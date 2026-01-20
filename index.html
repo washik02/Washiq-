@@ -1,288 +1,625 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Washiq Adnan | AI Architect Portfolio</title>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Washiq Adnan | AI Architect Portfolio</title>
 
-    <style>
-        :root {
-            --primary: #00d2ff;
-            --accent: #ff007a;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-            --bg: #020617;
-        }
+  <!-- SEO -->
+  <meta name="description" content="Washiq Adnan — AI Architect. Builder of Raha AI, a high-performance chatbot ecosystem for Messenger." />
+  <meta name="theme-color" content="#00d2ff" />
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: var(--bg);
-            color: #e5e7eb;
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            font-size: 15px;
-        }
+  <!-- OpenGraph (Facebook/Discord share preview) -->
+  <meta property="og:title" content="Washiq Adnan | AI Architect" />
+  <meta property="og:description" content="Architect of Raha AI — intelligent virtual ecosystems for seamless Messenger communication." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://files.catbox.moe/x0uu6r.jpg" />
 
-        /* Background Particles */
-        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
+  <!-- Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        /* Top Bar Info */
-        .top-nav {
-            position: fixed; top: 15px; left: 15px; right: 15px;
-            display: flex; justify-content: space-between; z-index: 1000;
-        }
-        .badge {
-            background: var(--glass); border: 1px solid var(--border);
-            padding: 6px 15px; border-radius: 50px; backdrop-filter: blur(10px);
-            font-family: 'Orbitron'; font-size: 10px; color: var(--primary);
-        }
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-        /* Music Player - Advanced */
-        .music-player {
-            position: fixed; bottom: 25px; right: 25px; z-index: 10001;
-            display: flex; align-items: center; gap: 10px;
-            background: rgba(15, 23, 42, 0.9); padding: 10px 20px;
-            border-radius: 50px; border: 1px solid var(--primary);
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
-        }
-        #music-btn {
-            background: var(--primary); border: none; width: 35px; height: 35px;
-            border-radius: 50%; cursor: pointer; display: flex; align-items: center;
-            justify-content: center; color: #000; transition: 0.3s;
-        }
-        .playing-bar {
-            display: flex; gap: 3px; align-items: flex-end; height: 15px;
-        }
-        .bar { width: 3px; background: var(--primary); animation: wave 1s ease-in-out infinite; display: none; }
-        @keyframes wave { 0%, 100% { height: 5px; } 50% { height: 15px; } }
-
-        /* Hero */
-        .hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .hero-avatar {
-            width: 160px; height: 160px; border-radius: 50%; padding: 5px;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            box-shadow: 0 0 40px rgba(0, 210, 255, 0.4); margin-bottom: 25px;
-        }
-        .hero-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        h1 { font-family: 'Orbitron'; font-size: 2.5rem; color: #fff; margin-bottom: 10px; }
-
-        /* Section Styling */
-        .section { padding: 60px 20px; max-width: 1000px; margin: auto; }
-        .glass-card {
-            background: var(--glass); border: 1px solid var(--border); border-radius: 25px;
-            padding: 35px; backdrop-filter: blur(15px); transition: 0.4s; margin-bottom: 30px;
-        }
-        .glass-card:hover { border-color: var(--primary); transform: translateY(-5px); }
-
-        /* Skill Bars */
-        .skill-container { margin-top: 20px; }
-        .skill-info { display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 11px; margin-bottom: 8px; color: var(--primary); }
-        .bar-bg { background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--primary); box-shadow: 0 0 10px var(--primary); width: 0; transition: 2s; }
-
-        /* Project & Gallery */
-        .project-img { width: 100%; border-radius: 20px; margin: 20px 0; border: 1px solid var(--border); }
-        .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .gallery img { width: 100%; border-radius: 15px; border: 1px solid var(--border); transition: 0.3s; }
-        .gallery img:hover { transform: scale(1.05); border-color: var(--accent); }
-
-        /* Facebook Profile Card */
-        .fb-profile {
-            display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.03);
-            padding: 20px; border-radius: 20px; border: 1px solid var(--border);
-            text-decoration: none; color: #fff; margin-top: 20px;
-        }
-        .fb-profile i { font-size: 30px; color: #1877f2; }
-        .fb-profile:hover { background: rgba(24, 119, 242, 0.1); border-color: #1877f2; }
-
-        /* Footer Animation */
-        .neural-footer {
-            height: 100px; width: 100%; position: relative; overflow: hidden; margin-top: 50px;
-        }
-        .neural-line {
-            position: absolute; bottom: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
-            box-shadow: 0 0 15px var(--primary); animation: moveLine 3s infinite linear;
-        }
-        @keyframes moveLine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        .btn-action {
-            display: inline-block; padding: 12px 30px; background: var(--primary); color: #000;
-            text-decoration: none; border-radius: 50px; font-family: 'Orbitron'; font-size: 11px;
-            font-weight: bold; margin-top: 20px; transition: 0.3s;
-        }
-        .btn-action:hover { box-shadow: 0 0 30px var(--primary); transform: scale(1.05); }
-
-        footer { text-align: center; padding: 60px; opacity: 0.5; font-size: 12px; }
-    </style>
-</head>
-<body>
-
-<div id="particles-js"></div>
-
-<div class="top-nav">
-    <div class="badge" id="clock">00:00:00</div>
-    <div class="badge">💖 STATUS: MARRIED TO RAHA</div>
-</div>
-
-<div class="music-player">
-    <div class="playing-bar" id="visualizer">
-        <div class="bar" style="animation-delay: 0s;"></div>
-        <div class="bar" style="animation-delay: 0.2s;"></div>
-        <div class="bar" style="animation-delay: 0.4s;"></div>
-        <div class="bar" style="animation-delay: 0.6s;"></div>
-    </div>
-    <span style="font-size: 10px; font-family: 'Orbitron';">SYSTEM AUDIO</span>
-    <button id="music-btn"><i class="fas fa-play" id="music-icon"></i></button>
-    <audio id="bg-audio" loop><source src="https://files.catbox.moe/7n4vd4.mp3" type="audio/mpeg"></audio>
-</div>
-
-<section class="hero">
-    <div class="hero-avatar" data-aos="zoom-in">
-        <img src="https://files.catbox.moe/x0uu6r.jpg" alt="Washiq Adnan">
-    </div>
-    <h1 id="typing"></h1>
-    <p style="font-size: 1.1rem; letter-spacing: 5px; color: var(--primary);">ARCHITECT OF RAHA AI</p>
-    <p style="margin-top: 10px; color: var(--accent);">Dedicated to Raha Jannat Megh ❤️</p>
-</section>
-
-<section class="section">
-    <div class="glass-card" data-aos="fade-up">
-        <h2 style="font-family: 'Orbitron'; color: var(--primary); margin-bottom: 20px;">01. MISSION</h2>
-        <p>I build intelligent virtual ecosystems. My main project, <b>Raha AI</b>, is a high-performance chatbot designed for Facebook Messenger, combining advanced logic with human-like interaction.</p>
-        
-        <div class="skill-container">
-            <div class="skill-info"><span>AI DEVELOPMENT</span><span>95%</span></div>
-            <div class="bar-bg"><div class="bar-fill" data-width="95%"></div></div>
-        </div>
-        <div class="skill-container">
-            <div class="skill-info"><span>MESSENGER BOT ARCHITECTURE</span><span>98%</span></div>
-            <div class="bar-bg"><div class="bar-fill" data-width="98%"></div></div>
-        </div>
-    </div>
-</section>
-
-<section class="section">
-    <div class="glass-card" style="text-align: center;" data-aos="fade-up">
-        <h2 style="font-family: 'Orbitron'; color: var(--primary);">02. RAHA AI PROJECT</h2>
-        <img src="https://files.catbox.moe/a1xeia.jpg" class="project-img">
-        <p>A specialized intelligent assistant system for seamless Messenger communication.</p>
-        <a href="https://m.me/j/AbYa0Wgrn9uUcctl/" class="btn-action">EXPERIENCE RAHA AI</a>
-    </div>
-</section>
-
-<section class="section">
-    <h2 style="font-family: 'Orbitron'; text-align: center; margin-bottom: 20px;">03. VISUAL ARCHIVE</h2>
-    <div class="gallery" data-aos="fade-up">
-        <img src="https://files.catbox.moe/h0n53u.jpg">
-        <img src="https://files.catbox.moe/fk8o2f.jpg">
-        <img src="https://files.catbox.moe/d6jevu.jpg">
-    </div>
-    <img src="https://files.catbox.moe/1sbpow.jpg" class="project-img" data-aos="fade-up">
-</section>
-
-<section class="section">
-    <div class="glass-card" data-aos="fade-up">
-        <h2 style="font-family: 'Orbitron'; color: var(--primary); margin-bottom: 20px;">04. CONNECT</h2>
-        <p><b>📍 Base:</b> Dinajpur, Bangladesh</p>
-        <p><b>📞 Secure Line:</b> +8801340975547</p>
-        
-        <a href="https://facebook.com/61574715983842" target="_blank" class="fb-profile">
-            <i class="fab fa-facebook"></i>
-            <div>
-                <h4 style="font-family: 'Orbitron';">Washiq Adnan</h4>
-                <p style="font-size: 12px; opacity: 0.7;">Official Facebook Profile</p>
-            </div>
-        </a>
-    </div>
-</section>
-
-<div class="neural-footer">
-    <div class="neural-line"></div>
-</div>
-
-<footer>
-    © 2026 WASHIQ ADNAN | BUILT WITH PASSION FOR RAHA AI <br>
-    Everything is connected.
-</footer>
-
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-<script>
-    // AOS Init
-    AOS.init({ duration: 1000, once: true });
-
-    // Typing Effect
-    const text = "Hi, I'm Washiq Adnan";
-    let i = 0;
-    function typeEffect() {
-        if(i < text.length) {
-            document.getElementById("typing").innerHTML += text.charAt(i);
-            i++; setTimeout(typeEffect, 100);
-        }
+  <style>
+    :root{
+      --primary:#00d2ff;
+      --accent:#ff007a;
+      --glass:rgba(255,255,255,0.06);
+      --border:rgba(255,255,255,0.12);
+      --bg:#020617;
+      --text:#e5e7eb;
+      --muted:rgba(229,231,235,0.72);
+      --shadow:0 0 24px rgba(0,210,255,0.22);
+      --radius:24px;
+      --max:1050px;
     }
-    window.onload = typeEffect;
 
-    // Particles
-    particlesJS("particles-js", {
-        particles: {
-            number: { value: 60 },
-            color: { value: "#00d2ff" },
-            opacity: { value: 0.2 },
-            size: { value: 2 },
-            line_linked: { enable: true, distance: 150, color: "#00d2ff", opacity: 0.1, width: 1 },
-            move: { enable: true, speed: 2 }
-        }
-    });
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Rajdhani', sans-serif;
+      overflow-x:hidden;
+      font-size:15px;
+      line-height:1.6;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      html{ scroll-behavior:auto; }
+      *{ animation:none !important; transition:none !important; }
+    }
+
+    /* Background particles */
+    #particles-js{ position:fixed; inset:0; z-index:-1; }
+
+    /* Top bar */
+    .top-nav{
+      position:fixed; top:14px; left:14px; right:14px;
+      display:flex; justify-content:space-between; align-items:center;
+      z-index:1000; gap:10px;
+      pointer-events:none; /* so it doesn't block taps */
+    }
+    .badge{
+      pointer-events:auto;
+      background:var(--glass);
+      border:1px solid var(--border);
+      padding:7px 14px;
+      border-radius:999px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      font-family:'Orbitron';
+      font-size:10px;
+      color:var(--primary);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+    }
+    .badge.status{ color:#fff; }
+    .badge.status b{ color:var(--accent); font-weight:700; }
+
+    /* Mini Nav */
+    .mini-nav{
+      position:fixed;
+      top:64px; left:50%; transform:translateX(-50%);
+      z-index:1000;
+      display:flex; gap:8px;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background:rgba(15,23,42,0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+    .mini-nav a{
+      text-decoration:none;
+      font-family:'Orbitron';
+      font-size:10px;
+      letter-spacing:0.6px;
+      color:rgba(255,255,255,0.75);
+      padding:8px 10px;
+      border-radius:999px;
+      transition:0.25s;
+      border:1px solid transparent;
+    }
+    .mini-nav a:hover{ color:#fff; border-color: rgba(0,210,255,0.35); }
+    .mini-nav a.active{
+      color:#000;
+      background:var(--primary);
+      border-color: transparent;
+    }
+
+    /* Music player */
+    .music-player{
+      position:fixed; bottom:22px; right:22px; z-index:10001;
+      display:flex; align-items:center; gap:10px;
+      background: rgba(15,23,42,0.92);
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,210,255,0.55);
+      box-shadow: var(--shadow);
+    }
+    #music-btn{
+      background: var(--primary);
+      border:none;
+      width:36px; height:36px;
+      border-radius:50%;
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      color:#000;
+      transition:0.25s;
+    }
+    #music-btn:hover{ transform:scale(1.06); box-shadow:0 0 26px rgba(0,210,255,0.35); }
+
+    .playing-bar{ display:flex; gap:3px; align-items:flex-end; height:15px; }
+    .bar{ width:3px; background:var(--primary); display:none; animation:wave 1s ease-in-out infinite; }
+    @keyframes wave{ 0%,100%{ height:5px; } 50%{ height:15px; } }
+    .sys-audio{
+      font-size:10px;
+      font-family:'Orbitron';
+      opacity:0.9;
+      color:#fff;
+      letter-spacing:0.6px;
+    }
+
+    /* Layout */
+    .container{ max-width:var(--max); margin:0 auto; padding:0 18px; }
+    .section{ padding: 72px 0; }
+
+    /* Hero */
+    .hero{
+      min-height:100svh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding: 130px 16px 60px; /* leave room for fixed top */
+    }
+    .hero-inner{ max-width: 820px; }
+    .hero-avatar{
+      width: 168px; height: 168px;
+      border-radius: 50%;
+      padding: 6px;
+      background: linear-gradient(45deg, var(--primary), var(--accent));
+      box-shadow: 0 0 44px rgba(0,210,255,0.34);
+      margin: 0 auto 22px;
+    }
+    .hero-avatar img{
+      width:100%; height:100%;
+      border-radius:50%;
+      object-fit:cover;
+      display:block;
+    }
+    h1{
+      font-family:'Orbitron';
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      color:#fff;
+      margin-bottom:10px;
+      letter-spacing:1px;
+    }
+    .subtitle{
+      font-size: 1.06rem;
+      letter-spacing: 4px;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+    .dedication{
+      margin-top: 10px;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.8px;
+    }
+    .hero-cta{
+      margin-top: 24px;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      text-decoration:none;
+      font-family:'Orbitron';
+      font-size: 11px;
+      letter-spacing:0.6px;
+      font-weight:700;
+      transition:0.25s;
+      border:1px solid transparent;
+      user-select:none;
+    }
+    .btn.primary{
+      background: var(--primary);
+      color:#000;
+      box-shadow: 0 0 28px rgba(0,210,255,0.25);
+    }
+    .btn.primary:hover{ transform: translateY(-2px); box-shadow: 0 0 40px rgba(0,210,255,0.38); }
+    .btn.ghost{
+      background: rgba(255,255,255,0.04);
+      color:#fff;
+      border-color: rgba(255,255,255,0.12);
+    }
+    .btn.ghost:hover{ border-color: rgba(0,210,255,0.5); transform: translateY(-2px); }
+
+    /* Cards */
+    .glass-card{
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 34px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: 0.25s;
+      margin-bottom: 26px;
+    }
+    .glass-card:hover{ border-color: rgba(0,210,255,0.55); transform: translateY(-4px); }
+
+    .section-title{
+      font-family:'Orbitron';
+      color: var(--primary);
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+    .muted{ color: var(--muted); }
+
+    /* Skills */
+    .skill-container{ margin-top: 18px; }
+    .skill-info{
+      display:flex;
+      justify-content:space-between;
+      font-family:'Orbitron';
+      font-size: 11px;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+    .bar-bg{
+      background: rgba(255,255,255,0.07);
+      height: 7px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .bar-fill{
+      height:100%;
+      background: var(--primary);
+      box-shadow: 0 0 14px rgba(0,210,255,0.55);
+      width: 0;
+      transition: width 1.6s ease;
+    }
+
+    /* Project / Images */
+    .project-img{
+      width:100%;
+      border-radius: 20px;
+      margin: 18px 0 12px;
+      border: 1px solid var(--border);
+      display:block;
+    }
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .gallery img{
+      width:100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      transition: 0.22s;
+      cursor: pointer;
+      display:block;
+    }
+    .gallery img:hover{ transform: scale(1.03); border-color: rgba(255,0,122,0.55); }
+
+    /* Connect card */
+    .connect-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .info-row{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.09);
+      background: rgba(255,255,255,0.03);
+    }
+    .info-row i{
+      color: var(--primary);
+      margin-top: 2px;
+      width: 18px;
+      text-align:center;
+    }
+
+    .fb-profile{
+      display:flex;
+      align-items:center;
+      gap: 14px;
+      background: rgba(255,255,255,0.03);
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      text-decoration:none;
+      color:#fff;
+      transition:0.25s;
+      margin-top: 16px;
+    }
+    .fb-profile i{ font-size: 30px; color: #1877f2; }
+    .fb-profile:hover{ background: rgba(24,119,242,0.10); border-color: rgba(24,119,242,0.55); transform: translateY(-2px); }
+
+    /* Footer line */
+    .neural-footer{ height: 100px; width:100%; position:relative; overflow:hidden; margin-top: 40px; }
+    .neural-line{
+      position:absolute; bottom: 0; width:100%; height:2px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+      box-shadow: 0 0 15px rgba(0,210,255,0.55);
+      animation: moveLine 3s infinite linear;
+    }
+    @keyframes moveLine{ 0%{ transform: translateX(-100%);} 100%{ transform: translateX(100%);} }
+
+    footer{
+      text-align:center;
+      padding: 46px 18px 70px;
+      opacity:0.65;
+      font-size: 12px;
+    }
+
+    /* Lightbox */
+    .lightbox{
+      position:fixed;
+      inset:0;
+      background: rgba(2,6,23,0.88);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index: 20000;
+      padding: 16px;
+    }
+    .lightbox.open{ display:flex; }
+    .lightbox-inner{
+      max-width: 1000px;
+      width: 100%;
+      border-radius: 18px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(15,23,42,0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 0 36px rgba(0,0,0,0.35);
+      position: relative;
+    }
+    .lightbox-inner img{
+      width:100%;
+      height: auto;
+      display:block;
+    }
+    .lightbox-close{
+      position:absolute;
+      top: 10px;
+      right: 10px;
+      border:none;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      cursor:pointer;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.16);
+      color:#fff;
+      transition: 0.2s;
+    }
+    .lightbox-close:hover{ background: rgba(255,255,255,0.16); transform: scale(1.04); }
+
+    /* Mobile tweaks */
+    @media (max-width: 520px){
+      .glass-card{ padding: 24px; border-radius: 20px; }
+      .mini-nav{ width: calc(100% - 24px); justify-content: space-between; }
+      .mini-nav a{ padding: 8px 9px; }
+      .music-player{ right: 12px; bottom: 12px; padding: 9px 12px; gap: 8px; }
+      .gallery img{ height: 150px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="particles-js" aria-hidden="true"></div>
+
+  <div class="top-nav" role="banner" aria-label="Top status bar">
+    <div class="badge" id="clock">--:--:--</div>
+    <div class="badge status">💖 STATUS: <b>MARRIED TO RAHA</b></div>
+  </div>
+
+  <nav class="mini-nav" aria-label="Quick navigation">
+    <a href="#mission" class="nav-link">MISSION</a>
+    <a href="#project" class="nav-link">RAHA AI</a>
+    <a href="#gallery" class="nav-link">ARCHIVE</a>
+    <a href="#connect" class="nav-link">CONNECT</a>
+  </nav>
+
+  <div class="music-player" aria-label="Music player">
+    <div class="playing-bar" id="visualizer" aria-hidden="true">
+      <div class="bar" style="animation-delay:0s;"></div>
+      <div class="bar" style="animation-delay:0.2s;"></div>
+      <div class="bar" style="animation-delay:0.4s;"></div>
+      <div class="bar" style="animation-delay:0.6s;"></div>
+    </div>
+    <span class="sys-audio">SYSTEM AUDIO</span>
+    <button id="music-btn" aria-label="Toggle music">
+      <i class="fas fa-play" id="music-icon" aria-hidden="true"></i>
+    </button>
+    <audio id="bg-audio" loop preload="none">
+      <source src="https://files.catbox.moe/7n4vd4.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <div class="hero-avatar" data-aos="zoom-in">
+        <img src="https://files.catbox.moe/x0uu6r.jpg" alt="Washiq Adnan" decoding="async" />
+      </div>
+      <h1 id="typing" aria-label="Intro heading"></h1>
+      <p class="subtitle">ARCHITECT OF RAHA AI</p>
+      <p class="dedication">Dedicated to Raha Jannat Megh ❤️</p>
+
+      <div class="hero-cta">
+        <a class="btn primary" href="#project"><i class="fa-solid fa-bolt"></i> VIEW PROJECT</a>
+        <a class="btn ghost" href="https://facebook.com/61574715983842" target="_blank" rel="noopener">
+          <i class="fa-brands fa-facebook"></i> FACEBOOK
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- MISSION -->
+    <section class="section" id="mission">
+      <div class="glass-card" data-aos="fade-up">
+        <h2 class="section-title">01. MISSION</h2>
+        <p class="muted">
+          I build intelligent virtual ecosystems. My main project, <b>Raha AI</b>, is a high-performance chatbot designed for Facebook Messenger—combining advanced logic with human-like interaction.
+        </p>
+
+        <div class="skill-container">
+          <div class="skill-info"><span>AI DEVELOPMENT</span><span>95%</span></div>
+          <div class="bar-bg"><div class="bar-fill" data-width="95%"></div></div>
+        </div>
+
+        <div class="skill-container">
+          <div class="skill-info"><span>MESSENGER BOT ARCHITECTURE</span><span>98%</span></div>
+          <div class="bar-bg"><div class="bar-fill" data-width="98%"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT -->
+    <section class="section" id="project">
+      <div class="glass-card" style="text-align:center;" data-aos="fade-up">
+        <h2 class="section-title">02. RAHA AI PROJECT</h2>
+        <img
+          src="https://files.catbox.moe/a1xeia.jpg"
+          class="project-img"
+          alt="Raha AI Project"
+          loading="lazy"
+          decoding="async"
+        />
+        <p class="muted">A specialized intelligent assistant system for seamless Messenger communication.</p>
+
+        <a href="https://m.me/j/AbYa0Wgrn9uUcctl/" class="btn primary" style="margin-top:18px;">
+          <i class="fa-brands fa-facebook-messenger"></i> EXPERIENCE RAHA AI
+        </a>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="section" id="gallery">
+      <h2 class="section-title" style="text-align:center; margin-bottom: 10px;">03. VISUAL ARCHIVE</h2>
+      <p class="muted" style="text-align:center; margin-bottom: 18px;">
+        Snapshots from the build journey—systems, memories, and moments.
+      </p>
+
+      <div class="gallery" data-aos="fade-up" aria-label="Image gallery">
+        <img src="https://files.catbox.moe/h0n53u.jpg" alt="Gallery image 1" loading="lazy" decoding="async" />
+        <img src="https://files.catbox.moe/fk8o2f.jpg" alt="Gallery image 2" loading="lazy" decoding="async" />
+        <img src="https://files.catbox.moe/d6jevu.jpg" alt="Gallery image 3" loading="lazy" decoding="async" />
+      </div>
+
+      <img
+        src="https://files.catbox.moe/1sbpow.jpg"
+        class="project-img"
+        data-aos="fade-up"
+        alt="Visual archive banner"
+        loading="lazy"
+        decoding="async"
+        style="margin-top:18px;"
+      />
+    </section>
+
+    <!-- CONNECT -->
+    <section class="section" id="connect">
+      <div class="glass-card" data-aos="fade-up">
+        <h2 class="section-title">04. CONNECT</h2>
+
+        <div class="connect-grid">
+          <div class="info-row">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            <div>
+              <div style="font-family:'Orbitron'; font-size:11px; color:var(--primary);">BASE</div>
+              <div class="muted">Dinajpur, Bangladesh</div>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <div>
+              <div style="font-family:'Orbitron'; font-size:11px; color:var(--primary);">SECURE LINE</div>
+              <div class="muted">+8801340975547</div>
+            </div>
+          </div>
+        </div>
+
+        <a href="https://facebook.com/61574715983842" target="_blank" rel="noopener" class="fb-profile">
+          <i class="fab fa-facebook" aria-hidden="true"></i>
+          <div>
+            <h4 style="font-family:'Orbitron'; margin-bottom:2px;">Washiq Adnan</h4>
+            <p style="font-size:12px; opacity:0.72;">Official Facebook Profile</p>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <div class="neural-footer" aria-hidden="true"><div class="neural-line"></div></div>
+
+  <footer>
+    © 2026 WASHIQ ADNAN | BUILT WITH PASSION FOR RAHA AI <br />
+    Everything is connected.
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close image">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+      <img id="lightboxImg" src="" alt="Opened image" />
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <script>
+    // AOS
+    AOS.init({ duration: 900, once: true });
+
+    // Typing effect (clean + reset-safe)
+    const typingEl = document.getElementById("typing");
+    const introText = "Hi, I'm Washiq Adnan";
+    let t = 0;
+    function typeEffect(){
+      typingEl.textContent = introText.slice(0, t++);
+      if (t <= introText.length) setTimeout(typeEffect, 85);
+    }
+    typeEffect();
 
     // Clock - Bangladesh Time
-    function updateClock() {
-        const options = { timeZone: 'Asia/Dhaka', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-US', options);
+    function updateClock(){
+      const options = { timeZone: "Asia/Dhaka", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true };
+      document.getElementById("clock").innerText = new Date().toLocaleTimeString("en-US", options);
     }
+    updateClock();
     setInterval(updateClock, 1000);
 
-    // Skill Bar Scroll Animation
-    window.addEventListener('scroll', () => {
-        document.querySelectorAll('.bar-fill').forEach(bar => {
-            const rect = bar.getBoundingClientRect();
-            if(rect.top < window.innerHeight) {
-                bar.style.width = bar.getAttribute('data-width');
-            }
-        });
-    });
-
-    // Music System - FIXED
-    const audio = document.getElementById("bg-audio");
-    const musicBtn = document.getElementById("music-btn");
-    const musicIcon = document.getElementById("music-icon");
-    const bars = document.querySelectorAll(".bar");
-    let isPlaying = false;
-
-    musicBtn.addEventListener("click", () => {
-        if (isPlaying) {
-            audio.pause();
-            musicIcon.className = "fas fa-play";
-            bars.forEach(b => b.style.display = "none");
-        } else {
-            audio.play();
-            musicIcon.className = "fas fa-pause";
-            bars.forEach(b => b.style.display = "block");
+    // Particles (skip if reduced motion)
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduceMotion) {
+      particlesJS("particles-js", {
+        particles: {
+          number: { value: 58 },
+          color: { value: "#00d2ff" },
+          opacity: { value: 0.18 },
+          size: { value: 2 },
+          line_linked: { enable: true, distance: 150, color: "#00d2ff", opacity: 0.10, width: 1 },
+          move: { enable: true, speed: 2 }
         }
-        isPlaying = !isPlaying;
-    });
+      });
+    }
 
-    // Audio context fix for browsers
-    document.body.addEventListener('click', () => {
-        // This ensures audio can play after user interaction
-    }, {once: true});
-</script>
-
-</body>
-  </html>
+    // Skill bars (IntersectionObserver, no scroll bugs)
+    const fills = document.querySelectorAll(".bar-fill");
+    const skillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          el.style.width = el.getAttribute("da
