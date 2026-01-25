@@ -1,220 +1,466 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Washiq Adnan | AI Architect Portfolio</title>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
-    <style>
-        :root {
-            --primary: #00d2ff;
-            --accent: #ff007a;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-            --bg: #020617;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: var(--bg);
-            color: #e5e7eb;
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            font-size: 15px;
-        }
-
-        /* Background Particles */
-        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
-
-        /* Top Bar Info */
-        .top-nav {
-            position: fixed; top: 15px; left: 15px; right: 15px;
-            display: flex; justify-content: space-between; z-index: 1000;
-        }
-        .badge {
-            background: var(--glass); border: 1px solid var(--border);
-            padding: 6px 15px; border-radius: 50px; backdrop-filter: blur(10px);
-            font-family: 'Orbitron'; font-size: 10px; color: var(--primary);
-        }
-
-        /* Music Player - Advanced */
-        .music-player {
-            position: fixed; bottom: 25px; right: 25px; z-index: 10001;
-            display: flex; align-items: center; gap: 10px;
-            background: rgba(15, 23, 42, 0.9); padding: 10px 20px;
-            border-radius: 50px; border: 1px solid var(--primary);
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
-        }
-        #music-btn {
-            background: var(--primary); border: none; width: 35px; height: 35px;
-            border-radius: 50%; cursor: pointer; display: flex; align-items: center;
-            justify-content: center; color: #000; transition: 0.3s;
-        }
-        .playing-bar {
-            display: flex; gap: 3px; align-items: flex-end; height: 15px;
-        }
-        .bar { width: 3px; background: var(--primary); animation: wave 1s ease-in-out infinite; display: none; }
-        @keyframes wave { 0%, 100% { height: 5px; } 50% { height: 15px; } }
-
-        /* Hero */
-        .hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .hero-avatar {
-            width: 160px; height: 160px; border-radius: 50%; padding: 5px;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            box-shadow: 0 0 40px rgba(0, 210, 255, 0.4); margin-bottom: 25px;
-        }
-        .hero-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        h1 { font-family: 'Orbitron'; font-size: 2.5rem; color: #fff; margin-bottom: 10px; }
-
-        /* Section Styling */
-        .section { padding: 60px 20px; max-width: 1000px; margin: auto; }
-        .glass-card {
-            background: var(--glass); border: 1px solid var(--border); border-radius: 25px;
-            padding: 35px; backdrop-filter: blur(15px); transition: 0.4s; margin-bottom: 30px;
-        }
-        .glass-card:hover { border-color: var(--primary); transform: translateY(-5px); }
-
-        /* Skill Bars */
-        .skill-container { margin-top: 20px; }
-        .skill-info { display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 11px; margin-bottom: 8px; color: var(--primary); }
-        .bar-bg { background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--primary); box-shadow: 0 0 10px var(--primary); width: 0; transition: 2s; }
-
-        /* Project & Gallery */
-        .project-img { width: 100%; border-radius: 20px; margin: 20px 0; border: 1px solid var(--border); }
-        .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
-        .gallery img { width: 100%; border-radius: 15px; border: 1px solid var(--border); transition: 0.3s; }
-        .gallery img:hover { transform: scale(1.05); border-color: var(--accent); }
-
-        /* Facebook Profile Card */
-        .fb-profile {
-            display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.03);
-            padding: 20px; border-radius: 20px; border: 1px solid var(--border);
-            text-decoration: none; color: #fff; margin-top: 20px;
-        }
-        .fb-profile i { font-size: 30px; color: #1877f2; }
-        .fb-profile:hover { background: rgba(24, 119, 242, 0.1); border-color: #1877f2; }
-
-        /* Footer Animation */
-        .neural-footer {
-            height: 100px; width: 100%; position: relative; overflow: hidden; margin-top: 50px;
-        }
-        .neural-line {
-            position: absolute; bottom: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
-            box-shadow: 0 0 15px var(--primary); animation: moveLine 3s infinite linear;
-        }
-        @keyframes moveLine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        .btn-action {
-            display: inline-block; padding: 12px 30px; background: var(--primary); color: #000;
-            text-decoration: none; border-radius: 50px; font-family: 'Orbitron'; font-size: 11px;
-            font-weight: bold; margin-top: 20px; transition: 0.3s;
-        }
-        .btn-action:hover { box-shadow: 0 0 30px var(--primary); transform: scale(1.05); }
-
-        footer { text-align: center; padding: 60px; opacity: 0.5; font-size: 12px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bangla to Banglish Converter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="theme-color" content="#4f46e5" />
+  <style>
+    /* Small polish beyond Tailwind */
+    .glass {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .soft-shadow {
+      box-shadow: 0 20px 50px rgba(79, 70, 229, 0.12);
+    }
+    .mono-like {
+      font-variant-ligatures: none;
+    }
+  </style>
 </head>
-<body>
-
-<div id="particles-js"></div>
-
-<div class="top-nav">
-    <div class="badge" id="clock">00:00:00</div>
-    <div class="badge">💖 STATUS: MARRIED TO RAHA</div>
-</div>
-
-<div class="music-player">
-    <div class="playing-bar" id="visualizer">
-        <div class="bar" style="animation-delay: 0s;"></div>
-        <div class="bar" style="animation-delay: 0.2s;"></div>
-        <div class="bar" style="animation-delay: 0.4s;"></div>
-        <div class="bar" style="animation-delay: 0.6s;"></div>
-    </div>
-    <span style="font-size: 10px; font-family: 'Orbitron';">SYSTEM AUDIO</span>
-    <button id="music-btn"><i class="fas fa-play" id="music-icon"></i></button>
-    <audio id="bg-audio" loop><source src="https://files.catbox.moe/7n4vd4.mp3" type="audio/mpeg"></audio>
-</div>
-
-<section class="hero">
-    <div class="hero-avatar" data-aos="zoom-in">
-        <img src="https://files.catbox.moe/x0uu6r.jpg" alt="Washiq Adnan">
-    </div>
-    <h1 id="typing"></h1>
-    <p style="font-size: 1.1rem; letter-spacing: 5px; color: var(--primary);">ARCHITECT OF RAHA AI</p>
-    <p style="margin-top: 10px; color: var(--accent);">Dedicated to Raha Jannat Megh ❤️</p>
-</section>
-
-<section class="section">
-    <div class="glass-card" data-aos="fade-up">
-        <h2 style="font-family: 'Orbitron'; color: var(--primary); margin-bottom: 20px;">01. MISSION</h2>
-        <p>I build intelligent virtual ecosystems. My main project, <b>Raha AI</b>, is a high-performance chatbot designed for Facebook Messenger, combining advanced logic with human-like interaction.</p>
-        
-        <div class="skill-container">
-            <div class="skill-info"><span>AI DEVELOPMENT</span><span>95%</span></div>
-            <div class="bar-bg"><div class="bar-fill" data-width="95%"></div></div>
+<body class="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-indigo-100 text-slate-800">
+  <main class="px-4 py-10 sm:py-14">
+    <section class="mx-auto w-full max-w-3xl rounded-3xl border border-indigo-100 glass soft-shadow">
+      <header class="px-6 pt-8 sm:px-10">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-indigo-700">
+              Bangla to Banglish Converter
+            </h1>
+            <p class="mt-2 text-sm sm:text-base text-slate-600">
+              Type or paste Bengali text and get phonetic Banglish instantly.
+            </p>
+          </div>
+          <div class="hidden sm:flex items-center gap-2">
+            <span class="inline-flex items-center rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
+              Tailwind + JS
+            </span>
+          </div>
         </div>
-        <div class="skill-container">
-            <div class="skill-info"><span>MESSENGER BOT ARCHITECTURE</span><span>98%</span></div>
-            <div class="bar-bg"><div class="bar-fill" data-width="98%"></div></div>
+      </header>
+
+      <div class="px-6 pb-8 pt-6 sm:px-10">
+        <!-- Input -->
+        <label for="bnInput" class="block text-sm font-semibold text-slate-700">
+          Bengali Input
+        </label>
+        <div class="mt-2 relative">
+          <textarea
+            id="bnInput"
+            rows="7"
+            placeholder="এখানে বাংলা লিখুন... (উদাহরণ: আমি তোমাকে ভালোবাসি)"
+            class="w-full resize-none rounded-2xl border border-indigo-200 bg-white/90 p-4 pr-12 text-base leading-relaxed outline-none ring-0 transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+          ></textarea>
+          <button
+            id="clearBtn"
+            type="button"
+            class="absolute right-3 top-3 inline-flex items-center justify-center rounded-xl border border-indigo-100 bg-white px-3 py-2 text-xs font-semibold text-indigo-700 shadow-sm hover:bg-indigo-50 active:scale-[0.98]"
+            title="Clear"
+          >
+            Clear
+          </button>
         </div>
-    </div>
-</section>
 
-<section class="section">
-    <div class="glass-card" style="text-align: center;" data-aos="fade-up">
-        <h2 style="font-family: 'Orbitron'; color: var(--primary);">02. RAHA AI PROJECT</h2>
-        <img src="https://files.catbox.moe/a1xeia.jpg" class="project-img">
-        <p>A specialized intelligent assistant system for seamless Messenger communication.</p>
-        <a href="https://m.me/j/AbYa0Wgrn9uUcctl/" class="btn-action">EXPERIENCE RAHA AI</a>
-    </div>
-</section>
+        <!-- Actions -->
+        <div class="mt-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+          <div class="flex items-center gap-3">
+            <button
+              id="convertBtn"
+              type="button"
+              class="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.99]"
+            >
+              Convert
+            </button>
 
-<section class="section">
-    <h2 style="font-family: 'Orbitron'; text-align: center; margin-bottom: 20px;">03. VISUAL ARCHIVE</h2>
-    <div class="gallery" data-aos="fade-up">
-        <img src="https://files.catbox.moe/h0n53u.jpg">
-        <img src="https://files.catbox.moe/fk8o2f.jpg">
-        <img src="https://files.catbox.moe/d6jevu.jpg">
-    </div>
-    <img src="https://files.catbox.moe/1sbpow.jpg" class="project-img" data-aos="fade-up">
-</section>
+            <label class="inline-flex items-center gap-2 text-sm text-slate-600 select-none">
+              <input id="liveToggle" type="checkbox" class="h-4 w-4 rounded border-indigo-300 text-indigo-600 focus:ring-indigo-200" checked />
+              Live convert
+            </label>
+          </div>
 
-<section class="section">
-    <div class="glass-card" data-aos="fade-up">
-        <h2 style="font-family: 'Orbitron'; color: var(--primary); margin-bottom: 20px;">04. CONNECT</h2>
-        <p><b>📍 Base:</b> Dinajpur, Bangladesh</p>
-        <p><b>📞 Secure Line:</b> +8801340975547</p>
-        
-        <a href="https://facebook.com/61574715983842" target="_blank" class="fb-profile">
-            <i class="fab fa-facebook"></i>
-            <div>
-                <h4 style="font-family: 'Orbitron';">Washiq Adnan</h4>
-                <p style="font-size: 12px; opacity: 0.7;">Official Facebook Profile</p>
-            </div>
-        </a>
-    </div>
-</section>
+          <div class="flex items-center gap-2">
+            <span id="status" class="text-xs text-slate-500"></span>
+          </div>
+        </div>
 
-<div class="neural-footer">
-    <div class="neural-line"></div>
-</div>
+        <!-- Output -->
+        <div class="mt-6">
+          <div class="flex items-center justify-between gap-3">
+            <label class="block text-sm font-semibold text-slate-700">
+              Banglish Output
+            </label>
+            <button
+              id="copyBtn"
+              type="button"
+              class="inline-flex items-center justify-center rounded-2xl border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm hover:bg-indigo-50 active:scale-[0.99]"
+            >
+              Copy
+            </button>
+          </div>
 
-<footer>
-    © 2026 WASHIQ ADNAN | BUILT WITH PASSION FOR RAHA AI <br>
-    Everything is connected.
-</footer>
+          <div
+            id="outputBox"
+            class="mt-2 min-h-[110px] rounded-2xl border border-indigo-200 bg-white/80 p-4 text-base leading-relaxed text-slate-800 mono-like whitespace-pre-wrap"
+          >
+            <span class="text-slate-400">Your converted Banglish will appear here…</span>
+          </div>
 
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+          <p class="mt-3 text-xs text-slate-500">
+            Tip: Results are phonetic. You can customize mappings in the JavaScript section.
+          </p>
+        </div>
+      </div>
+    </section>
 
-<script>
+    <footer class="mx-auto mt-8 max-w-3xl px-2 text-center text-xs text-slate-500">
+      Built as a single-file SPA • Mobile-friendly • No server needed
+    </footer>
+  </main>
+
+  <script>
+    // ----------------------------
+    // Bangla -> Banglish Transliteration (phonetic)
+    // ----------------------------
+
+    // Conjunct / multi-char patterns should be applied before single chars.
+    // You can extend these for better accuracy.
+    const MULTI = [
+      // Common conjuncts
+      ["ক্ষ্ণ", "kkhn"],
+      ["ক্ষ্ম", "kkhm"],
+      ["ক্ষ", "kkh"],          // often "kho/kkho" depending context; we keep phonetic
+      ["জ্ঞ", "ggyo"],         // common Banglish: ggyo / gyo
+      ["চ্ছ", "cch"],
+      ["চ্ছা", "ccha"],
+      ["ঙ্গ", "ng"],
+      ["ঙ্", "ng"],
+
+      ["ঙ্ক", "ngk"],
+      ["ঙ্গা", "nga"],
+      ["ঙ্গি", "ngi"],
+      ["ঙ্গী", "ngii"],
+      ["ঙ্গু", "ngu"],
+      ["ঙ্গূ", "nguu"],
+      ["ঙ্গে", "nge"],
+      ["ঙ্গৈ", "ngoi"],
+      ["ঙ্গো", "ngo"],
+      ["ঙ্গৌ", "ngou"],
+
+      ["ঞ্জ", "nj"],
+      ["ঞ্ছ", "nch"],
+      ["ঞ্ছি", "nchi"],
+      ["ঞ্ছা", "ncha"],
+
+      ["ত্র", "tr"],
+      ["ত্ত", "tt"],
+      ["দ্ধ", "ddh"],
+      ["দ্দ", "dd"],
+      ["ন্থ", "nth"],
+      ["ন্ত", "nt"],
+      ["ন্দ", "nd"],
+      ["ম্ভ", "mbh"],
+      ["ম্প", "mp"],
+      ["প্ন", "pn"],
+      ["প্র", "pr"],
+      ["গ্র", "gr"],
+      ["ক্র", "kr"],
+      ["ভ্র", "bhr"],
+      ["শ্র", "shr"],
+      ["স্ত", "st"],
+      ["স্প", "sp"],
+      ["স্ক", "sk"],
+      ["শ্চ", "shch"],
+      ["ঞ্চ", "nch"],
+      ["ক্ক", "kk"],
+      ["জ্জ", "jj"],
+
+      // Common clusters with ya-phala / ra-phala approximations
+      ["্য", "y"],  // ya-phala; handled loosely
+      ["্র", "r"],  // ra-phala
+    ];
+
+    // Independent vowels
+    const VOWELS = {
+      "অ": "o",
+      "আ": "a",
+      "ই": "i",
+      "ঈ": "ii",
+      "উ": "u",
+      "ঊ": "uu",
+      "ঋ": "ri",
+      "এ": "e",
+      "ঐ": "oi",
+      "ও": "o",
+      "ঔ": "ou",
+    };
+
+    // Vowel signs (kar)
+    const KARS = {
+      "া": "a",
+      "ি": "i",
+      "ী": "ii",
+      "ু": "u",
+      "ূ": "uu",
+      "ৃ": "ri",
+      "ে": "e",
+      "ৈ": "oi",
+      "ো": "o",
+      "ৌ": "ou",
+    };
+
+    // Consonants (base)
+    const CONS = {
+      "ক": "k",
+      "খ": "kh",
+      "গ": "g",
+      "ঘ": "gh",
+      "ঙ": "ng",
+
+      "চ": "ch",
+      "ছ": "chh",
+      "জ": "j",
+      "ঝ": "jh",
+      "ঞ": "n",
+
+      "ট": "t",
+      "ঠ": "th",
+      "ড": "d",
+      "ঢ": "dh",
+      "ণ": "n",
+
+      "ত": "t",
+      "থ": "th",
+      "দ": "d",
+      "ধ": "dh",
+      "ন": "n",
+
+      "প": "p",
+      "ফ": "ph",
+      "ব": "b",
+      "ভ": "bh",
+      "ম": "m",
+
+      "য": "y",
+      "র": "r",
+      "ল": "l",
+
+      "শ": "sh",
+      "ষ": "sh",
+      "স": "s",
+      "হ": "h",
+
+      "ড়": "r",
+      "ঢ়": "rh",
+      "য়": "y",
+
+      "ৎ": "t",
+    };
+
+    // Special signs
+    const SIGNS = {
+      "ং": "ng",    // anusvara
+      "ঁ": "n",     // chandrabindu (approx)
+      "ঃ": "h",     // visarga (approx)
+      "্": "",      // hasanta/virama (handled in logic too)
+    };
+
+    // Digits
+    const DIGITS = {
+      "০": "0", "১": "1", "২": "2", "৩": "3", "৪": "4",
+      "৫": "5", "৬": "6", "৭": "7", "৮": "8", "৯": "9",
+    };
+
+    const PUNCT_KEEP = new Set([" ", "\n", "\t", ".", ",", "!", "?", ":", ";", "-", "—", "(", ")", "[", "]", "{", "}", "\"", "'", "…", "।", "॥"]);
+
+    function isBengaliChar(ch) {
+      const code = ch.charCodeAt(0);
+      return (code >= 0x0980 && code <= 0x09FF);
+    }
+
+    function capWord(word) {
+      // Sentence-like capitalization: "ami" -> "Ami" (but keep acronyms)
+      if (!word) return word;
+      if (word.toUpperCase() === word) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+
+    function transliterateBanglaToBanglish(input) {
+      if (!input) return "";
+
+      // Apply multi patterns first (greedy in order)
+      let text = input;
+      for (const [bn, rom] of MULTI) {
+        // Replace all occurrences
+        text = text.split(bn).join(rom);
+      }
+
+      let out = "";
+      const chars = Array.from(text);
+
+      // Helper to peek next char
+      const next = (i) => (i + 1 < chars.length ? chars[i + 1] : "");
+
+      for (let i = 0; i < chars.length; i++) {
+        const ch = chars[i];
+
+        // If multi replaced produced latin letters, just pass through
+        if (!isBengaliChar(ch)) {
+          out += ch;
+          continue;
+        }
+
+        // Keep punctuation/space
+        if (PUNCT_KEEP.has(ch)) {
+          out += (ch === "।" ? "." : ch);
+          continue;
+        }
+
+        if (DIGITS[ch]) {
+          out += DIGITS[ch];
+          continue;
+        }
+
+        // Independent vowels
+        if (VOWELS[ch]) {
+          out += VOWELS[ch];
+          continue;
+        }
+
+        // Signs
+        if (SIGNS.hasOwnProperty(ch)) {
+          out += SIGNS[ch];
+          continue;
+        }
+
+        // Consonant + possible vowel sign
+        if (CONS[ch]) {
+          const n1 = next(i);
+
+          // If next is virama (্), suppress inherent vowel and skip virama
+          if (n1 === "্") {
+            out += CONS[ch];
+            i += 1; // skip virama
+            continue;
+          }
+
+          // If next is a vowel sign (kar), append it
+          if (KARS[n1]) {
+            out += CONS[ch] + KARS[n1];
+            i += 1; // skip kar
+            continue;
+          }
+
+          // No kar: use inherent vowel 'o' (Bangla default)
+          out += CONS[ch] + "o";
+          continue;
+        }
+
+        // Vowel sign without consonant (rare), map anyway
+        if (KARS[ch]) {
+          out += KARS[ch];
+          continue;
+        }
+
+        // Fallback: keep as-is
+        out += ch;
+      }
+
+      // Cleanup: common readability tweaks
+      out = out
+        .replace(/oo+/g, "o")          // reduce long inherent-vowel artifacts
+        .replace(/\s+/g, (m) => m)     // keep spacing
+        .replace(/ngg/g, "ngg");
+
+      // Capitalize first letter of each sentence-ish segment
+      // This keeps it nicer: "ami tumi" -> "Ami tumi"
+      out = out
+        .split(/(\n|[.?!]\s+)/)
+        .map((seg) => {
+          // If delimiter, return as-is
+          if (seg === "\n" || /^[.?!]\s+$/.test(seg)) return seg;
+          const trimmed = seg.trimStart();
+          const leadSpaces = seg.slice(0, seg.length - trimmed.length);
+          if (!trimmed) return seg;
+
+          // Capitalize first "word" only
+          const parts = trimmed.split(/(\s+)/);
+          if (parts.length) parts[0] = capWord(parts[0]);
+          return leadSpaces + parts.join("");
+        })
+        .join("");
+
+      return out;
+    }
+
+    // ----------------------------
+    // UI logic
+    // ----------------------------
+    const bnInput = document.getElementById("bnInput");
+    const outputBox = document.getElementById("outputBox");
+    const convertBtn = document.getElementById("convertBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const liveToggle = document.getElementById("liveToggle");
+    const status = document.getElementById("status");
+
+    function setOutput(text) {
+      if (!text) {
+        outputBox.innerHTML = '<span class="text-slate-400">Your converted Banglish will appear here…</span>';
+      } else {
+        outputBox.textContent = text;
+      }
+    }
+
+    function convertNow() {
+      const input = bnInput.value;
+      const converted = transliterateBanglaToBanglish(input);
+      setOutput(converted);
+      status.textContent = converted ? "Converted ✓" : "";
+    }
+
+    bnInput.addEventListener("input", () => {
+      if (liveToggle.checked) convertNow();
+    });
+
+    convertBtn.addEventListener("click", convertNow);
+
+    clearBtn.addEventListener("click", () => {
+      bnInput.value = "";
+      setOutput("");
+      status.textContent = "";
+      bnInput.focus();
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      const text = outputBox.textContent.trim();
+      if (!text || outputBox.querySelector("span")) {
+        status.textContent = "Nothing to copy";
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        status.textContent = "Copied to clipboard ✓";
+      } catch (e) {
+        // Fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        status.textContent = "Copied ✓";
+      }
+    });
+
+    // Demo text (optional): comment out if you don't want it
+    // bnInput.value = "আমি তোমাকে ভালোবাসি। তুমি কেমন আছো?";
+    // convertNow();
+  </script>
+</body>
+</html>>
     // AOS Init
     AOS.init({ duration: 1000, once: true });
 
