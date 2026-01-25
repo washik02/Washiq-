@@ -18,27 +18,18 @@
     #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
     .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
     
-    /* Chat Window Styles */
+    /* চ্যাট উইন্ডো স্টাইল */
     #chat-window { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateY(20px); opacity: 0; pointer-events: none; }
     #chat-window.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
-    .msg-user { background: linear-gradient(135deg, #3a7bd5, #00d2ff); color: white; border-radius: 15px 15px 2px 15px; margin-left: auto; border: 1px solid rgba(255,255,255,0.1); }
+    .msg-user { background: linear-gradient(135deg, #3a7bd5, #00d2ff); color: white; border-radius: 15px 15px 2px 15px; margin-left: auto; }
     .msg-bot { background: rgba(255,255,255,0.08); color: #e2e8f0; border-radius: 15px 15px 15px 2px; border: 1px solid rgba(255,255,255,0.1); }
     .typing-dot { width: 4px; height: 4px; background: #00d2ff; border-radius: 50%; animation: blink 1.4s infinite both; }
     @keyframes blink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 210, 255, 0.3); border-radius: 10px; }
   </style>
 </head>
 <body>
 
   <div id="particles-js"></div>
-
-  <nav class="fixed top-0 w-full p-6 flex justify-between items-center z-50">
-    <div class="glass-card px-5 py-2 text-xs font-mono border-indigo-500/30 text-cyan-400" id="digital-clock">00:00:00</div>
-    <div class="bg-gradient-to-r from-pink-600 to-purple-600 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
-      ❤️ Married to Raha Jannat Megh
-    </div>
-  </nav>
 
   <section class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
     <div class="mb-8" data-aos="zoom-in">
@@ -47,13 +38,10 @@
     <h1 class="text-4xl md:text-6xl font-extrabold mb-4">
       <span id="type-text" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"></span>
     </h1>
-    <p class="text-slate-400 text-sm tracking-[0.4em] uppercase mb-10">Creator of Washiq AI & Developer</p>
-    
-    <div class="flex gap-4">
-      <button onclick="openChat()" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-full font-bold transition-all">
+    <p class="text-slate-400 text-sm tracking-[0.4em] uppercase mb-10">Washiq Adnan - Developer & Creator</p>
+    <button onclick="openChat()" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-full font-bold transition-all shadow-lg shadow-blue-500/30">
         Talk to Raha AI
-      </button>
-    </div>
+    </button>
   </section>
 
   <div class="fixed bottom-6 right-6 z-[1000] flex flex-col items-end">
@@ -62,16 +50,16 @@
         <div class="flex items-center gap-3">
           <img src="https://files.catbox.moe/x0uu6r.jpg" class="w-10 h-10 rounded-full border border-cyan-500/50">
           <div>
-            <h3 class="text-sm font-bold">Raha AI (Live)</h3>
-            <p class="text-[9px] text-green-400 uppercase font-bold tracking-widest">Powered by Washiq AI</p>
+            <h3 class="text-sm font-bold">Raha AI (Portfolio Ver.)</h3>
+            <p class="text-[9px] text-green-400 font-bold uppercase tracking-widest">Washiq's Creation</p>
           </div>
         </div>
-        <button onclick="toggleChat()" class="text-slate-400"><i class="fas fa-times"></i></button>
+        <button onclick="toggleChat()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
       </div>
 
-      <div id="chat-body" class="flex-1 overflow-y-auto p-4 space-y-4 text-[13px] custom-scrollbar">
+      <div id="chat-body" class="flex-1 overflow-y-auto p-4 space-y-4 text-[13px] scroll-smooth">
         <div class="msg-bot p-3 max-w-[85%]">
-          আসসালামু আলাইকুম! আমি <b>রাহা এআই</b>। ওয়াশিকের তৈরি চ্যাটবট। এখন আমি ব্রাউজারেও কথা বলতে পারি! 😊
+            আসসালামু আলাইকুম! আমি <b>রাহা এআই</b>। ওয়াশিক আদনানের পোর্টফোলিওতে আপনাকে স্বাগতম! আমি কি আপনাকে সাহায্য করতে পারি?
         </div>
       </div>
 
@@ -83,13 +71,13 @@
 
       <div class="p-4 bg-white/5 border-t border-white/10 flex gap-2">
         <input type="text" id="chat-input" placeholder="Type a message..." class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 w-full text-sm focus:outline-none focus:border-cyan-500 text-white">
-        <button onclick="sendMessage()" class="bg-cyan-600 w-10 h-10 rounded-xl flex items-center justify-center">
+        <button onclick="sendMessage()" class="bg-cyan-600 hover:bg-cyan-500 w-10 h-10 rounded-xl flex items-center justify-center transition-all">
           <i class="fas fa-paper-plane text-xs"></i>
         </button>
       </div>
     </div>
 
-    <button onclick="toggleChat()" class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-full shadow-2xl flex items-center justify-center text-white text-2xl border-2 border-white/10">
+    <button onclick="toggleChat()" class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-full shadow-2xl flex items-center justify-center text-white text-2xl border-2 border-white/10 hover:scale-110 transition-all">
       <i class="fas fa-comment-dots"></i>
     </button>
   </div>
@@ -97,16 +85,14 @@
   <script>
     AOS.init({ duration: 1000, once: true });
     
-    // Simple Typewriter
+    // টাইপিং ইফেক্ট
     const textStr = "Hi, I'm Washiq Adnan";
     let charIdx = 0;
     function typeEffect() { if(charIdx < textStr.length) { document.getElementById("type-text").innerHTML += textStr.charAt(charIdx); charIdx++; setTimeout(typeEffect, 100); } }
     window.onload = typeEffect;
 
-    // Particles
+    // পার্টিকেলস
     particlesJS("particles-js", { particles: { number: { value: 40 }, color: { value: "#00d2ff" }, opacity: { value: 0.2 }, size: { value: 2 }, line_linked: { enable: true, distance: 150, color: "#00d2ff", opacity: 0.1, width: 1 }, move: { enable: true, speed: 1 } } });
-
-    setInterval(() => { document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: false }); }, 1000);
 
     const chatWindow = document.getElementById('chat-window');
     const chatBody = document.getElementById('chat-body');
@@ -116,29 +102,30 @@
     function toggleChat() { chatWindow.classList.toggle('active'); }
     function openChat() { chatWindow.classList.add('active'); chatInput.focus(); }
 
+    // আসল এপিআই কানেকশন এবং প্রক্সি লজিক
     async function sendMessage() {
-      const msg = chatInput.value.trim();
-      if(!msg) return;
+      const userMsg = chatInput.value.trim();
+      if(!userMsg) return;
 
-      appendMessage(msg, 'user');
+      appendMessage(userMsg, 'user');
       chatInput.value = "";
       typing.classList.remove('hidden');
       chatBody.scrollTop = chatBody.scrollHeight;
 
       try {
-        // এই প্রক্সিটি ব্যবহার করলে ব্রাউজার আর এরর দেবে না
-        const proxyUrl = "https://api.allorigins.win/get?url=";
-        const apiUrl = `https://betadash-api-swordslush-production.up.railway.app/you?chat=${encodeURIComponent(msg)}`;
+        // মেসেঞ্জার বটের এপিআই ব্রাউজারে চালাতে আমরা AllOrigins প্রক্সি ব্যবহার করছি
+        const proxy = "https://api.allorigins.win/get?url=";
+        const target = `https://betadash-api-swordslush-production.up.railway.app/you?chat=${encodeURIComponent(userMsg)}`;
         
-        const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
+        const response = await fetch(proxy + encodeURIComponent(target));
         const data = await response.json();
-        const finalData = JSON.parse(data.contents); // প্রক্সি থেকে মেইন ডাটা বের করা
-        
+        const finalData = JSON.parse(data.contents); // প্রক্সি থেকে ডাটা রিড করা
+
         typing.classList.add('hidden');
-        appendMessage(finalData.response || "দুঃখিত, আমি বুঝতে পারছি না।", 'bot');
+        appendMessage(finalData.response || "দুঃখিত, আমি ঠিক বুঝতে পারিনি।", 'bot');
       } catch (err) {
         typing.classList.add('hidden');
-        appendMessage("কানেকশনে সমস্যা হচ্ছে। সার্ভারটি হয়তো এখন বিজি আছে।", 'bot');
+        appendMessage("কানেকশন এরর! আপনার এপিআই সার্ভারটি হয়তো এখন অফলাইনে আছে।", 'bot');
       }
     }
 
