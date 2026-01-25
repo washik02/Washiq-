@@ -1,123 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Washiq Adnan | Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #020617;
-            color: #e2e8f0;
-            scroll-behavior: smooth;
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .gradient-text {
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .avatar-glow {
-            box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-        .cursor { display: inline-block; width: 3px; background: #38bdf8; animation: blink 0.7s infinite; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Washiq Adnan | Architect of Raha AI</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --primary: #00d2ff;
+      --secondary: #3a7bd5;
+      --dark: #020617;
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: var(--dark);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+    }
+
+    .hero-avatar img {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+      box-shadow: 0 0 30px rgba(0, 210, 255, 0.3);
+      object-fit: cover;
+    }
+
+    /* Music Player Style */
+    .music-player {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px 20px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--primary);
+    }
+
+    .bar {
+      width: 3px;
+      height: 15px;
+      background: var(--primary);
+      display: none;
+      animation: equalize 1s infinite alternate;
+    }
+
+    @keyframes equalize {
+      0% { height: 5px; }
+      100% { height: 20px; }
+    }
+
+    .status-badge {
+      background: linear-gradient(90deg, #ff0080, #7928ca);
+      padding: 5px 15px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  </style>
 </head>
-<body class="selection:bg-indigo-500 selection:text-white">
+<body>
 
-    <div id="particles-js" class="fixed inset-0 -z-10"></div>
+  <div id="particles-js"></div>
 
-    <div class="max-w-4xl mx-auto px-6 py-12">
-        
-        <header class="glass rounded-[2rem] p-10 text-center mb-10 relative overflow-hidden">
-            <div class="absolute top-4 right-6 flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Online</span>
-            </div>
+  <div class="fixed top-0 w-full p-4 flex justify-between items-center z-50 pointer-events-none">
+    <div class="glass-card px-4 py-2 text-sm font-mono" id="clock">00:00:00</div>
+    <div class="status-badge pointer-events-auto">❤️ MARRIED TO RAHA JANNAT MEGH</div>
+  </div>
 
-            <div class="relative inline-block mb-6">
-                <img src="https://files.catbox.moe/x0uu6r.jpg" alt="Washiq Adnan" 
-                     class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-indigo-500/50 avatar-glow">
-            </div>
+  <section class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+    <div class="hero-avatar mb-6" data-aos="zoom-in">
+      <img src="https://files.catbox.moe/x0uu6r.jpg" alt="Washiq Adnan">
+    </div>
+    
+    <h1 class="text-4xl md:text-6xl font-bold mb-2" data-aos="fade-up">
+      <span id="typing" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600"></span>
+    </h1>
+    <p class="text-gray-400 tracking-[0.2em] mb-8" data-aos="fade-up" data-aos-delay="200">DEVELOPER & CREATOR OF WASHIQ AI</p>
 
-            <h1 class="text-4xl md:text-5xl font-black mb-2">
-                <span id="typing-text"></span><span class="cursor">|</span>
-            </h1>
-            <p class="text-indigo-400 font-medium tracking-wide mb-4">ARCHITECT OF WASHIQ AI & RAHA AI</p>
-            
-            <div class="inline-flex items-center gap-2 bg-pink-500/10 text-pink-400 px-5 py-2 rounded-full border border-pink-500/20 text-sm font-semibold">
-                ❤️ Married to <span class="text-pink-300">Raha Jannat Megh</span>
-            </div>
-        </header>
+    <div class="flex gap-4" data-aos="fade-up" data-aos-delay="400">
+      <a href="https://facebook.com/61574715983842" target="_blank" class="glass-card px-8 py-3 hover:bg-white/10 transition">Connect</a>
+      <a href="#projects" class="bg-blue-600 px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition">View Works</a>
+    </div>
+  </section>
 
-        <div class="grid md:grid-cols-2 gap-6 mb-10">
-            <section class="glass p-8 rounded-3xl">
-                <h3 class="text-xl font-bold mb-4 flex items-center gap-3 text-sky-400">
-                    <i class="fas fa-bullseye"></i> MISSION
-                </h3>
-                <p class="text-slate-400 leading-relaxed">
-                    আমি ফেসবুক মেসেঞ্জার প্ল্যাটফর্মের জন্য হাই-পারফরম্যান্স চ্যাটবট ইকোসিস্টেম তৈরি করি। 
-                    আমার লক্ষ্য হলো AI-কে মানুষের মতো সাবলীল এবং কার্যকর করে তোলা।
-                </p>
-            </section>
-
-            <section class="glass p-8 rounded-3xl border-l-4 border-l-indigo-500">
-                <h3 class="text-xl font-bold mb-4 flex items-center gap-3 text-indigo-400">
-                    <i class="fas fa-brain"></i> RAHA AI
-                </h3>
-                <p class="text-slate-400 leading-relaxed">
-                    আমার স্ত্রীর নামে উৎসর্গ করা এই প্রজেক্টটি একটি অ্যাডভান্সড চ্যাটবট ফ্রেমওয়ার্ক, 
-                    যা দ্রুত রেসপন্স এবং লজিক্যাল ইন্টেলিজেন্সের জন্য ডিজাইন করা হয়েছে।
-                </p>
-            </section>
-        </div>
-
-        <section class="glass rounded-3xl p-8 text-center">
-            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-[0.3em] mb-6">Get In Touch</h3>
-            <div class="flex justify-center gap-8 text-3xl">
-                <a href="https://facebook.com/61574715983842" target="_blank" class="text-slate-400 hover:text-blue-500 transition-all transform hover:scale-110">
-                    <i class="fab fa-facebook"></i>
-                </a>
-                <a href="#" class="text-slate-400 hover:text-white transition-all transform hover:scale-110">
-                    <i class="fab fa-github"></i>
-                </a>
-                <a href="#" class="text-slate-400 hover:text-sky-400 transition-all transform hover:scale-110">
-                    <i class="fas fa-envelope"></i>
-                </a>
-            </div>
-        </section>
-
-        <footer class="mt-12 text-center text-slate-600 text-xs tracking-widest">
-            &copy; 2026 WASHIQ ADNAN | BUILT WITH LOVE FOR RAHA
-        </footer>
+  <section id="projects" class="max-w-5xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-8">
+    <div class="glass-card p-8" data-aos="fade-right">
+      <h2 class="text-2xl font-bold mb-4 text-cyan-400 italic">01. Mission</h2>
+      <p class="text-gray-400">I build intelligent virtual ecosystems. My main project, Washiq AI, is a high-performance chatbot designed for the Facebook Messenger platform.</p>
     </div>
 
-    <script>
-        // Typing Effect Logic
-        const text = "Hi, I'm Washiq Adnan";
-        let i = 0;
-        const speed = 100;
-        const target = document.getElementById("typing-text");
+    <div class="glass-card p-8" data-aos="fade-left">
+      <h2 class="text-2xl font-bold mb-4 text-purple-400 italic">02. Raha AI</h2>
+      <p class="text-gray-400">Dedicated to my wife Raha Jannat Megh, this project represents the pinnacle of my development journey in artificial intelligence.</p>
+    </div>
+  </section>
 
-        function typeWriter() {
-            if (i < text.length) {
-                target.innerHTML += text.charAt(i);
-                i++;
-                setTimeout(typeWriter, speed);
-            }
-        }
+  <div class="music-player">
+    <div class="flex gap-1">
+      <div class="bar"></div>
+      <div class="bar" style="animation-delay: 0.2s"></div>
+      <div class="bar" style="animation-delay: 0.4s"></div>
+    </div>
+    <span class="text-xs font-bold text-gray-300">SYSTEM AUDIO</span>
+    <button id="music-btn" class="text-white ml-2"><i id="music-icon" class="fas fa-play"></i></button>
+    <audio id="bg-audio" loop>
+      <source src="https://files.catbox.moe/7n4vd4.mp3" type="audio/mpeg">
+    </audio>
+  </div>
 
-        // Start effect when page loads
-        window.onload = typeWriter;
-    </script>
+  <script>
+    AOS.init({ duration: 1000, once: true });
+
+    // Typing Effect
+    const text = "Hi, I'm Washiq Adnan";
+    let i = 0;
+    function typeEffect() {
+      if(i < text.length) {
+        document.getElementById("typing").innerHTML += text.charAt(i);
+        i++; setTimeout(typeEffect, 100);
+      }
+    }
+    window.onload = typeEffect;
+
+    // Particles
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 80 },
+        color: { value: "#00d2ff" },
+        opacity: { value: 0.2 },
+        size: { value: 2 },
+        line_linked: { enable: true, distance: 150, color: "#00d2ff", opacity: 0.1, width: 1 },
+        move: { enable: true, speed: 2 }
+      }
+    });
+
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').innerText = now.toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+
+    // Music Fix
+    const audio = document.getElementById("bg-audio");
+    const musicBtn = document.getElementById("music-btn");
+    const icon = document.getElementById("music-icon");
+    const bars = document.querySelectorAll(".bar");
+
+    musicBtn.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play();
+        icon.className = "fas fa-pause";
+        bars.forEach(b => b.style.display = "block");
+      } else {
+        audio.pause();
+        icon.className = "fas fa-play";
+        bars.forEach(b => b.style.display = "none");
+      }
+    });
+  </script>
 </body>
 </html>
