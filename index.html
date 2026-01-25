@@ -18,138 +18,89 @@
     #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
     .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
     
-    #chat-window { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateY(20px); opacity: 0; pointer-events: none; }
-    #chat-window.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
-    .msg-user { background: linear-gradient(135deg, #3a7bd5, #00d2ff); color: white; border-radius: 15px 15px 2px 15px; margin-left: auto; }
-    .msg-bot { background: rgba(255,255,255,0.08); color: #e2e8f0; border-radius: 15px 15px 15px 2px; border: 1px solid rgba(255,255,255,0.1); }
-    .typing-dot { width: 4px; height: 4px; background: #00d2ff; border-radius: 50%; animation: blink 1.4s infinite both; }
-    @keyframes blink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
+    .hero-avatar img { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--primary); box-shadow: 0 0 40px rgba(0, 210, 255, 0.4); transition: 0.5s; }
+    .hero-avatar img:hover { transform: scale(1.05) rotate(5deg); }
+
+    .glow-btn {
+      background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+      box-shadow: 0 10px 30px rgba(0, 210, 255, 0.3);
+      transition: 0.4s;
+    }
+    .glow-btn:hover {
+      box-shadow: 0 15px 40px rgba(0, 210, 255, 0.5);
+      transform: translateY(-3px);
+    }
   </style>
 </head>
 <body>
 
   <div id="particles-js"></div>
 
-  <section class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
-    <div class="mb-8" data-aos="zoom-in">
-      <img src="https://files.catbox.moe/x0uu6r.jpg" class="w-32 h-32 rounded-full border-4 border-cyan-500 shadow-xl object-cover">
+  <nav class="fixed top-0 w-full p-6 flex justify-between items-center z-50">
+    <div class="glass-card px-5 py-2 text-xs font-mono border-indigo-500/30 text-cyan-400" id="digital-clock">00:00:00</div>
+    <div class="bg-gradient-to-r from-pink-600 to-purple-600 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg border border-white/10">
+      ❤️ Married to Raha Jannat Megh
     </div>
-    <h1 class="text-4xl md:text-6xl font-extrabold mb-4">
-      <span id="type-text" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"></span>
-    </h1>
-    <p class="text-slate-400 text-sm tracking-[0.4em] uppercase mb-10">Washiq Adnan - Developer & Creator</p>
-    <button onclick="openChat()" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-full font-bold transition-all shadow-lg">
-        Talk to Raha AI
-    </button>
+  </nav>
+
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 text-center pt-20">
+    <div class="hero-avatar mb-8" data-aos="zoom-in">
+      <img src="https://files.catbox.moe/x0uu6r.jpg" alt="Washiq Adnan">
+    </div>
+    
+    <div data-aos="fade-up">
+        <h1 class="text-4xl md:text-7xl font-extrabold mb-4">
+          <span id="type-text" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"></span>
+        </h1>
+        <p class="text-slate-400 text-sm md:text-base tracking-[0.4em] uppercase mb-10">AI Developer | Washiq AI Creator</p>
+    </div>
+    
+    <div class="flex flex-wrap gap-4 justify-center" data-aos="fade-up" data-aos-delay="200">
+      <a href="https://m.me/61574715983842" target="_blank" class="glow-btn px-10 py-5 rounded-full font-bold flex items-center gap-3">
+        <i class="fab fa-facebook-messenger"></i> Talk to Raha AI
+      </a>
+      
+      <a href="https://facebook.com/61574715983842" target="_blank" class="glass-card px-10 py-5 rounded-full font-bold hover:bg-white/5 transition-all flex items-center gap-3">
+        <i class="fas fa-id-card"></i> View Portfolio
+      </a>
+    </div>
+
+    <div class="mt-16 grid grid-cols-2 md:grid-cols-3 gap-6" data-aos="fade-up" data-aos-delay="400">
+        <div class="glass-card p-6 text-center">
+            <h3 class="text-2xl font-bold text-cyan-400">Node.js</h3>
+            <p class="text-xs text-slate-500">Platform</p>
+        </div>
+        <div class="glass-card p-6 text-center">
+            <h3 class="text-2xl font-bold text-pink-500">Messenger</h3>
+            <p class="text-xs text-slate-500">Integrated</p>
+        </div>
+        <div class="glass-card p-6 text-center hidden md:block">
+            <h3 class="text-2xl font-bold text-purple-500">AI Logic</h3>
+            <p class="text-xs text-slate-500">Developed</p>
+        </div>
+    </div>
   </section>
 
-  <div class="fixed bottom-6 right-6 z-[1000] flex flex-col items-end">
-    <div id="chat-window" class="glass-card w-[320px] md:w-[380px] h-[500px] mb-4 flex flex-col overflow-hidden border-cyan-500/40 shadow-2xl">
-      <div class="p-4 bg-white/5 border-b border-white/10 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <img src="https://files.catbox.moe/x0uu6r.jpg" class="w-10 h-10 rounded-full border border-cyan-500/50">
-          <div>
-            <h3 class="text-sm font-bold">Raha AI (Live)</h3>
-            <p class="text-[9px] text-green-400 font-bold uppercase">Created by Washiq</p>
-          </div>
-        </div>
-        <button onclick="toggleChat()" class="text-slate-400"><i class="fas fa-times"></i></button>
-      </div>
-
-      <div id="chat-body" class="flex-1 overflow-y-auto p-4 space-y-4 text-[13px]">
-        <div class="msg-bot p-3 max-w-[85%]">
-            আসসালামু আলাইকুম! আমি <b>রাহা এআই</b>। ওয়াশিকের পোর্টফোলিওতে আপনাকে স্বাগতম! আমি কি সাহায্য করতে পারি?
-        </div>
-      </div>
-
-      <div id="typing" class="hidden px-6 py-2 flex gap-1 mb-2">
-        <div class="typing-dot"></div>
-        <div class="typing-dot" style="animation-delay: 0.2s"></div>
-        <div class="typing-dot" style="animation-delay: 0.4s"></div>
-      </div>
-
-      <div class="p-4 bg-white/5 border-t border-white/10 flex gap-2">
-        <input type="text" id="chat-input" placeholder="Type a message..." class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 w-full text-sm focus:outline-none text-white">
-        <button onclick="sendMessage()" class="bg-cyan-600 w-10 h-10 rounded-xl flex items-center justify-center">
-          <i class="fas fa-paper-plane text-xs"></i>
-        </button>
-      </div>
-    </div>
-
-    <button onclick="toggleChat()" class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-full shadow-2xl flex items-center justify-center text-white text-2xl">
-      <i class="fas fa-comment-dots"></i>
-    </button>
-  </div>
+  <footer class="p-10 text-center text-slate-600 text-[10px] tracking-widest uppercase">
+    &copy; 2026 Washiq AI Chatbot Project. All Rights Reserved.
+  </footer>
 
   <script>
     AOS.init({ duration: 1000, once: true });
-    
-    // Typewriter
+
+    // Typing Effect
     const textStr = "Hi, I'm Washiq Adnan";
     let charIdx = 0;
     function typeEffect() { if(charIdx < textStr.length) { document.getElementById("type-text").innerHTML += textStr.charAt(charIdx); charIdx++; setTimeout(typeEffect, 100); } }
     window.onload = typeEffect;
 
-    // Particles
-    particlesJS("particles-js", { particles: { number: { value: 40 }, color: { value: "#00d2ff" }, opacity: { value: 0.2 }, size: { value: 2 }, line_linked: { enable: true, distance: 150, color: "#00d2ff", opacity: 0.1, width: 1 }, move: { enable: true, speed: 1 } } });
+    // Particles Config
+    particlesJS("particles-js", {
+      particles: { number: { value: 60 }, color: { value: "#00d2ff" }, opacity: { value: 0.2 }, size: { value: 2 }, line_linked: { enable: true, distance: 150, color: "#00d2ff", opacity: 0.1, width: 1 }, move: { enable: true, speed: 1.2 } }
+    });
 
-    const chatWindow = document.getElementById('chat-window');
-    const chatBody = document.getElementById('chat-body');
-    const chatInput = document.getElementById('chat-input');
-    const typing = document.getElementById('typing');
-
-    function toggleChat() { chatWindow.classList.toggle('active'); }
-    function openChat() { chatWindow.classList.add('active'); chatInput.focus(); }
-
-    async function sendMessage() {
-      const userMsg = chatInput.value.trim();
-      if(!userMsg) return;
-
-      appendMessage(userMsg, 'user');
-      chatInput.value = "";
-      typing.classList.remove('hidden');
-      chatBody.scrollTop = chatBody.scrollHeight;
-
-      try {
-        // ১. প্রথমে তোমার মেইন API ট্রাই করবে (মেসেঞ্জার বটের জন্য যা তৈরি করেছিলে)
-        const targetUrl = `https://betadash-api-swordslush-production.up.railway.app/you?chat=${encodeURIComponent(userMsg)}`;
-        const proxy = "https://api.allorigins.win/get?url=";
-        
-        const response = await fetch(proxy + encodeURIComponent(targetUrl));
-        const data = await response.json();
-        const finalData = JSON.parse(data.contents);
-
-        if (finalData.response) {
-            handleReply(finalData.response);
-        } else {
-            throw new Error("No response from primary");
-        }
-      } catch (err) {
-        // ২. যদি মেইন API কাজ না করে, তবে এই ব্যাকআপ API রিপ্লাই দিবে (স্মার্ট সিস্টেম)
-        try {
-            const fallback = await fetch(`https://api.simsimi.vn/v2/simsimi?text=${encodeURIComponent(userMsg)}&lc=bn`);
-            const fallbackData = await fallback.json();
-            handleReply(fallbackData.result || "আমি বুঝতে পেরেছি, ওয়াশিককে মেসেঞ্জারে জানান!");
-        } catch (fErr) {
-            handleReply("দুঃখিত, বর্তমানে সার্ভার কানেকশনে সমস্যা হচ্ছে।");
-        }
-      }
-    }
-
-    function handleReply(reply) {
-      typing.classList.add('hidden');
-      appendMessage(reply, 'bot');
-    }
-
-    function appendMessage(txt, side) {
-      const bubble = document.createElement('div');
-      bubble.className = `p-3 max-w-[85%] ${side === 'user' ? 'msg-user' : 'msg-bot'}`;
-      bubble.innerHTML = txt;
-      chatBody.appendChild(bubble);
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    chatInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
+    // Real-time Clock
+    setInterval(() => { document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: false }); }, 1000);
   </script>
 </body>
 </html>
