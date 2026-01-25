@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Washiq Adnan | AI Developer Portfolio</title>
+  <title>Washiq Adnan | AI Portfolio</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,7 +18,7 @@
     #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
     .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
     
-    /* Chat Widget Styles */
+    /* Chat Window Styles */
     #chat-window { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateY(20px); opacity: 0; pointer-events: none; }
     #chat-window.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
     .msg-user { background: linear-gradient(135deg, #3a7bd5, #00d2ff); color: white; border-radius: 15px 15px 2px 15px; margin-left: auto; border: 1px solid rgba(255,255,255,0.1); }
@@ -35,27 +35,24 @@
 
   <nav class="fixed top-0 w-full p-6 flex justify-between items-center z-50">
     <div class="glass-card px-5 py-2 text-xs font-mono border-indigo-500/30 text-cyan-400" id="digital-clock">00:00:00</div>
-    <div class="bg-gradient-to-r from-pink-600 to-purple-600 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg border border-white/20">
+    <div class="bg-gradient-to-r from-pink-600 to-purple-600 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
       ❤️ Married to Raha Jannat Megh
     </div>
   </nav>
 
-  <section class="min-h-screen flex flex-col items-center justify-center px-6 text-center pt-20">
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
     <div class="mb-8" data-aos="zoom-in">
-      <img src="https://files.catbox.moe/x0uu6r.jpg" class="w-36 h-36 rounded-full border-4 border-cyan-500 shadow-[0_0_30px_rgba(0,210,255,0.3)] object-cover">
+      <img src="https://files.catbox.moe/x0uu6r.jpg" class="w-32 h-32 rounded-full border-4 border-cyan-500 shadow-xl object-cover">
     </div>
     <h1 class="text-4xl md:text-6xl font-extrabold mb-4">
       <span id="type-text" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"></span>
     </h1>
-    <p class="text-slate-400 text-sm tracking-[0.4em] uppercase mb-10">AI Developer & Creator of Washiq AI</p>
+    <p class="text-slate-400 text-sm tracking-[0.4em] uppercase mb-10">Creator of Washiq AI & Developer</p>
     
     <div class="flex gap-4">
-      <button onclick="openChat()" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-full font-bold transition-all shadow-lg shadow-blue-500/30">
+      <button onclick="openChat()" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-full font-bold transition-all">
         Talk to Raha AI
       </button>
-      <a href="https://facebook.com/61574715983842" target="_blank" class="glass-card px-8 py-4 rounded-full font-bold hover:bg-white/5 transition-all">
-        Contact Washiq
-      </a>
     </div>
   </section>
 
@@ -63,21 +60,18 @@
     <div id="chat-window" class="glass-card w-[320px] md:w-[380px] h-[500px] mb-4 flex flex-col overflow-hidden border-cyan-500/40 shadow-2xl">
       <div class="p-4 bg-white/5 border-b border-white/10 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="relative">
-            <img src="https://files.catbox.moe/x0uu6r.jpg" class="w-10 h-10 rounded-full border border-cyan-500/50">
-            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#020617] rounded-full"></div>
-          </div>
+          <img src="https://files.catbox.moe/x0uu6r.jpg" class="w-10 h-10 rounded-full border border-cyan-500/50">
           <div>
             <h3 class="text-sm font-bold">Raha AI (Live)</h3>
-            <p class="text-[9px] text-green-400 uppercase tracking-widest font-bold">Creator: Washiq Adnan</p>
+            <p class="text-[9px] text-green-400 uppercase font-bold tracking-widest">Powered by Washiq AI</p>
           </div>
         </div>
-        <button onclick="closeChat()" class="text-slate-400 hover:text-white transition-colors"><i class="fas fa-times"></i></button>
+        <button onclick="toggleChat()" class="text-slate-400"><i class="fas fa-times"></i></button>
       </div>
 
       <div id="chat-body" class="flex-1 overflow-y-auto p-4 space-y-4 text-[13px] custom-scrollbar">
         <div class="msg-bot p-3 max-w-[85%]">
-          আসসালামু আলাইকুম! আমি <b>রাহা এআই</b>। ওয়াশিক আদনানের তৈরি একটি বুদ্ধিমান চ্যাটবট। আমি আপনার সাথে কথা বলতে প্রস্তুত! 😊
+          আসসালামু আলাইকুম! আমি <b>রাহা এআই</b>। ওয়াশিকের তৈরি চ্যাটবট। এখন আমি ব্রাউজারেও কথা বলতে পারি! 😊
         </div>
       </div>
 
@@ -88,88 +82,69 @@
       </div>
 
       <div class="p-4 bg-white/5 border-t border-white/10 flex gap-2">
-        <input type="text" id="chat-input" placeholder="Type a message..." class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 w-full text-sm focus:outline-none focus:border-cyan-500 transition-all text-white">
-        <button onclick="sendMessage()" class="bg-cyan-600 hover:bg-cyan-500 w-10 h-10 rounded-xl flex items-center justify-center transition-all shadow-lg shadow-cyan-500/20">
+        <input type="text" id="chat-input" placeholder="Type a message..." class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 w-full text-sm focus:outline-none focus:border-cyan-500 text-white">
+        <button onclick="sendMessage()" class="bg-cyan-600 w-10 h-10 rounded-xl flex items-center justify-center">
           <i class="fas fa-paper-plane text-xs"></i>
         </button>
       </div>
     </div>
 
-    <button onclick="toggleChat()" class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-full shadow-2xl flex items-center justify-center text-white text-2xl hover:scale-110 transition-all border-2 border-white/10">
-      <i class="fas fa-comment-dots" id="toggle-icon"></i>
+    <button onclick="toggleChat()" class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-full shadow-2xl flex items-center justify-center text-white text-2xl border-2 border-white/10">
+      <i class="fas fa-comment-dots"></i>
     </button>
   </div>
 
   <script>
     AOS.init({ duration: 1000, once: true });
-
-    // Typewriter
+    
+    // Simple Typewriter
     const textStr = "Hi, I'm Washiq Adnan";
     let charIdx = 0;
     function typeEffect() { if(charIdx < textStr.length) { document.getElementById("type-text").innerHTML += textStr.charAt(charIdx); charIdx++; setTimeout(typeEffect, 100); } }
     window.onload = typeEffect;
 
     // Particles
-    particlesJS("particles-js", {
-      particles: { number: { value: 50 }, color: { value: "#00d2ff" }, opacity: { value: 0.2 }, size: { value: 2 }, line_linked: { enable: true, distance: 150, color: "#00d2ff", opacity: 0.1, width: 1 }, move: { enable: true, speed: 1.2 } }
-    });
+    particlesJS("particles-js", { particles: { number: { value: 40 }, color: { value: "#00d2ff" }, opacity: { value: 0.2 }, size: { value: 2 }, line_linked: { enable: true, distance: 150, color: "#00d2ff", opacity: 0.1, width: 1 }, move: { enable: true, speed: 1 } } });
 
-    // Clock
     setInterval(() => { document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: false }); }, 1000);
 
-    // RAHA AI CHAT SYSTEM
     const chatWindow = document.getElementById('chat-window');
     const chatBody = document.getElementById('chat-body');
     const chatInput = document.getElementById('chat-input');
     const typing = document.getElementById('typing');
-    const toggleIcon = document.getElementById('toggle-icon');
 
-    let history = []; 
-
-    function toggleChat() { 
-      chatWindow.classList.toggle('active');
-      toggleIcon.className = chatWindow.classList.contains('active') ? 'fas fa-times' : 'fas fa-comment-dots';
-    }
-    function openChat() { chatWindow.classList.add('active'); chatInput.focus(); toggleIcon.className = 'fas fa-times'; }
-    function closeChat() { chatWindow.classList.remove('active'); toggleIcon.className = 'fas fa-comment-dots'; }
+    function toggleChat() { chatWindow.classList.toggle('active'); }
+    function openChat() { chatWindow.classList.add('active'); chatInput.focus(); }
 
     async function sendMessage() {
-      const userMsg = chatInput.value.trim();
-      if(!userMsg) return;
+      const msg = chatInput.value.trim();
+      if(!msg) return;
 
-      appendMessage(userMsg, 'user');
+      appendMessage(msg, 'user');
       chatInput.value = "";
-      
-      history.push(`User: ${userMsg}`);
-      if(history.length > 10) history.shift();
-
       typing.classList.remove('hidden');
       chatBody.scrollTop = chatBody.scrollHeight;
 
       try {
-        // Using a Proxy to bypass CORS restrictions
-        const proxy = "https://api.allorigins.win/get?url=";
-        const targetUrl = `https://betadash-api-swordslush-production.up.railway.app/you?chat=${encodeURIComponent(userMsg)}`;
+        // এই প্রক্সিটি ব্যবহার করলে ব্রাউজার আর এরর দেবে না
+        const proxyUrl = "https://api.allorigins.win/get?url=";
+        const apiUrl = `https://betadash-api-swordslush-production.up.railway.app/you?chat=${encodeURIComponent(msg)}`;
         
-        const response = await fetch(proxy + encodeURIComponent(targetUrl));
+        const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
         const data = await response.json();
-        const finalData = JSON.parse(data.contents); // Extracting from proxy
+        const finalData = JSON.parse(data.contents); // প্রক্সি থেকে মেইন ডাটা বের করা
         
-        const reply = finalData.response || "আমি আপনার কথা বুঝতে পারছি, কিন্তু আমার মেমোরি এখন একটু রিলোড হচ্ছে।";
-
         typing.classList.add('hidden');
-        appendMessage(reply, 'bot');
-        history.push(`Assistant: ${reply}`);
+        appendMessage(finalData.response || "দুঃখিত, আমি বুঝতে পারছি না।", 'bot');
       } catch (err) {
-        console.error(err);
         typing.classList.add('hidden');
-        appendMessage("কানেকশনে সমস্যা হচ্ছে। দয়া করে আপনার ইন্টারনেট চেক করুন অথবা কিছুক্ষণ পর চেষ্টা করুন।", 'bot');
+        appendMessage("কানেকশনে সমস্যা হচ্ছে। সার্ভারটি হয়তো এখন বিজি আছে।", 'bot');
       }
     }
 
     function appendMessage(txt, side) {
       const bubble = document.createElement('div');
-      bubble.className = `p-3 max-w-[85%] shadow-sm ${side === 'user' ? 'msg-user' : 'msg-bot'}`;
+      bubble.className = `p-3 max-w-[85%] ${side === 'user' ? 'msg-user' : 'msg-bot'}`;
       bubble.innerHTML = txt;
       chatBody.appendChild(bubble);
       chatBody.scrollTop = chatBody.scrollHeight;
