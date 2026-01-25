@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tune Tribe | Welcome</title>
+  <title>Tune Tribe | Professional Hub</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,7 +23,7 @@
       font-family: 'Space Grotesk', sans-serif;
       background-color: var(--dark);
       color: #fff;
-      overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
     #particles-js {
@@ -37,31 +37,36 @@
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(15px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
     }
 
-    .hero-avatar img {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      border: 4px solid var(--primary);
-      box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
-      object-fit: cover;
+    .glass-card:hover {
+      border-color: var(--primary);
     }
 
     .rules-content {
-      display: none;
-      text-align: left;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out, padding 0.3s ease;
     }
 
     .rules-content.open {
-      display: block;
-      animation: fadeIn 0.5s ease;
+      max-height: 1500px;
+      padding-top: 1rem;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .hero-avatar img {
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+      box-shadow: 0 0 25px rgba(0, 210, 255, 0.3);
+      object-fit: cover;
+    }
+
+    .join-btn {
+      background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+      font-weight: bold;
     }
   </style>
 </head>
@@ -69,82 +74,109 @@
 
   <div id="particles-js"></div>
 
-  <section class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+  <section class="min-h-screen flex flex-col items-center py-12 px-4 text-center">
     
     <div class="hero-avatar mb-6" data-aos="zoom-in">
       <img src="https://files.catbox.moe/ib1z2u.jpg" alt="Tune Tribe">
     </div>
     
-    <h1 class="text-4xl md:text-6xl font-black mb-6" data-aos="fade-up">
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-        WELCOME TO TUNE TRIBE
-      </span>
+    <h1 class="text-3xl md:text-5xl font-black mb-10 tracking-tight" data-aos="fade-up">
+      WELCOME TO <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">TUNE TRIBE</span>
     </h1>
 
-    <div class="max-w-xl w-full space-y-4">
+    <div class="max-w-2xl w-full space-y-6">
       
-      <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="200">
-        <button id="rules-btn" class="w-full text-xl font-bold flex items-center justify-between text-cyan-400">
-          <span><i class="fas fa-users-bubble mr-2"></i> Join Our Adda Group</span>
-          <i class="fas fa-chevron-down text-sm"></i>
+      <div class="glass-card p-5" data-aos="fade-up">
+        <button class="toggle-btn w-full text-lg font-bold flex items-center justify-between text-cyan-400">
+          <span><i class="fas fa-microphone-lines mr-2"></i> Join Our Adda Group</span>
+          <i class="fas fa-plus text-sm"></i>
         </button>
-        
-        <div id="rules-box" class="rules-content mt-4 border-t border-white/10 pt-4 text-sm leading-relaxed text-gray-300">
-          <p class="mb-2 text-white">আসসালামু আলাইকুম 😊</p>
-          <p class="mb-4 font-semibold text-cyan-300">🎤 𝕋𝕦𝕟𝕖 𝕋𝕣𝕚𝕓𝕖 🎧 শিল্পী গোষ্ঠীর পক্ষ থেকে আপনাকে জানাই—আমাদের গ্রুপে স্বাগতম!</p>
-          
-          <div class="bg-white/5 p-4 rounded-xl space-y-2">
-            <h4 class="text-center font-bold text-red-400 mb-2">⚠️⚠️ 𝐆𝐫𝐨𝐮𝐩 𝐑𝐮𝐥𝐞𝐬 ⚠️⚠️</h4>
-            <p>1️⃣ টেক্সট করা যাবে না ❌</p>
-            <p>2️⃣ ইমোজি দেওয়া যাবে না ❌</p>
-            <p>3️⃣ ছবি/পিক দেওয়া যাবে না ❌</p>
-            <p>4️⃣ কোনো লিংক দেওয়া যাবে না ❌</p>
-            <p>5️⃣ সবাই শুধু গান গাইবে এবং রিয়েক্ট দিবে ✅</p>
-            <p>6️⃣ কারো কিছু জানার/বলতে হলে এডমিনকে ইনবক্সে জানাবেন ✅</p>
-            <p>7️⃣ নতুন মেম্বার এড করলে অবশ্যই গ্রুপ রুলস জানিয়ে এড করবেন ✅</p>
-            <p>8️⃣ গান দিলেও/না দিলেও সবার ভয়েসে অবশ্যই রিয়েক্ট দিতে হবে ✅</p>
+        <div class="rules-content text-left text-sm text-gray-300">
+          <p class="mb-4">আসসালামু আলাইকুম 😊 <br> <b>🎤 𝕋𝕦𝕟𝕖 𝕋𝕣𝕚𝕓𝕖 🎧</b> শিল্পী গোষ্ঠীর পক্ষ থেকে আপনাকে স্বাগতম!</p>
+          <div class="space-y-1 bg-white/5 p-4 rounded-lg">
+             <p>1️⃣ টেক্সট করা যাবে না ❌</p>
+             <p>2️⃣ ইমোজি দেওয়া যাবে না ❌</p>
+             <p>5️⃣ সবাই শুধু গান গাইবে এবং রিয়েক্ট দিবে ✅</p>
+             <p>8️⃣ সবার ভয়েসে অবশ্যই রিয়েক্ট দিতে হবে ✅</p>
           </div>
-          
-          <p class="mt-4 text-center italic">আপনারা সবাই নিয়মগুলো মেনে চলার চেষ্টা করবেন ❤️‍🔥</p>
-          <p class="mt-2 text-center text-xs opacity-60">ধন্যবাদান্তে — এডমিন প্যানেল<br>🎤 𝕋𝕦𝕟𝕖 𝕋𝕣𝕚𝕓𝕖 🎧</p>
+          <a href="https://m.me/j/Aba9CcaH2HWuGzvM/" target="_blank" class="mt-4 block text-center p-3 rounded-xl join-btn">JOIN ADDA GROUP</a>
         </div>
       </div>
 
-      <div class="glass-card p-6 hover:bg-white/5 transition" data-aos="fade-up" data-aos-delay="400">
-        <a href="https://m.me/j/Aba9CcaH2HWuGzvM/" target="_blank" class="text-xl font-bold text-white flex items-center justify-between">
-          <span><i class="fab fa-facebook-messenger mr-2 text-blue-400"></i> Join Group Link</span>
-          <i class="fas fa-external-link-alt text-sm opacity-50"></i>
-        </a>
+      <div class="glass-card p-5" data-aos="fade-up">
+        <button class="toggle-btn w-full text-lg font-bold flex items-center justify-between text-pink-400">
+          <span><i class="fas fa-video mr-2"></i> Join Video Group (V~Box)</span>
+          <i class="fas fa-plus text-sm"></i>
+        </button>
+        <div class="rules-content text-left text-sm text-gray-300">
+          <p class="font-bold mb-2">📸 𝗩 ~ 𝐁𝐨𝐱 ❥📸~ (₮ɆӾ₮ ₦Ø₮ ₳ⱠⱠØ₩)</p>
+          <div class="space-y-2 bg-white/5 p-4 rounded-lg">
+            <p>• নাম মেনশন করলে পিক দিয়ে লিরিক্স কপি করে দেবেন।</p>
+            <p>• পরিচালকের নির্দেশ মতো ভিডিও চলবে।</p>
+            <p>• টেক্সট/ইমোজি/ভিডিও/লিঙ্ক দেওয়া নিষেধ ❌</p>
+            <p>• ১৮+ ভয়েস দেওয়া যাবে না ❌</p>
+            <p class="text-red-400">🩸 সিন করলে অবশ্যই রিয়েক্ট দিতে হবে।</p>
+          </div>
+          <a href="https://m.me/j/AbZyw-Qgl3hqUEue/" target="_blank" class="mt-4 block text-center p-3 rounded-xl join-btn">JOIN VIDEO GROUP</a>
+        </div>
+      </div>
+
+      <div class="glass-card p-5" data-aos="fade-up">
+        <button class="toggle-btn w-full text-lg font-bold flex items-center justify-between text-green-400">
+          <span><i class="fas fa-phone-volume mr-2"></i> Join Call Group</span>
+          <i class="fas fa-plus text-sm"></i>
+        </button>
+        <div class="rules-content text-left text-sm text-gray-300">
+          <p class="mb-2">আসসালামু আলাইকুম 🖤</p>
+          <p class="mb-3 italic text-xs">যারা শুধু কলে আড্ডা দিতে, গান গাইতে বা শুনতে পছন্দ করেন তাদের জন্য এই গ্রুপ।</p>
+          <div class="space-y-1 bg-white/5 p-4 rounded-lg">
+            <p>3️⃣ টেক্সট বা মেসেজ দেওয়া যাবে না ⛔</p>
+            <p>4️⃣ কোনো ইমোজি দেওয়া যাবে না 🚫</p>
+            <p>6️⃣ কোনো ধরণের লিঙ্ক দেওয়া যাবে না ❌</p>
+            <p>7️⃣ সবার সাথে সম্মান দিয়ে কথা বলতে হবে 🌸</p>
+          </div>
+          <a href="https://m.me/j/AbYtdEak_G87aUYG/" target="_blank" class="mt-4 block text-center p-3 rounded-xl join-btn">JOIN CALL GROUP</a>
+        </div>
       </div>
 
     </div>
+
+    <footer class="mt-16 text-[10px] text-gray-600 tracking-[0.3em]">
+      POWERED BY RAHA AI • CREATED BY WASHIQ ADNAN
+    </footer>
   </section>
 
   <script>
-    AOS.init({ duration: 1000, once: true });
-
-    // Particles Setup (Same as your old one)
+    AOS.init();
+    
+    // Particles
     particlesJS("particles-js", {
       particles: {
-        number: { value: 80 },
+        number: { value: 50 },
         color: { value: "#00d2ff" },
         opacity: { value: 0.2 },
         size: { value: 2 },
         line_linked: { enable: true, distance: 150, color: "#00d2ff", opacity: 0.1, width: 1 },
-        move: { enable: true, speed: 2 }
+        move: { enable: true, speed: 1 }
       }
     });
 
-    // Rules Toggle Logic
-    const rulesBtn = document.getElementById('rules-btn');
-    const rulesBox = document.getElementById('rules-box');
-    
-    rulesBtn.addEventListener('click', () => {
-      rulesBox.classList.toggle('open');
-      const icon = rulesBtn.querySelector('.fa-chevron-down');
-      icon.style.transform = rulesBox.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
+    // Toggle Logic
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const content = this.nextElementSibling;
+        const icon = this.querySelector('.fas');
+        
+        // Close others
+        document.querySelectorAll('.rules-content').forEach(el => {
+          if (el !== content) el.classList.remove('open');
+        });
+
+        content.classList.toggle('open');
+        this.querySelector('.fa-plus, .fa-minus')?.classList.toggle('fa-plus');
+        this.querySelector('.fa-plus, .fa-minus')?.classList.toggle('fa-minus');
+      });
     });
   </script>
 </body>
-            </html>
-            
+</html>
