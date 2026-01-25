@@ -3,83 +3,141 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Washiq Adnan | AI Portfolio</title>
+  <title>Washiq Adnan | Portfolio AI</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Space Grotesk', sans-serif; background-color: #020617; color: #fff; }
-    .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; }
-    #chat-window { transition: all 0.3s ease; opacity: 0; transform: translateY(20px); pointer-events: none; }
+    :root { --primary: #00d2ff; --dark: #020617; }
+    body { font-family: 'Space Grotesk', sans-serif; background-color: var(--dark); color: #fff; overflow-x: hidden; }
+    #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
+    .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
+    
+    #chat-window { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translateY(20px); opacity: 0; pointer-events: none; }
     #chat-window.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-    .msg-user { background: #3b82f6; border-radius: 15px 15px 2px 15px; margin-left: auto; }
-    .msg-bot { background: rgba(255,255,255,0.1); border-radius: 15px 15px 15px 2px; }
+    .msg-user { background: linear-gradient(135deg, #3a7bd5, #00d2ff); color: white; border-radius: 15px 15px 2px 15px; margin-left: auto; }
+    .msg-bot { background: rgba(255,255,255,0.08); color: #e2e8f0; border-radius: 15px 15px 15px 2px; border: 1px solid rgba(255,255,255,0.1); }
+    .typing-dot { width: 4px; height: 4px; background: #00d2ff; border-radius: 50%; animation: blink 1.4s infinite both; }
+    @keyframes blink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
   </style>
 </head>
 <body>
 
-  <section class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
-    <img src="https://files.catbox.moe/x0uu6r.jpg" class="w-32 h-32 rounded-full border-4 border-cyan-500 mb-6 shadow-2xl">
-    <h1 class="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4">Washiq Adnan</h1>
-    <p class="text-slate-400 mb-8 uppercase tracking-widest text-xs">AI Developer & Creator of Washiq AI</p>
-    <button onclick="toggleChat()" class="bg-blue-600 px-8 py-3 rounded-full font-bold hover:scale-105 transition-all">Chat with Raha AI</button>
+  <div id="particles-js"></div>
+
+  <section class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+    <div class="mb-8" data-aos="zoom-in">
+      <img src="https://files.catbox.moe/x0uu6r.jpg" class="w-36 h-36 rounded-full border-4 border-cyan-500 shadow-[0_0_30px_rgba(0,210,255,0.3)] object-cover">
+    </div>
+    <h1 class="text-4xl md:text-6xl font-extrabold mb-4">
+      <span id="type-text" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"></span>
+    </h1>
+    <p class="text-slate-400 text-sm tracking-[0.4em] uppercase mb-10">AI Developer & Creator of Washiq AI</p>
+    <button onclick="toggleChat()" class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-full font-bold transition-all shadow-lg shadow-blue-500/30">
+        Talk to Raha AI
+    </button>
   </section>
 
   <div class="fixed bottom-6 right-6 z-[1000] flex flex-col items-end">
-    <div id="chat-window" class="glass-card w-[350px] h-[500px] mb-4 flex flex-col overflow-hidden shadow-2xl">
+    <div id="chat-window" class="glass-card w-[320px] md:w-[380px] h-[500px] mb-4 flex flex-col overflow-hidden border-cyan-500/40 shadow-2xl">
       <div class="p-4 bg-white/5 border-b border-white/10 flex items-center justify-between">
-        <span class="font-bold text-sm">Raha AI (Powered by Gemini)</span>
-        <button onclick="toggleChat()"><i class="fas fa-times"></i></button>
+        <div class="flex items-center gap-3">
+          <img src="https://files.catbox.moe/x0uu6r.jpg" class="w-10 h-10 rounded-full border border-cyan-500/50">
+          <div>
+            <h3 class="text-sm font-bold">Raha AI (Powered by Gemini)</h3>
+            <p class="text-[9px] text-green-400 font-bold uppercase tracking-widest">Washiq's Creation</p>
+          </div>
+        </div>
+        <button onclick="toggleChat()" class="text-slate-400"><i class="fas fa-times"></i></button>
       </div>
-      <div id="chat-body" class="flex-1 overflow-y-auto p-4 space-y-4 text-sm">
-        <div class="msg-bot p-3 max-w-[85%]">আসসালামু আলাইকুম! আমি **রাহা এআই**। ওয়াশিকের পোর্টফোলিওতে আপনাকে স্বাগতম! 😊</div>
+
+      <div id="chat-body" class="flex-1 overflow-y-auto p-4 space-y-4 text-[13px] scroll-smooth">
+        <div class="msg-bot p-3 max-w-[85%]">আসসালামু আলাইকুম! আমি **রাহা এআই**। আমি ওয়াশিকের তৈরি জেমিনি এআই মডেল। আপনাকে কীভাবে সাহায্য করতে পারি? 😊</div>
       </div>
-      <div class="p-4 flex gap-2">
-        <input type="text" id="user-input" placeholder="Ask anything..." class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 w-full text-sm outline-none focus:border-blue-500">
-        <button onclick="askGemini()" class="bg-blue-600 w-10 h-10 rounded-xl flex items-center justify-center"><i class="fas fa-paper-plane"></i></button>
+
+      <div id="typing" class="hidden px-6 py-2 flex gap-1 mb-2">
+        <div class="typing-dot"></div>
+        <div class="typing-dot" style="animation-delay: 0.2s"></div>
+        <div class="typing-dot" style="animation-delay: 0.4s"></div>
+      </div>
+
+      <div class="p-4 bg-white/5 border-t border-white/10 flex gap-2">
+        <input type="text" id="chat-input" placeholder="Say something..." class="bg-white/5 border border-white/10 rounded-xl px-4 py-2 w-full text-sm focus:outline-none text-white">
+        <button onclick="sendMessage()" class="bg-cyan-600 w-10 h-10 rounded-xl flex items-center justify-center"><i class="fas fa-paper-plane text-xs"></i></button>
       </div>
     </div>
-    <button onclick="toggleChat()" class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-2xl text-2xl"><i class="fas fa-robot"></i></button>
+
+    <button onclick="toggleChat()" class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-full shadow-2xl flex items-center justify-center text-white text-2xl border-2 border-white/10 hover:scale-110 transition-all">
+      <i class="fas fa-robot"></i>
+    </button>
   </div>
 
   <script>
-    const API_KEY = "AIzaSyD5TlQGTIrMJ49G_JxQ6wHVOoa9ZgGLSj0"
+    // তোমার API Key টি এখানে আবার চেক করে বসাও
+    const GEMINI_API_KEY = "AIzaSyD5TlQGTIrMJ49G_JxQ6wHVOoa9ZgGLSj0";
+
+    AOS.init({ duration: 1000, once: true });
+    const textStr = "Hi, I'm Washiq Adnan";
+    let charIdx = 0;
+    function typeEffect() { if(charIdx < textStr.length) { document.getElementById("type-text").innerHTML += textStr.charAt(charIdx); charIdx++; setTimeout(typeEffect, 100); } }
+    window.onload = typeEffect;
+    particlesJS("particles-js", { particles: { number: { value: 40 }, color: { value: "#00d2ff" }, opacity: { value: 0.2 }, size: { value: 2 }, line_linked: { enable: true, distance: 150, color: "#00d2ff", opacity: 0.1, width: 1 }, move: { enable: true, speed: 1 } } });
 
     function toggleChat() { document.getElementById('chat-window').classList.toggle('active'); }
 
-    async function askGemini() {
-      const input = document.getElementById('user-input');
+    async function sendMessage() {
+      const input = document.getElementById('chat-input');
       const body = document.getElementById('chat-body');
-      const text = input.value.trim();
-      if(!text) return;
+      const typing = document.getElementById('typing');
+      const msg = input.value.trim();
+      if(!msg) return;
 
-      appendMsg(text, 'user');
+      appendMsg(msg, 'user');
       input.value = "";
+      typing.classList.remove('hidden');
+      body.scrollTop = body.scrollHeight;
 
       try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: `You are Raha AI, an assistant created by Washiq Adnan. Answer in Bengali or English based on user. Context: User's message: ${text}` }] }]
+            contents: [{ parts: [{ text: `You are Raha AI, a helpful AI assistant created by Washiq Adnan. Keep answers friendly and use Bengali if the user speaks Bengali. Question: ${msg}` }] }]
           })
         });
 
-        const data = await response.json();
-        const aiReply = data.candidates[0].content.parts[0].text;
-        appendMsg(aiReply, 'bot');
+        const data = await res.json();
+        
+        if (data.candidates && data.candidates[0].content) {
+          const reply = data.candidates[0].content.parts[0].text;
+          typing.classList.add('hidden');
+          appendMsg(reply, 'bot');
+        } else {
+          throw new Error("Invalid Response");
+        }
       } catch (err) {
-        appendMsg("দুঃখিত, এপিআই কি-তে সমস্যা হচ্ছে। দয়া করে সঠিক কি ব্যবহার করুন।", 'bot');
+        typing.classList.add('hidden');
+        appendMsg("দুঃখিত, বর্তমানে কথা বলতে সমস্যা হচ্ছে। দয়া করে আপনার জেমিনি এআই কি-টি চেক করুন।", 'bot');
+        console.error(err);
       }
     }
 
     function appendMsg(t, s) {
       const d = document.createElement('div');
       d.className = `p-3 max-w-[85%] ${s === 'user' ? 'msg-user' : 'msg-bot'}`;
-      d.innerHTML = t;
+      d.innerHTML = t.replace(/\n/g, '<br>');
       document.getElementById('chat-body').appendChild(d);
       document.getElementById('chat-body').scrollTop = document.getElementById('chat-body').scrollHeight;
     }
+
+    document.getElementById('chat-input').addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
   </script>
 </body>
-</html>
+  </html>
+  
