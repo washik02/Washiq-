@@ -6,43 +6,118 @@
     <title>Washiq Adnan | Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { background-color: #020617; color: white; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .gradient-text { background: linear-gradient(90deg, #00d2ff, #3a7bd5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617;
+            color: #e2e8f0;
+            scroll-behavior: smooth;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .avatar-glow {
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        .cursor { display: inline-block; width: 3px; background: #38bdf8; animation: blink 0.7s infinite; }
     </style>
 </head>
-<body class="p-4 md:p-10">
-    <div class="max-w-4xl mx-auto space-y-10">
+<body class="selection:bg-indigo-500 selection:text-white">
+
+    <div id="particles-js" class="fixed inset-0 -z-10"></div>
+
+    <div class="max-w-4xl mx-auto px-6 py-12">
         
-        <header class="glass rounded-3xl p-8 text-center">
-            <img src="https://files.catbox.moe/x0uu6r.jpg" alt="Washiq" class="w-32 h-32 rounded-full mx-auto border-4 border-indigo-500 mb-4 object-cover">
-            <h1 class="text-4xl font-bold gradient-text">Washiq Adnan</h1>
-            <p class="text-slate-400 mt-2">Developer & Creator of Washiq AI Chatbot</p>
-            <div class="mt-4 inline-block bg-indigo-500/20 text-indigo-300 px-4 py-1 rounded-full text-sm border border-indigo-500/30">
-                ❤️ Married to Raha Jannat Megh
+        <header class="glass rounded-[2rem] p-10 text-center mb-10 relative overflow-hidden">
+            <div class="absolute top-4 right-6 flex items-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Online</span>
+            </div>
+
+            <div class="relative inline-block mb-6">
+                <img src="https://files.catbox.moe/x0uu6r.jpg" alt="Washiq Adnan" 
+                     class="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-indigo-500/50 avatar-glow">
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-black mb-2">
+                <span id="typing-text"></span><span class="cursor">|</span>
+            </h1>
+            <p class="text-indigo-400 font-medium tracking-wide mb-4">ARCHITECT OF WASHIQ AI & RAHA AI</p>
+            
+            <div class="inline-flex items-center gap-2 bg-pink-500/10 text-pink-400 px-5 py-2 rounded-full border border-pink-500/20 text-sm font-semibold">
+                ❤️ Married to <span class="text-pink-300">Raha Jannat Megh</span>
             </div>
         </header>
 
-        <section class="grid md:grid-cols-2 gap-6">
-            <div class="glass p-6 rounded-2xl">
-                <h2 class="text-xl font-bold mb-4 text-indigo-400"><i class="fas fa-rocket mr-2"></i>Mission</h2>
-                <p class="text-slate-400 text-sm">Building intelligent virtual ecosystems for Facebook Messenger. My project, Washiq AI, focuses on seamless human-like interaction.</p>
-            </div>
-            <div class="glass p-6 rounded-2xl">
-                <h2 class="text-xl font-bold mb-4 text-indigo-400"><i class="fas fa-code mr-2"></i>Top Project</h2>
-                <p class="text-slate-400 text-sm"><b>Raha AI:</b> A specialized chatbot framework named in honor of my wife, designed for high-performance automation.</p>
+        <div class="grid md:grid-cols-2 gap-6 mb-10">
+            <section class="glass p-8 rounded-3xl">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-3 text-sky-400">
+                    <i class="fas fa-bullseye"></i> MISSION
+                </h3>
+                <p class="text-slate-400 leading-relaxed">
+                    আমি ফেসবুক মেসেঞ্জার প্ল্যাটফর্মের জন্য হাই-পারফরম্যান্স চ্যাটবট ইকোসিস্টেম তৈরি করি। 
+                    আমার লক্ষ্য হলো AI-কে মানুষের মতো সাবলীল এবং কার্যকর করে তোলা।
+                </p>
+            </section>
+
+            <section class="glass p-8 rounded-3xl border-l-4 border-l-indigo-500">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-3 text-indigo-400">
+                    <i class="fas fa-brain"></i> RAHA AI
+                </h3>
+                <p class="text-slate-400 leading-relaxed">
+                    আমার স্ত্রীর নামে উৎসর্গ করা এই প্রজেক্টটি একটি অ্যাডভান্সড চ্যাটবট ফ্রেমওয়ার্ক, 
+                    যা দ্রুত রেসপন্স এবং লজিক্যাল ইন্টেলিজেন্সের জন্য ডিজাইন করা হয়েছে।
+                </p>
+            </section>
+        </div>
+
+        <section class="glass rounded-3xl p-8 text-center">
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-[0.3em] mb-6">Get In Touch</h3>
+            <div class="flex justify-center gap-8 text-3xl">
+                <a href="https://facebook.com/61574715983842" target="_blank" class="text-slate-400 hover:text-blue-500 transition-all transform hover:scale-110">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="#" class="text-slate-400 hover:text-white transition-all transform hover:scale-110">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#" class="text-slate-400 hover:text-sky-400 transition-all transform hover:scale-110">
+                    <i class="fas fa-envelope"></i>
+                </a>
             </div>
         </section>
 
-        <footer class="text-center pb-10">
-            <p class="text-slate-500 text-xs mb-4">CONNECT WITH ME</p>
-            <div class="flex justify-center gap-6 text-2xl">
-                <a href="https://facebook.com/61574715983842" class="hover:text-indigo-400 transition"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="hover:text-indigo-400 transition"><i class="fab fa-github"></i></a>
-            </div>
+        <footer class="mt-12 text-center text-slate-600 text-xs tracking-widest">
+            &copy; 2026 WASHIQ ADNAN | BUILT WITH LOVE FOR RAHA
         </footer>
     </div>
+
+    <script>
+        // Typing Effect Logic
+        const text = "Hi, I'm Washiq Adnan";
+        let i = 0;
+        const speed = 100;
+        const target = document.getElementById("typing-text");
+
+        function typeWriter() {
+            if (i < text.length) {
+                target.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, speed);
+            }
+        }
+
+        // Start effect when page loads
+        window.onload = typeWriter;
+    </script>
 </body>
-  </html>
-  
+</html>
