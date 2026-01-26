@@ -1,312 +1,360 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Washiq AI - Portfolio</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>আমার পোর্টফোলিও</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: #0f172a;
-            color: white;
-            font-family: system-ui, sans-serif;
-        }
-        
-        .chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-        
-        .chat-btn {
-            background: linear-gradient(135deg, #3b82f6, #06b6d4);
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .chat-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .chat-window {
-            width: 350px;
-            height: 500px;
-            background: rgba(30, 41, 59, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            display: none;
-            flex-direction: column;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        .chat-window.active {
-            display: flex;
-        }
-        
-        .chat-header {
-            background: rgba(15, 23, 42, 0.9);
-            padding: 15px;
-            border-radius: 15px 15px 0 0;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .chat-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid #3b82f6;
-        }
-        
-        .chat-body {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .user-message {
-            background: linear-gradient(135deg, #3b82f6, #06b6d4);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 15px 15px 5px 15px;
-            align-self: flex-end;
-            max-width: 80%;
-        }
-        
-        .bot-message {
-            background: rgba(255, 255, 255, 0.1);
-            color: #e2e8f0;
-            padding: 10px 15px;
-            border-radius: 15px 15px 15px 5px;
-            align-self: flex-start;
-            max-width: 80%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .chat-input-container {
-            padding: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            gap: 10px;
-        }
-        
-        .chat-input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 10px 15px;
-            color: white;
-            outline: none;
-        }
-        
-        .chat-input:focus {
-            border-color: #3b82f6;
-        }
-        
-        .send-btn {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
-        .typing-indicator {
-            display: flex;
-            gap: 4px;
-            padding: 10px 15px;
-            align-self: flex-start;
-        }
-        
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #3b82f6;
-            border-radius: 50%;
-            animation: typing 1.4s infinite both;
-        }
-        
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        
-        @keyframes typing {
-            0%, 80%, 100% { transform: scale(0.5); opacity: 0.5; }
-            40% { transform: scale(1); opacity: 1; }
-        }
-        
-        /* Homepage styles */
-        .homepage {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
         }
-        
+
+        /* Header Section */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
         .profile-img {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            border: 4px solid #3b82f6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 18px;
             margin-bottom: 20px;
         }
-        
-        .title {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #3b82f6, #06b6d4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+
+        .description {
+            line-height: 1.8;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Chat Section */
+        .chat-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .chat-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .chat-header h2 {
+            color: #667eea;
             margin-bottom: 10px;
+        }
+
+        .api-setup {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .api-setup input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .api-setup button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .api-setup button:hover {
+            background: #5568d3;
+        }
+
+        .chat-box {
+            height: 400px;
+            overflow-y: auto;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .ai-message {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        #userInput {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        #userInput:focus {
+            border-color: #667eea;
+        }
+
+        #sendBtn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        #sendBtn:hover {
+            transform: scale(1.05);
+        }
+
+        #sendBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-
-    <!-- Homepage Content -->
-    <div class="homepage">
-        <img src="https://files.catbox.moe/x0uu6r.jpg" alt="Washiq" class="profile-img">
-        <h1 class="title">Hi, I'm Washiq Adnan</h1>
-        <p style="color: #94a3b8; margin-bottom: 30px;">AI Developer | Creator of Washiq AI</p>
-        <button id="openChatBtn" style="background: #3b82f6; color: white; padding: 12px 30px; border-radius: 25px; border: none; font-weight: bold; cursor: pointer; font-size: 16px;">
-            💬 Talk to Raha AI (DeepSeek)
-        </button>
-        <p style="color: #64748b; margin-top: 20px; font-size: 14px;">Click the button or the blue icon in bottom right to chat</p>
-    </div>
-
-    <!-- Chat Bot -->
-    <div class="chat-container">
-        <!-- Chat Window -->
-        <div class="chat-window" id="chatWindow">
-            <!-- Chat Header -->
-            <div class="chat-header">
-                <img src="https://files.catbox.moe/x0uu6r.jpg" alt="AI" class="chat-avatar">
-                <div>
-                    <h3 style="margin: 0; font-weight: bold;">Raha AI (DeepSeek)</h3>
-                    <p style="margin: 0; font-size: 11px; color: #10b981;">Washiq's Creation</p>
-                </div>
-                <button id="closeChatBtn" style="margin-left: auto; background: none; border: none; color: #94a3b8; cursor: pointer;">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <!-- Chat Messages -->
-            <div class="chat-body" id="chatBody">
-                <div class="bot-message">
-                    আসসালামু আলাইকুম! আমি <b>রাহা এআই</b>। ওয়াশিকের পোর্টফোলিওতে আপনাকে স্বাগতম। আমি এখন DeepSeek-এর মাধ্যমে আপনার সব প্রশ্নের উত্তর দেব। 😊
-                </div>
-            </div>
-            
-            <!-- Typing Indicator -->
-            <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            </div>
-            
-            <!-- Chat Input -->
-            <div class="chat-input-container">
-                <input type="text" class="chat-input" id="chatInput" placeholder="আপনার প্রশ্ন লিখুন...">
-                <button class="send-btn" id="sendBtn">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </div>
+    <div class="container">
+        <!-- Profile Section -->
+        <div class="header">
+            <div class="profile-img">👤</div>
+            <h1>আপনার নাম</h1>
+            <p class="subtitle">ওয়েব ডেভেলপার | ডিজাইনার | AI উৎসাহী</p>
+            <p class="description">
+                আমি একজন প্যাশনেট ওয়েব ডেভেলপার এবং ডিজাইনার। আধুনিক প্রযুক্তি এবং AI নিয়ে কাজ করতে ভালোবাসি। 
+                আমার লক্ষ্য হলো সুন্দর এবং ব্যবহারযোগ্য ডিজিটাল অভিজ্ঞতা তৈরি করা।
+            </p>
         </div>
-        
-        <!-- Chat Button -->
-        <div class="chat-btn" id="chatButton">
-            <i class="fas fa-robot"></i>
+
+        <!-- Chat Section -->
+        <div class="chat-section">
+            <div class="chat-header">
+                <h2>আমার AI সহায়কের সাথে কথা বলুন</h2>
+                <p>Google Gemini দ্বারা চালিত</p>
+            </div>
+
+            <div class="api-setup" id="apiSetup">
+                <strong>⚙️ API সেটআপ করুন:</strong>
+                <p style="margin: 10px 0; font-size: 14px;">
+                    Google Gemini API Key দিন। 
+                    <a href="https://makersuite.google.com/app/apikey" target="_blank" style="color: #667eea;">এখান থেকে API Key নিন</a>
+                </p>
+                <input type="password" id="apiKey" placeholder="আপনার Google Gemini API Key লিখুন">
+                <button onclick="saveApiKey()">Save করুন</button>
+            </div>
+
+            <div class="chat-box" id="chatBox">
+                <div class="message ai-message">
+                    নমস্কার! আমি আপনার AI সহায়ক। আমি যেকোনো প্রশ্নের উত্তর দিতে পারি। কীভাবে সাহায্য করতে পারি?
+                </div>
+            </div>
+
+            <div class="loading" id="loading">⏳ উত্তর তৈরি হচ্ছে...</div>
+
+            <div class="input-area">
+                <input 
+                    type="text" 
+                    id="userInput" 
+                    placeholder="আপনার প্রশ্ন লিখুন..."
+                    onkeypress="if(event.key === 'Enter') sendMessage()"
+                >
+                <button id="sendBtn" onclick="sendMessage()">পাঠান</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // API Configuration
-        const DEEPSEEK_API_KEY = "sk-3bf6d014f11d497e9c959df8f550107d";
-        const API_URL = "https://api.deepseek.com/chat/completions";
+        let apiKey = '';
 
-        // DOM Elements
-        const chatWindow = document.getElementById('chatWindow');
-        const chatBody = document.getElementById('chatBody');
-        const chatInput = document.getElementById('chatInput');
-        const typingIndicator = document.getElementById('typingIndicator');
-        const openChatBtn = document.getElementById('openChatBtn');
-        const chatButton = document.getElementById('chatButton');
-        const closeChatBtn = document.getElementById('closeChatBtn');
-        const sendBtn = document.getElementById('sendBtn');
-
-        // Toggle Chat Window
-        function toggleChat() {
-            chatWindow.classList.toggle('active');
-            if (chatWindow.classList.contains('active')) {
-                setTimeout(() => {
-                    chatInput.focus();
-                }, 300);
+        function saveApiKey() {
+            const key = document.getElementById('apiKey').value.trim();
+            if (key) {
+                apiKey = key;
+                localStorage.setItem('gemini_api_key', key);
+                document.getElementById('apiSetup').style.display = 'none';
+                alert('API Key সফলভাবে সংরক্ষিত হয়েছে!');
+            } else {
+                alert('দয়া করে একটি বৈধ API Key দিন।');
             }
         }
 
-        // Open Chat
-        function openChat() {
-            chatWindow.classList.add('active');
-            setTimeout(() => {
-                chatInput.focus();
-            }, 300);
+        // Check if API key exists
+        window.onload = function() {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                apiKey = savedKey;
+                document.getElementById('apiSetup').style.display = 'none';
+            }
+        };
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            if (!apiKey) {
+                alert('প্রথমে API Key সেট করুন!');
+                document.getElementById('apiSetup').style.display = 'block';
+                return;
+            }
+
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('sendBtn').disabled = true;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: message
+                            }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.candidates && data.candidates[0]) {
+                    const aiResponse = data.candidates[0].content.parts[0].text;
+                    addMessage(aiResponse, 'ai');
+                } else if (data.error) {
+                    addMessage(`ত্রুটি: ${data.error.message}`, 'error');
+                } else {
+                    addMessage('দুঃখিত, উত্তর পেতে সমস্যা হয়েছে।', 'error');
+                }
+            } catch (error) {
+                addMessage(`সংযোগ ত্রুটি: ${error.message}`, 'error');
+            }
+
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('sendBtn').disabled = false;
         }
 
-        // Close Chat
-        function closeChat() {
-            chatWindow.classList.remove('active');
-        }
-
-        // Add Message to Chat
-        function addMessage(text, sender) {
+        function addMessage(text, type) {
+            const chatBox = document.getElementById('chatBox');
             const messageDiv = document.createElement('div');
-            messageDiv.className = sender === 'user' ? 'user-message' : 'bot-message';
+            
+            if (type === 'error') {
+                messageDiv.className = 'error';
+            } else {
+                messageDiv.className = `message ${type}-message`;
+            }
+            
             messageDiv.textContent = text;
-            chatBody.appendChild(messageDiv);
-            chatBody.scrollTop = chatBody.scrollHeight;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
-
-        // Show/Hide Typing Indicator
-        function showTyping() {
-            typingIndicator.style.display = 'flex';
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }
-
-        function hideTyping() {
-            typingIndicator.style.display = 'none';
-        }
+    </script>
+</body>
+</html>       }
 
         // Send Message to DeepSeek API
         async function sendMessage() {
