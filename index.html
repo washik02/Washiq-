@@ -1,226 +1,87 @@
-<!doctype html>
-<html lang="en">  
-<head>  
-<meta charset="utf-8" />  
-<meta name="viewport" content="width=device-width, initial-scale=1" />  
-<title>Happy Birthday Azmira | A Celestial Celebration</title>  
-<style>  
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Montserrat:wght@200;400&display=swap');
-
-  :root{  
-    --bg:#02040a;  
-    --gold: #D4AF37;
-    --gold-grad: linear-gradient(90deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
-  }  
-  
-  *{ box-sizing:border-box; margin: 0; padding: 0; }  
-  html, body { height: 100%; overflow: hidden; background: var(--bg); font-family: 'Montserrat', sans-serif; }  
-  
-  /* ব্যাকগ্রাউন্ডের মায়াবী আলো (The Moonlight Effect) */
-  body {
-    background: 
-      radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.05), transparent 70%),
-      linear-gradient(180deg, #050915 0%, #02040a 100%);
-  }
-
-  .light-blob {
-    position: absolute; inset: -35%;
-    background: 
-      radial-gradient(closest-side, rgba(255, 255, 255, 0.12), transparent 65%) 0 0/40% 40%,
-      radial-gradient(closest-side, rgba(212, 175, 55, 0.08), transparent 70%) 0 0/52% 52%;
-    filter: blur(30px); opacity: 0.7;
-    animation: drift 18s ease-in-out infinite alternate;
-    mix-blend-mode: screen; pointer-events: none; z-index: 1;
-  }
-  @keyframes drift {
-    from { transform: translate(-3%, -2%) rotate(-2deg) scale(1); }
-    to { transform: translate(3%, 2%) rotate(2deg) scale(1.1); }
-  }
-
-  /* তারার মেলা */
-  .stars {
-    position: absolute; inset: 0; z-index: 0;
-    background: transparent url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/123163/stars.png') repeat;
-    opacity: 0.4; animation: moveStars 150s linear infinite;
-  }
-  @keyframes moveStars { from {background-position: 0 0;} to {background-position: 10000px 5000px;} }
-
-  /* মেইন টেক্সট এরিয়া */
-  .content {
-    position: absolute; left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center; width: 100%; z-index: 10; pointer-events: none;
-  }
-
-  .pre-title {
-    font-size: 14px; letter-spacing: 12px; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 20px; font-weight: 200;
-    opacity: 0; animation: fadeInDown 2s forwards 1s;
-  }
-
-  .main-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(40px, 9vw, 110px);
-    font-weight: 900; line-height: 1; color: white;
-    text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
-    opacity: 0; animation: scaleUp 2s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.2s;
-  }
-
-  .name {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(60px, 14vw, 180px);
-    font-style: italic; font-weight: 700;
-    background: var(--gold-grad);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4));
-    display: block; opacity: 0;
-    animation: slideUp 2s cubic-bezier(0.19, 1, 0.22, 1) forwards 1.5s;
-  }
-
-  .footer-text {
-    margin-top: 50px; font-size: 11px; letter-spacing: 5px;
-    text-transform: uppercase; color: rgba(255, 255, 255, 0.3);
-    opacity: 0; animation: fadeIn 3s forwards 3s;
-  }
-
-  /* এনিমেশনসমূহ */
-  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes scaleUp { from { opacity: 0; transform: scale(1.2); filter: blur(10px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeIn { to { opacity: 1; } }
-
-  /* এন্টার বাটন (মিউজিক স্টার্ট করার জন্য) */
-  #overlay {
-    position: fixed; inset: 0; background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 100; transition: 1s ease;
-  }
-  #startBtn {
-    padding: 15px 40px; border: 1px solid var(--gold);
-    background: transparent; color: var(--gold);
-    font-size: 14px; letter-spacing: 4px; text-transform: uppercase;
-    cursor: pointer; transition: 0.4s;
-  }
-  #startBtn:hover { background: var(--gold); color: #000; box-shadow: 0 0 30px var(--gold); }
-
-  canvas { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Washiq Adnan | AI Architect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root { --primary: #00d2ff; --accent: #ff007a; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); --bg: #020617; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: #e5e7eb; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; font-size: 15px; }
+        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
+        .top-nav { position: fixed; top: 15px; left: 15px; right: 15px; display: flex; justify-content: space-between; z-index: 1000; }
+        .badge { background: var(--glass); border: 1px solid var(--border); padding: 6px 15px; border-radius: 50px; backdrop-filter: blur(10px); font-family: 'Orbitron'; font-size: 10px; color: var(--primary); }
+        .music-player { position: fixed; bottom: 25px; right: 25px; z-index: 10001; display: flex; align-items: center; gap: 10px; background: rgba(15, 23, 42, 0.9); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--primary); }
+        #music-btn { background: var(--primary); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #000; }
+        .bar { width: 3px; background: var(--primary); animation: wave 1s infinite; display: none; margin: 0 1px; }
+        @keyframes wave { 0%, 100% { height: 5px; } 50% { height: 15px; } }
+        .hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .hero-avatar { width: 160px; height: 160px; border-radius: 50%; padding: 5px; background: linear-gradient(45deg, var(--primary), var(--accent)); box-shadow: 0 0 40px rgba(0, 210, 255, 0.4); margin-bottom: 25px; }
+        .hero-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .section { padding: 60px 20px; max-width: 900px; margin: auto; }
+        .glass-card { background: var(--glass); border: 1px solid var(--border); border-radius: 25px; padding: 35px; backdrop-filter: blur(15px); margin-bottom: 30px; }
+        .project-img { width: 100%; border-radius: 20px; margin: 20px 0; border: 1px solid var(--border); }
+        .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .gallery img { width: 100%; border-radius: 15px; border: 1px solid var(--border); transition: 0.3s; }
+        .contact-item { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 15px; border: 1px solid var(--border); text-decoration: none; color: #fff; margin-top: 10px; }
+        footer { text-align: center; padding: 60px; opacity: 0.5; font-size: 12px; }
+    </style>
 </head>
 <body>
+<div id="particles-js"></div>
+<div class="top-nav"><div class="badge" id="clock">00:00:00</div><div class="badge">💖 MARRIED TO RAHA JANNAT MEGH</div></div>
+<div class="music-player"><div style="display:flex; height:15px; align-items:flex-end;"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><button id="music-btn"><i class="fas fa-play" id="music-icon"></i></button><audio id="bg-audio" loop><source src="https://files.catbox.moe/7n4vd4.mp3"></audio></div>
 
-  <!-- মিউজিক শুরুর ইন্টারফেস -->
-  <div id="overlay">
-    <button id="startBtn">Enter the Celebration</button>
-  </div>
+<section class="hero">
+    <div class="hero-avatar" data-aos="zoom-in"><img src="https://files.catbox.moe/l6zp1d.jpg"></div>
+    <h1 style="font-family:'Orbitron'; font-size:2.5rem;">Washiq Adnan</h1>
+    <p style="letter-spacing:5px; color:var(--primary);">ARCHITECT OF RAHA AI</p>
+</section>
 
-  <div class="light-blob"></div>
-  <div class="stars"></div>
-  <canvas id="canvas"></canvas>
+<section class="section">
+    <div class="glass-card" data-aos="fade-up">
+        <h2 style="color:var(--primary); font-family:'Orbitron';">01. MISSION</h2>
+        <p>I build intelligent virtual ecosystems. My main project, <b>Raha AI</b>, is a high-performance chatbot designed for Facebook Messenger.</p>
+    </div>
 
-  <div class="content">
-    <p class="pre-title">Celestial Celebration for</p>
-    <h1 class="main-title">HAPPY BIRTHDAY</h1>
-    <span class="name">Azmira</span>
-    <p class="footer-text">Created by <b>Washiq AI</b> • Masterpiece Edition</p>
-  </div>
+    <div class="glass-card" data-aos="fade-up">
+        <h2 style="color:var(--primary); font-family:'Orbitron';">02. VISUAL ARCHIVE</h2>
+        <div class="gallery">
+            <img src="https://files.catbox.moe/h0n53u.jpg">
+            <img src="https://files.catbox.moe/fk8o2f.jpg">
+            <img src="https://files.catbox.moe/d6jevu.jpg">
+        </div>
+        <img src="https://files.catbox.moe/1sbpow.jpg" class="project-img">
+    </div>
 
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height, particles = [];
+    <div class="glass-card" data-aos="fade-up">
+        <h2 style="color:var(--primary); font-family:'Orbitron';">03. CONNECT</h2>
+        <p><b>📍 Base:</b> Dinajpur, Bangladesh</p>
+        <a href="https://www.facebook.com/share/1AWaMKHTYP/" target="_blank" class="contact-item">
+            <i class="fab fa-facebook" style="color:#1877f2;"></i>
+            <div><h4>Facebook</h4><p>Washiq Adnan Official</p></div>
+        </a>
+        <div class="contact-item">
+            <i class="fas fa-phone-alt" style="color:#25d366;"></i>
+            <div><h4>Secure Line</h4><p>+8809638190575 | 01340975547</p></div>
+        </div>
+    </div>
+</section>
 
-    // মিউজিক সিস্টেম
-    const songs = [
-      "https://files.catbox.moe/hj8h0n.mp3",
-      "https://files.catbox.moe/kftu8t.mp3"
-    ];
-    let currentSongIndex = 0;
-    const audio = new Audio();
+<footer>© 2026 WASHIQ ADNAN | EVERYTHING IS CONNECTED.</footer>
 
-    function playNextSong() {
-      if (currentSongIndex < songs.length) {
-        audio.src = songs[currentSongIndex];
-        audio.play().catch(e => console.log("Playback blocked"));
-        currentSongIndex++;
-      } else {
-        // লুপ করার জন্য আবার প্রথম গান থেকে শুরু হবে
-        currentSongIndex = 0;
-        playNextSong();
-      }
-    }
-
-    audio.addEventListener('ended', playNextSong);
-
-    // স্টার্ট বাটন ক্লিক করলে যা হবে
-    document.getElementById('startBtn').addEventListener('click', () => {
-      document.getElementById('overlay').style.opacity = '0';
-      setTimeout(() => document.getElementById('overlay').remove(), 1000);
-      playNextSong(); // মিউজিক শুরু
-      startAutoBurst(); // অটো আতশবাজি শুরু
-    });
-
-    // ক্যানভাস লজিক
-    function init() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', init);
-    init();
-
-    class Particle {
-      constructor(x, y, color) {
-        this.x = x; this.y = y;
-        this.color = color;
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 5 + 1;
-        this.vx = Math.cos(angle) * speed;
-        this.vy = Math.sin(angle) * speed;
-        this.alpha = 1;
-        this.decay = Math.random() * 0.015 + 0.005;
-      }
-      update() {
-        this.x += this.vx; this.y += this.vy;
-        this.vy += 0.03; this.alpha -= this.decay;
-      }
-      draw() {
-        ctx.globalAlpha = this.alpha;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 1.5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    function createBurst(x, y) {
-      const colors = ['#D4AF37', '#FFFACD', '#FFFFFF', '#FFD700'];
-      for(let i=0; i<40; i++) {
-        particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
-      }
-    }
-
-    function startAutoBurst() {
-      setInterval(() => {
-        createBurst(Math.random() * width, Math.random() * height * 0.7);
-      }, 1500);
-    }
-
-    // মাউস ক্লিক করলে ঝলকানি
-    window.addEventListener('mousedown', (e) => {
-      createBurst(e.clientX, e.clientY);
-    });
-
-    function animate() {
-      ctx.fillStyle = 'rgba(2, 4, 10, 0.2)';
-      ctx.fillRect(0, 0, width, height);
-      for(let i = particles.length - 1; i >= 0; i--) {
-        particles[i].update();
-        particles[i].draw();
-        if(particles[i].alpha <= 0) particles.splice(i, 1);
-      }
-      requestAnimationFrame(animate);
-    }
-    animate();
-  </script>
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 1000 });
+    particlesJS("particles-js", { particles: { number: { value: 50 }, color: { value: "#00d2ff" }, opacity: { value: 0.2 }, move: { speed: 1.5 } } });
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-US', {timeZone:'Asia/Dhaka'}); }, 1000);
+    const audio = document.getElementById("bg-audio"); const musicBtn = document.getElementById("music-btn");
+    musicBtn.addEventListener("click", () => { if (audio.paused) { audio.play(); document.getElementById("music-icon").className="fas fa-pause"; document.querySelectorAll(".bar").forEach(b=>b.style.display="block"); } else { audio.pause(); document.getElementById("music-icon").className="fas fa-play"; document.querySelectorAll(".bar").forEach(b=>b.style.display="none"); } });
+</script>
 </body>
-    </html>
+  </html>
+                                                  
