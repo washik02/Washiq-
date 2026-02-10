@@ -1,157 +1,123 @@
 <!doctype html>
 <html lang="bn">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Slap Game - Fullscreen</title>
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Slap Game</title>
   <style>
     *{box-sizing:border-box}
-    html,body{height:100%; margin:0}
+    html,body{height:100%;margin:0}
     body{
       font-family:system-ui,Segoe UI,sans-serif;
-      color:#fff;
-      -webkit-user-select:none;
-      user-select:none;
-      -webkit-tap-highlight-color:transparent;
       overflow:hidden;
+      -webkit-user-select:none; user-select:none;
+      -webkit-tap-highlight-color:transparent;
       background:#000;
     }
 
-    /* Fullscreen background video */
+    /* Background video cover (optional visual) */
     .bgVideo{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
+      position:fixed; inset:0;
+      width:100%; height:100%;
       object-fit:cover;
-      z-index:-2;
-      filter:brightness(.55) saturate(1.1);
+      z-index:-3;
+      filter:brightness(.85) saturate(1.1);
+    }
+    /* Pop-art overlay feel (so it looks like lagarelaga) */
+    .popOverlay{
+      position:fixed; inset:0; z-index:-2;
+      background:
+        radial-gradient(900px 520px at 50% 10%, rgba(255,255,255,.10), transparent 60%),
+        radial-gradient(800px 420px at 20% 40%, rgba(255,255,255,.08), transparent 60%),
+        linear-gradient(135deg, rgba(255,0,128,.20), rgba(255,196,0,.18));
+      mix-blend-mode: screen;
+      pointer-events:none;
+    }
+    /* Dark readability tint */
+    .tint{
+      position:fixed; inset:0; z-index:-1;
+      background:rgba(0,0,0,.18);
+      pointer-events:none;
     }
 
-    /* Dark overlay for readability */
-    .bgTint{
-      position:fixed;
-      inset:0;
-      background:radial-gradient(900px 480px at 50% 20%, rgba(0,173,239,.18), transparent 60%),
-                 rgba(0,0,0,.45);
-      z-index:-1;
-    }
-
-    /* App container full screen */
-    .app{
+    /* Layout: header / main / footer bar */
+    .wrap{
       height:100%;
-      width:100%;
-      display:flex;
-      flex-direction:column;
-      padding:14px;
-      padding-top:calc(14px + env(safe-area-inset-top));
-      padding-bottom:calc(14px + env(safe-area-inset-bottom));
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:10px 12px;
-      border-radius:16px;
-      background:rgba(0,0,0,.35);
-      border:1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(6px);
-    }
-
-    .brand{font-weight:900; letter-spacing:.2px}
-    .brand span{color:#00ADEF}
-    .pill{
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.25);
-      color:rgba(255,255,255,.85);
-    }
-
-    .hud{
-      margin-top:12px;
       display:grid;
-      grid-template-columns:1fr 1fr 1fr;
+      grid-template-rows:auto 1fr auto;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* HUD */
+    .hudRow{
+      padding:10px 12px 6px;
+      display:flex;
       gap:10px;
+      justify-content:space-between;
+      align-items:center;
     }
-    .box{
-      background:rgba(0,0,0,.35);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:16px;
-      padding:10px;
-      text-align:center;
-      backdrop-filter: blur(6px);
-    }
-    .box small{color:rgba(255,255,255,.72); font-size:12px}
-    .box b{font-size:18px}
-
-    .playWrap{
+    .hudBox{
       flex:1;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:12px 0;
+      background:rgba(255,255,255,.92);
+      color:#111;
+      border-radius:14px;
+      padding:10px 10px;
+      text-align:center;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
     }
+    .hudBox .k{font-size:12px; opacity:.75; font-weight:800}
+    .hudBox .v{font-size:22px; font-weight:1000; margin-top:2px}
+    .hudBox.time .v{color:#ff5f6d}
+    .hudBox.score .v{color:#e0a100}
+    .hudBox.best .v{color:#23b26b}
 
-    .playArea{
-      width:min(520px, 96vw);
-      height:min(560px, 66vh);
-      border-radius:22px;
-      background:rgba(0,0,0,.35);
-      border:1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(6px);
+    .playerPill{
+      margin:0 12px 10px;
+      background:rgba(255,255,255,.92);
+      border-radius:14px;
+      padding:10px 12px;
+      text-align:center;
+      font-weight:900;
+      color:#111;
+      box-shadow:0 10px 30px rgba(0,0,0,.22);
+    }
+    .playerPill span{color:#ff2f8d}
+
+    /* Main character area */
+    .stage{
+      position:relative;
       display:flex;
       align-items:center;
       justify-content:center;
-      position:relative;
+      padding:8px 8px 0;
+    }
+    .character{
+      width:min(86vw, 520px);
+      aspect-ratio: 3 / 4;
+      border-radius:22px;
       overflow:hidden;
+      box-shadow:0 26px 80px rgba(0,0,0,.45);
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);
+      transform:translateZ(0);
       touch-action:none;
     }
-
-    .target{
-      width:min(320px, 78vw);
-      height:min(320px, 78vw);
-      max-width:360px;
-      max-height:360px;
-      border-radius:28px;
-      overflow:hidden;
-      box-shadow:0 24px 70px rgba(0,0,0,.60);
-      border:1px solid rgba(255,255,255,.12);
-      transform:translateZ(0);
-      background:rgba(0,0,0,.2);
-    }
-    .target img{
-      width:100%;
-      height:100%;
+    .character img{
+      width:100%; height:100%;
       object-fit:cover;
       display:block;
-    }
-
-    .hint{
-      position:absolute;
-      bottom:12px;
-      left:50%;
-      transform:translateX(-50%);
-      font-size:13px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(0,0,0,.35);
-      border:1px solid rgba(255,255,255,.10);
-      color:rgba(255,255,255,.85);
     }
 
     .flash{
       position:absolute;
       inset:0;
-      background:rgba(255,0,0,.22);
+      background:rgba(255,0,0,.20);
       opacity:0;
       pointer-events:none;
+      transition:opacity .06s linear;
     }
-    .shake{animation:shake .18s linear}
+    .shake{ animation:shake .16s linear 1; }
     @keyframes shake{
       0%{transform:translate(0)}
       25%{transform:translate(4px,-3px)}
@@ -160,58 +126,78 @@
       100%{transform:translate(0)}
     }
 
-    .controls{
+    /* Bottom control bar like lagarelaga */
+    .bottomBar{
+      padding:10px 12px;
       display:flex;
       gap:10px;
-      margin-top:12px;
+      justify-content:center;
+      align-items:center;
     }
-    button{
+    .btn{
       flex:1;
-      padding:12px 14px;
+      padding:12px 12px;
       border:none;
-      border-radius:16px;
-      background:#00ADEF;
-      color:#051018;
-      font-weight:900;
+      border-radius:14px;
+      font-weight:1000;
       cursor:pointer;
-      box-shadow:0 10px 26px rgba(0,173,239,.18);
+      box-shadow:0 10px 24px rgba(0,0,0,.25);
+      color:#111;
+      background:rgba(255,255,255,.92);
     }
-    .secondary{
-      background:rgba(255,255,255,.10);
+    .btn.primary{
+      background:#ff2f8d;
       color:#fff;
-      box-shadow:none;
-      border:1px solid rgba(255,255,255,.12);
-      backdrop-filter: blur(6px);
     }
-    button:active{transform:translateY(1px)}
+    .btn.secondary{
+      background:rgba(255,255,255,.92);
+      color:#111;
+    }
+    .btn:active{transform:translateY(1px)}
 
-    /* overlays */
+    /* Overlay result */
     .overlay{
       position:fixed; inset:0;
-      display:none; align-items:center; justify-content:center;
+      display:none;
+      align-items:center; justify-content:center;
       background:rgba(0,0,0,.55);
-      padding:14px;
       backdrop-filter: blur(2px);
+      padding:14px;
     }
     .overlay.show{display:flex}
     .modal{
       width:min(420px, 94vw);
-      background:rgba(0,0,0,.45);
-      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.95);
+      color:#111;
       border-radius:18px;
       padding:18px;
       text-align:center;
-      backdrop-filter: blur(8px);
-      box-shadow:0 24px 70px rgba(0,0,0,.65);
+      box-shadow:0 26px 80px rgba(0,0,0,.45);
     }
-    .modal h2{margin:0 0 10px}
-    .modal p{margin:6px 0 12px; color:rgba(255,255,255,.82)}
-    .tiny{font-size:12px; color:rgba(255,255,255,.65)}
+    .modal h2{margin:0 0 8px}
+    .modal p{margin:8px 0 12px; font-weight:800}
+    .modal .big{font-size:34px; font-weight:1000; color:#ff2f8d}
+    .modal .row{display:flex; gap:10px}
+    .modal .row button{flex:1}
+
+    /* Tiny sound badge */
+    .soundBadge{
+      position:fixed;
+      right:12px;
+      bottom:calc(76px + env(safe-area-inset-bottom));
+      background:rgba(255,255,255,.92);
+      color:#111;
+      padding:8px 10px;
+      border-radius:999px;
+      font-weight:900;
+      border:none;
+      box-shadow:0 10px 24px rgba(0,0,0,.25);
+    }
   </style>
 </head>
 <body>
 
-  <!-- Fullscreen Background Video (also used as audio source) -->
+  <!-- Background video used as background + audio -->
   <video
     id="bgVideo"
     class="bgVideo"
@@ -220,93 +206,112 @@
     playsinline
     preload="auto"
   ></video>
-  <div class="bgTint"></div>
+  <div class="popOverlay"></div>
+  <div class="tint"></div>
 
-  <div class="app">
-    <div class="topbar">
-      <div class="brand">Slap <span>Game</span></div>
-      <div class="pill" id="statePill">Ready</div>
-    </div>
-
-    <div class="hud">
-      <div class="box"><small>সময়</small><br><b id="time">01:00</b></div>
-      <div class="box"><small>থাপ্পড়</small><br><b id="score">0</b></div>
-      <div class="box"><small>সেরা</small><br><b id="best">0</b></div>
-    </div>
-
-    <div class="playWrap">
-      <div class="playArea" id="playArea">
-        <div class="flash" id="flash"></div>
-        <div class="target" id="target">
-          <img id="targetImg" alt="character">
+  <div class="wrap">
+    <!-- HUD -->
+    <div>
+      <div class="hudRow">
+        <div class="hudBox time">
+          <div class="k">সময়</div>
+          <div class="v" id="time">01:00</div>
         </div>
-        <div class="hint">ট্যাপ করুন (থাপ্পড়) 👆</div>
+        <div class="hudBox score">
+          <div class="k">থাপ্পড়</div>
+          <div class="v" id="score">0</div>
+        </div>
+        <div class="hudBox best">
+          <div class="k">সেরা</div>
+          <div class="v" id="best">0</div>
+        </div>
+      </div>
+      <div class="playerPill">খেলোয়াড়: <span id="playerName">Washiq</span></div>
+    </div>
+
+    <!-- Main stage -->
+    <div class="stage">
+      <div class="flash" id="flash"></div>
+      <div class="character" id="tapArea" aria-label="Tap area">
+        <img id="charImg" alt="character" />
       </div>
     </div>
 
-    <div class="controls">
-      <button id="startBtn">▶ Start / Restart</button>
-      <button id="muteBtn" class="secondary">🔊 Sound On</button>
-    </div>
-
-    <div class="tiny" style="margin-top:10px">
-      Note: মোবাইলে অডিও শুরু করতে Start চাপা লাগবে (browser policy).
+    <!-- Bottom bar -->
+    <div class="bottomBar">
+      <button class="btn secondary" id="btnStart">▶ শুরু</button>
+      <button class="btn primary" id="btnRestart">↺ রিস্টার্ট</button>
+      <button class="btn secondary" id="btnLeader">🏆 লিডারবোর্ড</button>
     </div>
   </div>
+
+  <!-- Sound toggle -->
+  <button class="soundBadge" id="btnSound">🔊 Sound On</button>
 
   <!-- Result overlay -->
   <div class="overlay" id="overlay">
     <div class="modal">
       <h2>⏰ সময় শেষ!</h2>
-      <p>তোমার স্কোর: <b id="finalScore">0</b></p>
-      <button id="playAgainBtn">আবার খেলুন</button>
-      <div class="tiny" style="margin-top:10px">Powered by Raha AI</div>
+      <div class="big" id="finalScore">0</div>
+      <p>Best: <span id="finalBest">0</span></p>
+      <div class="row">
+        <button class="btn primary" id="btnPlayAgain">আবার খেলুন</button>
+        <button class="btn secondary" id="btnClose">বন্ধ</button>
+      </div>
     </div>
   </div>
 
 <script>
-  // Character images
-  const IDLE_IMG = "https://files.catbox.moe/n5tdgb.jpg"; // আগের ছবি
-  const SLAP_IMG = "https://files.catbox.moe/jdabf7.jpg"; // থাপ্পর খাওয়ার পর
+  // Images
+  const IDLE_IMG = "https://files.catbox.moe/n5tdgb.jpg";
+  const SLAP_IMG = "https://files.catbox.moe/jdabf7.jpg";
 
   const imgIdle = new Image();
   const imgSlap = new Image();
   imgIdle.src = IDLE_IMG;
   imgSlap.src = SLAP_IMG;
 
-  // Background video (audio source)
+  // Elements
   const bgVideo = document.getElementById("bgVideo");
+  const timeEl = document.getElementById("time");
+  const scoreEl = document.getElementById("score");
+  const bestEl = document.getElementById("best");
+  const playerNameEl = document.getElementById("playerName");
 
-  const target = document.getElementById("target");
-  const targetImg = document.getElementById("targetImg");
+  const tapArea = document.getElementById("tapArea");
+  const charImg = document.getElementById("charImg");
   const flash = document.getElementById("flash");
 
-  const scoreEl = document.getElementById("score");
-  const timeEl = document.getElementById("time");
-  const bestEl = document.getElementById("best");
+  const btnStart = document.getElementById("btnStart");
+  const btnRestart = document.getElementById("btnRestart");
+  const btnLeader = document.getElementById("btnLeader");
+  const btnSound = document.getElementById("btnSound");
+
   const overlay = document.getElementById("overlay");
-  const finalScore = document.getElementById("finalScore");
-  const playArea = document.getElementById("playArea");
+  const finalScoreEl = document.getElementById("finalScore");
+  const finalBestEl = document.getElementById("finalBest");
+  const btnPlayAgain = document.getElementById("btnPlayAgain");
+  const btnClose = document.getElementById("btnClose");
 
-  const startBtn = document.getElementById("startBtn");
-  const muteBtn = document.getElementById("muteBtn");
-  const playAgainBtn = document.getElementById("playAgainBtn");
-  const statePill = document.getElementById("statePill");
-
-  let score = 0;
-  let time = 60;
-  let running = false;
-  let timer = null;
-  let slapTimeout = null;
+  // State
   let muted = false;
+  let running = false;
+  let timerId = null;
+  let timeLeft = 60;
+  let score = 0;
+  let slapTimeout = null;
 
-  targetImg.src = imgIdle.src;
+  // Init
+  charImg.src = imgIdle.src;
+  const savedBest = Number(localStorage.getItem("bestSlap") || "0");
+  bestEl.textContent = savedBest;
 
-  // Best score
-  const bestSaved = Number(localStorage.getItem("bestSlap") || "0");
-  bestEl.textContent = bestSaved;
-
-  function setPill(t){ statePill.textContent = t; }
+  // (Optional) player name from prompt once
+  // You can replace with your form later
+  if (!localStorage.getItem("playerName")){
+    localStorage.setItem("playerName", "Washiq");
+  }
+  playerNameEl.textContent = localStorage.getItem("playerName") || "Player";
 
   function formatTime(sec){
     const m = Math.floor(sec/60);
@@ -314,33 +319,42 @@
     return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
 
-  async function ensureAudioPlaying(){
-    // Mobile browsers need user gesture; this is called from Start button click
+  async function ensureAudio(){
     try{
-      bgVideo.muted = muted; // respect mute state
+      bgVideo.muted = muted;
       bgVideo.volume = muted ? 0 : 1;
       await bgVideo.play();
     }catch(e){
-      // If autoplay blocked, user can press start again—no crash
-      console.log("Autoplay blocked:", e);
+      // autoplay blocked until user interaction (Start button provides interaction)
+      console.log("play blocked", e);
     }
   }
 
-  function startGame(){
-    score = 0;
-    time = 60;
-    running = true;
-    scoreEl.textContent = "0";
-    timeEl.textContent = formatTime(time);
-    targetImg.src = imgIdle.src;
-    overlay.classList.remove("show");
-    setPill("Playing");
+  async function goFullscreen(){
+    // best-effort fullscreen on user gesture
+    try{
+      const el = document.documentElement;
+      if (!document.fullscreenElement && el.requestFullscreen) {
+        await el.requestFullscreen();
+      }
+    }catch(e){}
+  }
 
-    clearInterval(timer);
-    timer = setInterval(()=>{
-      time--;
-      timeEl.textContent = formatTime(Math.max(0,time));
-      if(time <= 0){
+  function startGame(){
+    running = true;
+    score = 0;
+    timeLeft = 60;
+
+    scoreEl.textContent = "0";
+    timeEl.textContent = formatTime(timeLeft);
+    charImg.src = imgIdle.src;
+    overlay.classList.remove("show");
+
+    clearInterval(timerId);
+    timerId = setInterval(()=>{
+      timeLeft--;
+      timeEl.textContent = formatTime(Math.max(0, timeLeft));
+      if (timeLeft <= 0){
         endGame();
       }
     }, 1000);
@@ -348,86 +362,88 @@
 
   function endGame(){
     running = false;
-    clearInterval(timer);
-    setPill("Finished");
-
-    finalScore.textContent = score;
+    clearInterval(timerId);
 
     const best = Math.max(score, Number(localStorage.getItem("bestSlap") || "0"));
     localStorage.setItem("bestSlap", String(best));
     bestEl.textContent = String(best);
 
+    finalScoreEl.textContent = String(score);
+    finalBestEl.textContent = String(best);
     overlay.classList.add("show");
   }
 
-  function slap(){
-    if(!running) return;
-
-    score++;
-    scoreEl.textContent = String(score);
-
-    // flash
+  function feedback(){
     flash.style.opacity = "1";
     setTimeout(()=> flash.style.opacity = "0", 60);
 
-    // shake
-    target.classList.remove("shake");
-    void target.offsetWidth;
-    target.classList.add("shake");
+    tapArea.classList.remove("shake");
+    void tapArea.offsetWidth;
+    tapArea.classList.add("shake");
+  }
 
-    // image swap: idle -> slap -> idle
-    targetImg.src = imgSlap.src;
+  function slap(){
+    if (!running) return;
+    score++;
+    scoreEl.textContent = String(score);
+
+    feedback();
+
+    charImg.src = imgSlap.src;
     clearTimeout(slapTimeout);
     slapTimeout = setTimeout(()=>{
-      targetImg.src = imgIdle.src;
+      charImg.src = imgIdle.src;
     }, 130);
   }
 
-  // Tap area
-  playArea.addEventListener("pointerdown", (e)=>{
+  // Tap control
+  tapArea.addEventListener("pointerdown", (e)=>{
     e.preventDefault();
     slap();
-  }, { passive:false });
+  }, {passive:false});
 
-  // Start / Restart + request full screen
-  startBtn.addEventListener("click", async ()=>{
-    // Fullscreen request (best-effort)
-    try{
-      const el = document.documentElement;
-      if (!document.fullscreenElement && el.requestFullscreen) {
-        await el.requestFullscreen();
-      }
-    }catch(e){ /* ignore */ }
-
-    await ensureAudioPlaying();
+  // Buttons
+  btnStart.addEventListener("click", async ()=>{
+    await goFullscreen();
+    await ensureAudio();
     startGame();
   });
 
-  playAgainBtn.addEventListener("click", async ()=>{
+  btnRestart.addEventListener("click", async ()=>{
+    await goFullscreen();
+    await ensureAudio();
+    startGame();
+  });
+
+  btnPlayAgain.addEventListener("click", async ()=>{
     overlay.classList.remove("show");
-    await ensureAudioPlaying();
+    await goFullscreen();
+    await ensureAudio();
     startGame();
   });
 
-  // Mute toggle
-  muteBtn.addEventListener("click", async ()=>{
+  btnClose.addEventListener("click", ()=> overlay.classList.remove("show"));
+
+  btnSound.addEventListener("click", async ()=>{
     muted = !muted;
+    btnSound.textContent = muted ? "🔇 Sound Off" : "🔊 Sound On";
     bgVideo.muted = muted;
     bgVideo.volume = muted ? 0 : 1;
-    muteBtn.textContent = muted ? "🔇 Sound Off" : "🔊 Sound On";
-
-    // if user turns sound on, try playing again
-    if(!muted){
-      await ensureAudioPlaying();
-    }
+    if (!muted) await ensureAudio();
   });
 
-  // Keep video playing when tab returns
+  // Leaderboard placeholder (you can connect backend later)
+  btnLeader.addEventListener("click", ()=>{
+    alert("Leaderboard: এখন ডেমোতে শুধু Best (local) আছে। চাইলে আমি Firebase লিডারবোর্ড যোগ করে দেব।");
+  });
+
+  // Keep audio alive when returning
   document.addEventListener("visibilitychange", async ()=>{
-    if (!document.hidden && running && !muted){
-      await ensureAudioPlaying();
-    }
+    if (!document.hidden && running && !muted) await ensureAudio();
   });
+
+  // Initial time
+  timeEl.textContent = formatTime(60);
 </script>
 </body>
   </html>
