@@ -1,508 +1,594 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Breakout Game - Raha AI Edition</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Tap Slap Game</title>
   <style>
+    :root{
+      --bg:#0f0f12; --card:#17171c; --muted:#9aa0a6; --txt:#fff; --brand:#00ADEF;
+      --good:#2ecc71; --bad:#ff4d4d;
+    }
+    *{box-sizing:border-box}
     body{
-      background:#121212;color:#fff;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      height:100vh;margin:0;overflow:hidden;
-      -webkit-user-select:none; user-select:none;
-      -webkit-tap-highlight-color: transparent;
+      margin:0; background:radial-gradient(1200px 600px at 50% -10%, rgba(0,173,239,.12), transparent 55%), var(--bg);
+      color:var(--txt); font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial;
+      min-height:100vh; display:flex; justify-content:center; align-items:center;
+      -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent;
     }
-    h1{font-size:24px;margin:0 0 12px;text-shadow:0 0 10px rgba(0,173,239,.5)}
-    .game-container{
-      position:relative;box-shadow:0 0 20px rgba(0,0,0,.8);
-      border:2px solid #333;border-radius:6px;overflow:hidden
+    .app{width:min(420px, 94vw); padding:14px}
+    .topbar{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
+    .brand{font-weight:800; letter-spacing:.2px}
+    .brand span{color:var(--brand)}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px; padding:14px; box-shadow:0 10px 28px rgba(0,0,0,.35);
     }
-    canvas{
-      background:#1e1e1e;display:block;max-width:100%;height:auto;
-      touch-action:none;
+    .grid{display:grid; gap:12px}
+    .row{display:flex; gap:10px; flex-wrap:wrap}
+    label{font-size:13px; color:var(--muted)}
+    input{
+      width:100%; padding:12px 12px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.22); color:var(--txt);
+      outline:none;
     }
-    .footer{margin-top:12px;font-size:14px;color:#888;font-weight:700}
-    .highlight{color:#00ADEF}
-
-    .overlay{
-      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-      background:rgba(0,0,0,.55);backdrop-filter: blur(2px);
-      opacity:0;pointer-events:none;transition:.2s;
-    }
-    .overlay.show{opacity:1;pointer-events:auto}
-    .panel{
-      width:min(360px,92%);padding:18px 16px;border:1px solid #2a2a2a;border-radius:14px;
-      background:rgba(18,18,18,.92);box-shadow:0 0 18px rgba(0,0,0,.6);
-      text-align:center;
-    }
-    .panel h2{margin:0 0 10px;font-size:20px}
-    .panel p{margin:6px 0 14px;color:#cfcfcf;font-size:14px;line-height:1.4}
+    input:focus{border-color:rgba(0,173,239,.5); box-shadow:0 0 0 3px rgba(0,173,239,.12)}
     .btn{
-      border:none;border-radius:12px;padding:10px 16px;font-weight:700;
-      background:#00ADEF;color:#051018;cursor:pointer;
-      box-shadow:0 6px 18px rgba(0,173,239,.25);
+      width:100%; padding:12px 14px; border-radius:14px; border:none; cursor:pointer;
+      background:var(--brand); color:#051018; font-weight:800;
+      box-shadow:0 10px 24px rgba(0,173,239,.18);
     }
+    .btn.secondary{background:rgba(255,255,255,.08); color:var(--txt); box-shadow:none; border:1px solid rgba(255,255,255,.10)}
     .btn:active{transform:translateY(1px)}
-    .small{font-size:12px;color:#a8a8a8;margin-top:10px}
-    .kbd{
-      display:inline-block;border:1px solid #3a3a3a;border-bottom-width:3px;
-      padding:2px 6px;border-radius:6px;font-size:12px;color:#ddd
+    .tiny{font-size:12px; color:var(--muted)}
+    .pill{
+      padding:6px 10px; border-radius:999px; font-size:12px;
+      border:1px solid rgba(255,255,255,.12); color:var(--muted);
     }
+    .hud{
+      display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:12px
+    }
+    .hud .k{font-size:12px; color:var(--muted)}
+    .hud .v{font-size:18px; font-weight:900}
+    .hud .box{
+      background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.10);
+      border-radius:14px; padding:10px
+    }
+
+    /* Character select */
+    .chars{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+    .char{
+      padding:10px; border-radius:14px; border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18); cursor:pointer;
+      display:flex; align-items:center; gap:10px;
+    }
+    .char .av{
+      width:42px; height:42px; border-radius:14px;
+      background:linear-gradient(135deg, rgba(0,173,239,.35), rgba(255,195,113,.25));
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .char .name{font-weight:800}
+    .char.selected{border-color:rgba(0,173,239,.65); box-shadow:0 0 0 3px rgba(0,173,239,.10)}
+    .char small{color:var(--muted)}
+
+    /* Play area */
+    .playArea{
+      position:relative;
+      height:340px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(500px 250px at 50% 35%, rgba(255,255,255,.05), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.22));
+      overflow:hidden;
+      touch-action:none;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .target{
+      width:190px; height:190px; border-radius:28px;
+      background:linear-gradient(135deg, rgba(255,95,109,.25), rgba(255,195,113,.18));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 24px 60px rgba(0,0,0,.45);
+      display:flex; align-items:center; justify-content:center;
+      transform:translateZ(0);
+    }
+    .target .emoji{font-size:78px; filter:drop-shadow(0 10px 18px rgba(0,0,0,.5))}
+    .tapHint{
+      position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
+      font-size:13px; color:rgba(255,255,255,.75);
+      background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.10);
+      padding:8px 12px; border-radius:999px;
+    }
+    .flash{
+      position:absolute; inset:0; background:rgba(0,173,239,.18);
+      opacity:0; pointer-events:none;
+    }
+    .shake{ animation:shake .18s linear 1; }
+    @keyframes shake{
+      0%{transform:translate(0,0) rotate(0)}
+      25%{transform:translate(3px,-2px) rotate(1deg)}
+      50%{transform:translate(-3px,2px) rotate(-1deg)}
+      75%{transform:translate(2px,2px) rotate(1deg)}
+      100%{transform:translate(0,0) rotate(0)}
+    }
+
+    /* Modal-ish */
+    .overlay{
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.55); backdrop-filter: blur(2px);
+      padding:14px;
+    }
+    .overlay.show{display:flex}
+    .tabs{display:flex; gap:8px; margin-bottom:10px}
+    .tab{
+      flex:1; padding:10px; border-radius:12px; cursor:pointer; text-align:center;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.10); color:rgba(255,255,255,.85);
+      font-weight:800;
+    }
+    .tab.active{border-color:rgba(0,173,239,.6); box-shadow:0 0 0 3px rgba(0,173,239,.10)}
+    table{width:100%; border-collapse:collapse; overflow:hidden}
+    th,td{padding:10px 8px; border-bottom:1px solid rgba(255,255,255,.08); font-size:13px}
+    th{color:var(--muted); text-align:left}
+    .right{text-align:right}
   </style>
 </head>
 <body>
-  <h1>Breakout Game - Raha AI Edition</h1>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">Laga<span>Re</span>Laga (demo)</div>
+      <div class="pill" id="statePill">Ready</div>
+    </div>
 
-  <div class="game-container">
-    <canvas id="myCanvas" width="480" height="320"></canvas>
+    <!-- SCREEN: Start -->
+    <div class="card grid" id="screenStart">
+      <div class="grid" style="gap:8px">
+        <div class="tiny">খেলা শুরু করতে আপনার তথ্য দিন (ডেমোতে ফোন optional)</div>
+        <div>
+          <label>আপনার নাম *</label>
+          <input id="inpName" placeholder="যেমন: Washiq" maxlength="24" />
+        </div>
+        <div>
+          <label>ফোন নম্বর (optional)</label>
+          <input id="inpPhone" placeholder="01XXXXXXXXX" inputmode="tel" maxlength="14" />
+        </div>
+        <div class="row">
+          <button class="btn secondary" id="btnLeaderboard1">লিডারবোর্ড</button>
+          <button class="btn" id="btnGoChars">খেলা শুরু করুন</button>
+        </div>
+        <div class="tiny">Powered by <span style="color:var(--brand);font-weight:900">Raha AI</span></div>
+      </div>
+    </div>
 
-    <div id="overlay" class="overlay show">
-      <div class="panel">
-        <h2 id="overlayTitle">Breakout</h2>
-        <p id="overlayText">
-          Tap <span class="kbd">Play</span> to start.<br/>
-          Move: <span class="kbd">Touch & Drag</span> / <span class="kbd">Mouse</span> / <span class="kbd">←</span><span class="kbd">→</span>
-        </p>
-        <button id="playBtn" class="btn">Play</button>
-        <div class="small">Powered by <span class="highlight">Raha AI</span></div>
+    <!-- SCREEN: Character -->
+    <div class="card grid" id="screenChars" style="display:none">
+      <div style="font-weight:900">কাকে থাপ্পড় মারবেন?</div>
+      <div class="tiny">একজনকে বেছে নিন</div>
+      <div class="chars" id="charGrid"></div>
+      <div class="row">
+        <button class="btn secondary" id="btnBackStart">↩︎ Back</button>
+        <button class="btn" id="btnStartGame">▶ শুরু</button>
+      </div>
+    </div>
+
+    <!-- SCREEN: Game -->
+    <div class="card" id="screenGame" style="display:none">
+      <div class="hud">
+        <div class="box">
+          <div class="k">সময়</div>
+          <div class="v" id="hudTime">01:00</div>
+        </div>
+        <div class="box">
+          <div class="k">থাপ্পড়</div>
+          <div class="v" id="hudSlaps">0</div>
+        </div>
+        <div class="box">
+          <div class="k">সেরা</div>
+          <div class="v" id="hudBest">0</div>
+        </div>
+      </div>
+
+      <div class="tiny" style="margin-bottom:10px">
+        খেলোয়াড়: <b id="hudPlayer">-</b> • চরিত্র: <b id="hudChar">-</b>
+      </div>
+
+      <div class="playArea" id="playArea" aria-label="Tap area">
+        <div class="flash" id="flash"></div>
+        <div class="target" id="target">
+          <div class="emoji" id="targetEmoji">😵</div>
+        </div>
+        <div class="tapHint">থাপ্পড় মারতে ট্যাপ করুন</div>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <button class="btn secondary" id="btnRestart">↺ রিস্টার্ট</button>
+        <button class="btn secondary" id="btnLeaderboard2">লিডারবোর্ড</button>
+      </div>
+      <div class="tiny" style="margin-top:10px;color:rgba(255,255,255,.75)">
+        Tip: যত দ্রুত ট্যাপ করবেন তত বেশি স্কোর 😉
       </div>
     </div>
   </div>
 
-  <div class="footer">Powered by <span class="highlight">Raha AI</span></div>
+  <!-- Overlay: Result -->
+  <div class="overlay" id="overlayResult">
+    <div class="card grid" style="width:min(420px, 94vw)">
+      <div style="font-weight:1000; font-size:18px">⏰ সময় শেষ!</div>
+      <div class="tiny">️LagaReLaga (demo)</div>
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <div class="tiny">আপনার স্কোর</div>
+          <div style="font-size:28px;font-weight:1000" id="resScore">0</div>
+        </div>
+        <div>
+          <div class="tiny">সেরা স্কোর</div>
+          <div style="font-size:28px;font-weight:1000" id="resBest">0</div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn" id="btnPlayAgain">আবার খেলুন</button>
+        <button class="btn secondary" id="btnLeaderboard3">লিডারবোর্ড</button>
+      </div>
+      <div class="tiny">Share/Download বাটন চাইলে পরে যোগ করা যাবে (FB/WhatsApp)</div>
+    </div>
+  </div>
 
-  <script>
-    const canvas = document.getElementById("myCanvas");
-    const ctx = canvas.getContext("2d");
+  <!-- Overlay: Leaderboard -->
+  <div class="overlay" id="overlayLB">
+    <div class="card" style="width:min(520px, 96vw)">
+      <div class="row" style="justify-content:space-between; align-items:center">
+        <div style="font-weight:1000">লিডারবোর্ড</div>
+        <button class="btn secondary" id="btnCloseLB" style="width:auto">✕ বন্ধ</button>
+      </div>
+      <div class="tabs" style="margin-top:10px">
+        <div class="tab active" id="tabToday">আজকের</div>
+        <div class="tab" id="tabAll">সর্বকালের</div>
+      </div>
+      <div style="max-height:55vh; overflow:auto; border-radius:12px; border:1px solid rgba(255,255,255,.10)">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>নাম</th>
+              <th class="right">স্কোর</th>
+              <th class="right">সময়</th>
+            </tr>
+          </thead>
+          <tbody id="lbBody"></tbody>
+        </table>
+      </div>
+      <div class="tiny" style="margin-top:10px">
+        এখন localStorage এ সেভ হচ্ছে। Backend চাইলে Firebase/Supabase দিয়ে “আজকের/সর্বকালের” রিয়েল ডাটাবেস বানানো যাবে।
+      </div>
+    </div>
+  </div>
 
-    const overlay = document.getElementById("overlay");
-    const overlayTitle = document.getElementById("overlayTitle");
-    const overlayText  = document.getElementById("overlayText");
-    const playBtn = document.getElementById("playBtn");
+<script>
+/* --------------------------
+   Simple Tap Slap Game (Demo)
+   - 60 seconds
+   - Tap increases slap count
+   - Local leaderboard: Today + All-time
+   -------------------------- */
 
-    // ✅ Background image
-    const bgImage = new Image();
-    bgImage.crossOrigin = "anonymous"; // best-effort (if server allows CORS)
-    bgImage.src = "https://files.catbox.moe/jyvrmk.jpg";
-    let bgReady = false;
-    bgImage.onload = () => { bgReady = true; };
-    bgImage.onerror = () => { bgReady = false; };
+const DURATION_SEC = 60;
 
-    // ---- Game constants ----
-    const paddleHeight = 10;
-    const paddleWidth  = 80;
-    const ballRadius   = 8;
+const statePill = document.getElementById('statePill');
 
-    const MAX_LIVES = 9;
+const screenStart = document.getElementById('screenStart');
+const screenChars = document.getElementById('screenChars');
+const screenGame  = document.getElementById('screenGame');
 
-    // ---- Game state ----
-    let lastTime = 0;
-    let running = false;
-    let paused = false;
-    let gameOver = false;
+const inpName  = document.getElementById('inpName');
+const inpPhone = document.getElementById('inpPhone');
 
-    let leftPressed = false;
-    let rightPressed = false;
+const btnGoChars = document.getElementById('btnGoChars');
+const btnBackStart = document.getElementById('btnBackStart');
+const btnStartGame = document.getElementById('btnStartGame');
+const btnRestart = document.getElementById('btnRestart');
 
-    // Pointer (touch + mouse unified)
-    let pointerActive = false;
-    let pointerX = null;
+const btnLeaderboard1 = document.getElementById('btnLeaderboard1');
+const btnLeaderboard2 = document.getElementById('btnLeaderboard2');
+const btnLeaderboard3 = document.getElementById('btnLeaderboard3');
 
-    // World
-    let paddleX = (canvas.width - paddleWidth) / 2;
-    let ball = { x: canvas.width/2, y: canvas.height-30, vx: 180, vy: -180 };
-    let score = 0;
-    let lives = 3;
+const hudTime = document.getElementById('hudTime');
+const hudSlaps = document.getElementById('hudSlaps');
+const hudBest = document.getElementById('hudBest');
+const hudPlayer = document.getElementById('hudPlayer');
+const hudChar = document.getElementById('hudChar');
 
-    // Timer per round
-    let roundStartTime = 0;
+const playArea = document.getElementById('playArea');
+const target = document.getElementById('target');
+const targetEmoji = document.getElementById('targetEmoji');
+const flash = document.getElementById('flash');
 
-    // Levels: first easy 😅
-    const levels = [
-      { rows: 3, cols: 5, padding: 10, offsetTop: 34, offsetLeft: 45, brickW: 62, brickH: 18, speed: 170 },
-      { rows: 4, cols: 6, padding: 10, offsetTop: 34, offsetLeft: 35, brickW: 60, brickH: 20, speed: 200 },
-      { rows: 5, cols: 7, padding: 9,  offsetTop: 32, offsetLeft: 20, brickW: 58, brickH: 18, speed: 230 },
-      { rows: 6, cols: 8, padding: 8,  offsetTop: 30, offsetLeft: 12, brickW: 54, brickH: 16, speed: 260 },
-      { rows: 7, cols: 9, padding: 7,  offsetTop: 28, offsetLeft: 8,  brickW: 50, brickH: 15, speed: 290 },
-    ];
-    let levelIndex = 0;
-    let bricks = [];
+const overlayResult = document.getElementById('overlayResult');
+const resScore = document.getElementById('resScore');
+const resBest  = document.getElementById('resBest');
+const btnPlayAgain = document.getElementById('btnPlayAgain');
 
-    // ---- Time-based bonus rules (4 time-cases each round) ----
-    const timeBonusRules = [
-      [ { maxSec: 18, bonus: 2 }, { maxSec: 28, bonus: 1 }, { maxSec: 40, bonus: 0 }, { maxSec: Infinity, bonus: 0 } ],
-      [ { maxSec: 22, bonus: 2 }, { maxSec: 34, bonus: 1 }, { maxSec: 48, bonus: 0 }, { maxSec: Infinity, bonus: 0 } ],
-      [ { maxSec: 26, bonus: 2 }, { maxSec: 40, bonus: 1 }, { maxSec: 55, bonus: 0 }, { maxSec: Infinity, bonus: 0 } ],
-      [ { maxSec: 30, bonus: 2 }, { maxSec: 46, bonus: 1 }, { maxSec: 62, bonus: 0 }, { maxSec: Infinity, bonus: 0 } ],
-      [ { maxSec: 34, bonus: 2 }, { maxSec: 52, bonus: 1 }, { maxSec: 70, bonus: 0 }, { maxSec: Infinity, bonus: 0 } ],
-    ];
+const overlayLB = document.getElementById('overlayLB');
+const btnCloseLB = document.getElementById('btnCloseLB');
+const tabToday = document.getElementById('tabToday');
+const tabAll   = document.getElementById('tabAll');
+const lbBody   = document.getElementById('lbBody');
 
-    // ---- Helpers ----
-    function showOverlay(title, text, btnLabel = "Play") {
-      overlayTitle.textContent = title;
-      overlayText.innerHTML = text;
-      playBtn.textContent = btnLabel;
-      overlay.classList.add("show");
-    }
-    function hideOverlay() { overlay.classList.remove("show"); }
+const charGrid = document.getElementById('charGrid');
 
-    function normalizeToCanvasX(clientX) {
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      return (clientX - rect.left) * scaleX;
-    }
+const characters = [
+  { id:'c1', name:'ব্যক্তি ১', emoji:'😵' },
+  { id:'c2', name:'ব্যক্তি ২', emoji:'🤕' },
+  { id:'c3', name:'ব্যক্তি ৩', emoji:'😖' },
+  { id:'c4', name:'ব্যক্তি ৪', emoji:'🥴' },
+];
 
-    function circleRectCollision(cx, cy, cr, rx, ry, rw, rh) {
-      const closestX = Math.max(rx, Math.min(cx, rx + rw));
-      const closestY = Math.max(ry, Math.min(cy, ry + rh));
-      const dx = cx - closestX;
-      const dy = cy - closestY;
-      return (dx*dx + dy*dy) <= cr*cr;
-    }
+let selectedChar = characters[0];
 
-    function setupLevel(idx) {
-      const L = levels[idx];
-      bricks = [];
-      for (let c = 0; c < L.cols; c++) {
-        bricks[c] = [];
-        for (let r = 0; r < L.rows; r++) bricks[c][r] = { x: 0, y: 0, status: 1 };
-      }
+let player = { name:'', phone:'' };
+let running = false;
+let timerId = null;
+let timeLeft = DURATION_SEC;
+let slaps = 0;
 
-      paddleX = (canvas.width - paddleWidth) / 2;
-      ball.x = canvas.width/2;
-      ball.y = canvas.height - 30;
+function todayKey(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
 
-      const dirX = ball.vx >= 0 ? 1 : -1;
-      ball.vx = dirX * L.speed;
-      ball.vy = -Math.abs(L.speed);
+// Storage keys
+const KEY_ALL = 'tap_slap_lb_all';
+const KEY_TODAY_PREFIX = 'tap_slap_lb_today_';
 
-      roundStartTime = performance.now();
-    }
+function getLB(key){
+  try{ return JSON.parse(localStorage.getItem(key) || '[]'); }
+  catch{ return []; }
+}
+function setLB(key, arr){
+  localStorage.setItem(key, JSON.stringify(arr));
+}
 
-    function scoreForThisLevel() {
-      const L = levels[levelIndex];
-      let destroyed = 0;
-      for (let c = 0; c < L.cols; c++)
-        for (let r = 0; r < L.rows; r++)
-          destroyed += (bricks[c][r].status === 0 ? 1 : 0);
-      return destroyed;
-    }
+function bestScoreAllTime(){
+  const all = getLB(KEY_ALL);
+  return all.length ? all[0].score : 0;
+}
 
-    function getTimeBonusForLevel(levelIdx, elapsedSec) {
-      const rules = timeBonusRules[levelIdx] || timeBonusRules[timeBonusRules.length - 1];
-      for (const r of rules) if (elapsedSec <= r.maxSec) return r.bonus;
-      return 0;
-    }
+function formatMMSS(sec){
+  const m = Math.floor(sec/60);
+  const s = sec%60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
 
-    function nextLevelOrWin() {
-      const elapsedSec = (performance.now() - roundStartTime) / 1000;
-      const bonus = getTimeBonusForLevel(levelIndex, elapsedSec);
+function showScreen(which){
+  screenStart.style.display = which==='start' ? '' : 'none';
+  screenChars.style.display = which==='chars' ? '' : 'none';
+  screenGame.style.display  = which==='game'  ? '' : 'none';
+}
 
-      if (levelIndex < levels.length - 1) {
-        levelIndex++;
-        lives = Math.min(MAX_LIVES, lives + bonus);
+function setPill(text){ statePill.textContent = text; }
 
-        setupLevel(levelIndex);
-        paused = true;
-
-        showOverlay(
-          `Round ${levelIndex + 1} শুরু!`,
-          `Round cleared in <span class="highlight">${elapsedSec.toFixed(1)}s</span><br/>
-           Bonus Life: <span class="highlight">+${bonus}</span> ✅ | Lives now: <span class="highlight">${lives}</span><br/>
-           Tap <span class="kbd">Play</span> to continue.`,
-          "Play"
-        );
-      } else {
-        gameOver = true;
-        running = false;
-        showOverlay(
-          "Winner! 🎉",
-          `You cleared all rounds!<br/>
-           Final Score: <span class="highlight">${score}</span><br/>
-           Tap <span class="kbd">Play Again</span> to restart.`,
-          "Play Again"
-        );
-      }
-    }
-
-    function resetAfterLifeLost() {
-      paddleX = (canvas.width - paddleWidth) / 2;
-      ball.x = canvas.width / 2;
-      ball.y = canvas.height - 30;
-
-      const sp = levels[levelIndex].speed;
-      ball.vx = (Math.random() < 0.5 ? -1 : 1) * sp;
-      ball.vy = -sp;
-    }
-
-    // ---- Input: Keyboard ----
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight" || e.key === "Right") rightPressed = true;
-      if (e.key === "ArrowLeft"  || e.key === "Left")  leftPressed = true;
-
-      if (e.key === " " || e.code === "Space") {
-        if (!running || gameOver) return;
-        paused = !paused;
-        if (paused) showOverlay("Paused", "Press <span class='kbd'>Space</span> or tap <span class='kbd'>Resume</span>.", "Resume");
-        else hideOverlay();
-      }
+function renderChars(){
+  charGrid.innerHTML = '';
+  for (const ch of characters){
+    const div = document.createElement('div');
+    div.className = 'char' + (ch.id===selectedChar.id ? ' selected' : '');
+    div.innerHTML = `
+      <div class="av"></div>
+      <div>
+        <div class="name">${ch.name}</div>
+        <small>${ch.emoji} tap game</small>
+      </div>
+    `;
+    div.addEventListener('click', () => {
+      selectedChar = ch;
+      renderChars();
     });
-    document.addEventListener("keyup", (e) => {
-      if (e.key === "ArrowRight" || e.key === "Right") rightPressed = false;
-      if (e.key === "ArrowLeft"  || e.key === "Left")  leftPressed  = false;
-    });
+    charGrid.appendChild(div);
+  }
+}
 
-    // ---- Input: Pointer events ----
-    canvas.addEventListener("pointerdown", (e) => {
-      canvas.setPointerCapture(e.pointerId);
-      pointerActive = true;
-      pointerX = normalizeToCanvasX(e.clientX);
-    });
-    canvas.addEventListener("pointermove", (e) => {
-      if (!pointerActive) return;
-      pointerX = normalizeToCanvasX(e.clientX);
-    });
-    canvas.addEventListener("pointerup", () => { pointerActive = false; });
-    canvas.addEventListener("pointercancel", () => { pointerActive = false; });
+function resetRound(){
+  running = false;
+  clearInterval(timerId);
+  timerId = null;
+  timeLeft = DURATION_SEC;
+  slaps = 0;
+  hudTime.textContent = formatMMSS(timeLeft);
+  hudSlaps.textContent = slaps;
+  hudBest.textContent = bestScoreAllTime();
+  targetEmoji.textContent = selectedChar.emoji;
+}
 
-    // ---- Overlay controls ----
-    playBtn.addEventListener("click", () => {
-      if (gameOver) {
-        levelIndex = 0;
-        score = 0;
-        lives = 3;
-        gameOver = false;
-        paused = false;
-        setupLevel(levelIndex);
-      }
-      running = true;
-      paused = false;
-      hideOverlay();
-      lastTime = performance.now();
-      requestAnimationFrame(loop);
-    });
+function startRound(){
+  resetRound();
+  running = true;
+  setPill('Playing');
+  hudPlayer.textContent = player.name;
+  hudChar.textContent = selectedChar.name;
+  showScreen('game');
 
-    overlay.addEventListener("click", (e) => {
-      if (e.target === playBtn) return;
-      playBtn.click();
-    });
-
-    // ---- Draw background (cover) ----
-    function drawBackground() {
-      // Fallback background if image not ready
-      ctx.fillStyle = "#141414";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      if (!bgReady || !bgImage.naturalWidth) return;
-
-      const imgRatio = bgImage.naturalWidth / bgImage.naturalHeight;
-      const canvasRatio = canvas.width / canvas.height;
-
-      let drawW, drawH, offX, offY;
-      if (canvasRatio > imgRatio) {
-        drawW = canvas.width;
-        drawH = canvas.width / imgRatio;
-        offX = 0;
-        offY = (canvas.height - drawH) / 2;
-      } else {
-        drawH = canvas.height;
-        drawW = canvas.height * imgRatio;
-        offY = 0;
-        offX = (canvas.width - drawW) / 2;
-      }
-
-      ctx.drawImage(bgImage, offX, offY, drawW, drawH);
-
-      // Dark overlay so game objects stay visible
-      ctx.fillStyle = "rgba(0,0,0,0.35)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+  timerId = setInterval(() => {
+    timeLeft--;
+    hudTime.textContent = formatMMSS(Math.max(0,timeLeft));
+    if (timeLeft <= 0){
+      endRound();
     }
+  }, 1000);
+}
 
-    // ---- HUD ----
-    function drawHUD() {
-      ctx.font = "14px Arial";
-      ctx.fillStyle = "#ffffff";
+function endRound(){
+  running = false;
+  clearInterval(timerId);
+  timerId = null;
+  setPill('Finished');
 
-      const elapsedSec = (performance.now() - roundStartTime) / 1000;
-      const timeText = `Time: ${elapsedSec.toFixed(1)}s`;
+  // Save scores
+  const entry = {
+    name: player.name,
+    phone: player.phone || '',
+    score: slaps,
+    time: new Date().toISOString()
+  };
 
-      ctx.fillText(`Score: ${score}`, 8, 18);
-      ctx.fillText(`Lives: ${lives}`, canvas.width - 70, 18);
-      ctx.fillText(`Round: ${levelIndex + 1}/${levels.length}`, canvas.width/2 - 50, 18);
+  // All-time: keep top 50
+  const all = getLB(KEY_ALL);
+  all.push(entry);
+  all.sort((a,b) => b.score - a.score);
+  setLB(KEY_ALL, all.slice(0,50));
 
-      ctx.font = "12px Arial";
-      ctx.fillStyle = "#e0e0e0";
-      ctx.fillText(timeText, canvas.width/2 - 38, 34);
-    }
+  // Today: keep top 50
+  const tk = KEY_TODAY_PREFIX + todayKey();
+  const td = getLB(tk);
+  td.push(entry);
+  td.sort((a,b) => b.score - a.score);
+  setLB(tk, td.slice(0,50));
 
-    function drawBall() {
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
-      ctx.fillStyle = "#00ADEF";
-      ctx.fill();
-      ctx.closePath();
-    }
+  resScore.textContent = slaps;
+  resBest.textContent = bestScoreAllTime();
 
-    function drawPaddle() {
-      ctx.beginPath();
-      ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-      ctx.fillStyle = "#ffffff";
-      ctx.fill();
-      ctx.closePath();
-    }
+  overlayResult.classList.add('show');
+}
 
-    function drawBricks() {
-      const L = levels[levelIndex];
-      for (let c = 0; c < L.cols; c++) {
-        for (let r = 0; r < L.rows; r++) {
-          if (bricks[c][r].status === 1) {
-            const brickX = (c * (L.brickW + L.padding)) + L.offsetLeft;
-            const brickY = (r * (L.brickH + L.padding)) + L.offsetTop;
-            bricks[c][r].x = brickX;
-            bricks[c][r].y = brickY;
+function doSlap(){
+  if (!running) return;
 
-            ctx.beginPath();
-            ctx.rect(brickX, brickY, L.brickW, L.brickH);
-            const g = ctx.createLinearGradient(brickX, brickY, brickX, brickY + L.brickH);
-            g.addColorStop(0, "#ff5f6d");
-            g.addColorStop(1, "#ffc371");
-            ctx.fillStyle = g;
-            ctx.fill();
-            ctx.closePath();
-          }
-        }
-      }
-    }
+  slaps++;
+  hudSlaps.textContent = slaps;
 
-    function handleBrickCollisions() {
-      const L = levels[levelIndex];
-      for (let c = 0; c < L.cols; c++) {
-        for (let r = 0; r < L.rows; r++) {
-          const b = bricks[c][r];
-          if (b.status !== 1) continue;
+  // feedback: flash + shake
+  flash.style.opacity = '1';
+  setTimeout(() => flash.style.opacity = '0', 60);
 
-          if (circleRectCollision(ball.x, ball.y, ballRadius, b.x, b.y, L.brickW, L.brickH)) {
-            b.status = 0;
-            score++;
+  target.classList.remove('shake');
+  // force reflow so animation restarts
+  void target.offsetWidth;
+  target.classList.add('shake');
+}
 
-            const midX = b.x + L.brickW / 2;
-            const midY = b.y + L.brickH / 2;
-            const diffX = ball.x - midX;
-            const diffY = ball.y - midY;
+function openLB(mode='today'){
+  overlayLB.classList.add('show');
+  if (mode === 'all'){
+    tabAll.classList.add('active');
+    tabToday.classList.remove('active');
+    renderLB('all');
+  } else {
+    tabToday.classList.add('active');
+    tabAll.classList.remove('active');
+    renderLB('today');
+  }
+}
 
-            if (Math.abs(diffX) > Math.abs(diffY)) ball.vx *= -1;
-            else ball.vy *= -1;
+function renderLB(mode){
+  lbBody.innerHTML = '';
+  let list = [];
+  if (mode === 'all'){
+    list = getLB(KEY_ALL);
+  } else {
+    list = getLB(KEY_TODAY_PREFIX + todayKey());
+  }
 
-            if (scoreForThisLevel() >= (L.rows * L.cols)) nextLevelOrWin();
-            return;
-          }
-        }
-      }
-    }
+  if (!list.length){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="4" style="color:rgba(255,255,255,.65);padding:14px">কোনো স্কোর নেই</td>`;
+    lbBody.appendChild(tr);
+    return;
+  }
 
-    // ---- Update ----
-    function update(dt) {
-      const paddleSpeed = 420;
+  list.slice(0,30).forEach((e, i) => {
+    const t = new Date(e.time);
+    const hh = String(t.getHours()).padStart(2,'0');
+    const mm = String(t.getMinutes()).padStart(2,'0');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i+1}</td>
+      <td>${escapeHtml(e.name)}</td>
+      <td class="right"><b>${e.score}</b></td>
+      <td class="right" style="color:rgba(255,255,255,.75)">${hh}:${mm}</td>
+    `;
+    lbBody.appendChild(tr);
+  });
+}
 
-      if (pointerX !== null) {
-        const target = pointerX - paddleWidth / 2;
-        paddleX += (target - paddleX) * Math.min(1, dt * (pointerActive ? 18 : 10));
-      } else {
-        if (rightPressed) paddleX += paddleSpeed * dt;
-        if (leftPressed)  paddleX -= paddleSpeed * dt;
-      }
-      paddleX = Math.max(0, Math.min(canvas.width - paddleWidth, paddleX));
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[m]));
+}
 
-      // Ball move
-      ball.x += ball.vx * dt;
-      ball.y += ball.vy * dt;
+/* -------- Events -------- */
+btnGoChars.addEventListener('click', () => {
+  const name = inpName.value.trim();
+  if (!name){
+    inpName.focus();
+    alert('নাম দিন 🙂');
+    return;
+  }
+  player = { name, phone: inpPhone.value.trim() };
+  setPill('Choose character');
+  renderChars();
+  showScreen('chars');
+});
 
-      // Walls
-      if (ball.x < ballRadius) { ball.x = ballRadius; ball.vx *= -1; }
-      if (ball.x > canvas.width - ballRadius) { ball.x = canvas.width - ballRadius; ball.vx *= -1; }
-      if (ball.y < ballRadius) { ball.y = ballRadius; ball.vy *= -1; }
+btnBackStart.addEventListener('click', () => {
+  setPill('Ready');
+  showScreen('start');
+});
 
-      // ✅ Paddle collision FIX (no early bounce)
-      const paddleY = canvas.height - paddleHeight;
+btnStartGame.addEventListener('click', () => {
+  overlayResult.classList.remove('show');
+  setPill('Starting…');
+  startRound();
+});
 
-      const ballComingDown = ball.vy > 0;
-      const withinPaddleX = ball.x >= paddleX - ballRadius && ball.x <= paddleX + paddleWidth + ballRadius;
-      const touchesPaddleTop =
-        (ball.y + ballRadius) >= paddleY &&
-        (ball.y + ballRadius) <= (paddleY + paddleHeight + 2);
+btnRestart.addEventListener('click', () => {
+  overlayResult.classList.remove('show');
+  setPill('Restarting…');
+  startRound();
+});
 
-      if (ballComingDown && withinPaddleX && touchesPaddleTop) {
-        ball.y = paddleY - ballRadius - 0.5;
-        ball.vy = -Math.abs(ball.vy);
+btnPlayAgain.addEventListener('click', () => {
+  overlayResult.classList.remove('show');
+  setPill('Choose character');
+  showScreen('chars');
+});
 
-        const hitPos = (ball.x - (paddleX + paddleWidth/2)) / (paddleWidth/2);
-        const sp = Math.hypot(ball.vx, ball.vy);
-        const maxAngle = Math.PI * 0.35;
-        const angle = hitPos * maxAngle;
-        ball.vx = sp * Math.sin(angle);
-        ball.vy = -sp * Math.cos(angle);
-      }
+playArea.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  doSlap();
+}, { passive:false });
 
-      // Bottom (lose life)
-      if (ball.y > canvas.height + ballRadius) {
-        lives--;
-        if (lives <= 0) {
-          gameOver = true;
-          running = false;
-          showOverlay(
-            "GAME OVER 😵",
-            `Better Luck Next Time!<br/>Final Score: <span class="highlight">${score}</span><br/>Tap <span class="kbd">Play Again</span> to restart.`,
-            "Play Again"
-          );
-          return;
-        } else {
-          paused = true;
-          resetAfterLifeLost();
-          showOverlay(
-            "Life Lost!",
-            `Lives left: <span class="highlight">${lives}</span><br/>Tap <span class="kbd">Resume</span> to continue.`,
-            "Resume"
-          );
-        }
-      }
+btnLeaderboard1.addEventListener('click', () => openLB('today'));
+btnLeaderboard2.addEventListener('click', () => openLB('today'));
+btnLeaderboard3.addEventListener('click', () => openLB('today'));
 
-      handleBrickCollisions();
-    }
+btnCloseLB.addEventListener('click', () => overlayLB.classList.remove('show'));
+overlayLB.addEventListener('click', (e) => { if (e.target === overlayLB) overlayLB.classList.remove('show'); });
 
-    function render() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+tabToday.addEventListener('click', () => {
+  tabToday.classList.add('active'); tabAll.classList.remove('active');
+  renderLB('today');
+});
+tabAll.addEventListener('click', () => {
+  tabAll.classList.add('active'); tabToday.classList.remove('active');
+  renderLB('all');
+});
 
-      // ✅ background first
-      drawBackground();
+/* -------- Init -------- */
+setPill('Ready');
+renderChars();
+resetRound();
 
-      // game objects
-      drawBricks();
-      drawBall();
-      drawPaddle();
-      drawHUD();
-    }
-
-    function loop(t) {
-      if (!running) return;
-      const dt = Math.min(0.033, (t - lastTime) / 1000);
-      lastTime = t;
-
-      if (!paused && !gameOver) update(dt);
-      render();
-
-      requestAnimationFrame(loop);
-    }
-
-    // ---- Init ----
-    setupLevel(levelIndex);
-    showOverlay(
-      "Breakout - Raha AI Edition",
-      `Mobile friendly ✅<br/>
-       Move: <span class="kbd">Touch & Drag</span><br/>
-       Round 1 is easy 😅<br/>
-       Bonus lives depend on time ⏱️`,
-      "Play"
-    );
-  </script>
+/* -------- Backend note (later) --------
+  এখন localStorage দিয়ে leaderboard হচ্ছে।
+  যদি তুমি “আজকের/সর্বকালের” সত্যিকারের সার্ভার leaderboard চাও, তাহলে:
+  - Firebase Firestore / Supabase / Node+MongoDB দিয়ে API বানাবে
+  - endRound() এ localStorage না করে POST করবে:
+      await fetch('/api/score', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(entry)});
+  - leaderboard open করলে GET করবে:
+      const res = await fetch('/api/leaderboard?mode=today'); list = await res.json();
+--------------------------------------- */
+</script>
 </body>
   </html>
