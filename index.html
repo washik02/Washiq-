@@ -19,7 +19,7 @@
     }
     canvas{
       background:#1e1e1e;display:block;max-width:100%;height:auto;
-      touch-action:none; /* IMPORTANT: no scroll/zoom while playing */
+      touch-action:none;
     }
     .footer{margin-top:12px;font-size:14px;color:#888;font-weight:700}
     .highlight{color:#00ADEF}
@@ -80,6 +80,14 @@
     const overlayText  = document.getElementById("overlayText");
     const playBtn = document.getElementById("playBtn");
 
+    // ✅ Background image
+    const bgImage = new Image();
+    bgImage.crossOrigin = "anonymous"; // best-effort (if server allows CORS)
+    bgImage.src = "https://files.catbox.moe/jyvrmk.jpg";
+    let bgReady = false;
+    bgImage.onload = () => { bgReady = true; };
+    bgImage.onerror = () => { bgReady = false; };
+
     // ---- Game constants ----
     const paddleHeight = 10;
     const paddleWidth  = 80;
@@ -121,44 +129,12 @@
     let bricks = [];
 
     // ---- Time-based bonus rules (4 time-cases each round) ----
-    // You can edit these numbers anytime.
-    // Example: Round 1 -> <=18s +2 life, <=28s +1, <=40s +0, else +0
     const timeBonusRules = [
-      // Round 1
-      [
-        { maxSec: 18, bonus: 2 },
-        { maxSec: 28, bonus: 1 },
-        { maxSec: 40, bonus: 0 },
-        { maxSec: Infinity, bonus: 0 },
-      ],
-      // Round 2
-      [
-        { maxSec: 22, bonus: 2 },
-        { maxSec: 34, bonus: 1 },
-        { maxSec: 48, bonus: 0 },
-        { maxSec: Infinity, bonus: 0 },
-      ],
-      // Round 3
-      [
-        { maxSec: 26, bonus: 2 },
-        { maxSec: 40, bonus: 1 },
-        { maxSec: 55, bonus: 0 },
-        { maxSec: Infinity, bonus: 0 },
-      ],
-      // Round 4
-      [
-        { maxSec: 30, bonus: 2 },
-        { maxSec: 46, bonus: 1 },
-        { maxSec: 62, bonus: 0 },
-        { maxSec: Infinity, bonus: 0 },
-      ],
-      // Round 5
-      [
-        { maxSec: 34, bonus: 2 },
-        { maxSec: 52, bonus: 1 },
-        { maxSec: 70, bonus: 0 },
-        { maxSec: Infinity, bonus: 0 },
-      ],
+      [ { maxSec: 18, bonus: 2 }, { maxSec: 28, bonus: 1 }, { maxSec: 40, bonus: 0 }, { maxSec: Infinity, bonus: 0 } ],
+      [ { maxSec: 22, bonus: 2 }, { maxSec: 34, bonus: 1 }, { maxSec: 48, bonus: 0 }, { maxSec: Infinity, bonus: 0 } ],
+      [ { maxSec: 26, bonus: 2 }, { maxSec: 40, bonus: 1 }, { maxSec: 55, bonus: 0 }, { maxSec: Infinity, bonus: 0 } ],
+      [ { maxSec: 30, bonus: 2 }, { maxSec: 46, bonus: 1 }, { maxSec: 62, bonus: 0 }, { maxSec: Infinity, bonus: 0 } ],
+      [ { maxSec: 34, bonus: 2 }, { maxSec: 52, bonus: 1 }, { maxSec: 70, bonus: 0 }, { maxSec: Infinity, bonus: 0 } ],
     ];
 
     // ---- Helpers ----
@@ -200,7 +176,6 @@
       ball.vx = dirX * L.speed;
       ball.vy = -Math.abs(L.speed);
 
-      // ✅ Round start time reset
       roundStartTime = performance.now();
     }
 
@@ -215,9 +190,7 @@
 
     function getTimeBonusForLevel(levelIdx, elapsedSec) {
       const rules = timeBonusRules[levelIdx] || timeBonusRules[timeBonusRules.length - 1];
-      for (const r of rules) {
-        if (elapsedSec <= r.maxSec) return r.bonus;
-      }
+      for (const r of rules) if (elapsedSec <= r.maxSec) return r.bonus;
       return 0;
     }
 
@@ -227,8 +200,6 @@
 
       if (levelIndex < levels.length - 1) {
         levelIndex++;
-
-        // ✅ time-based bonus life
         lives = Math.min(MAX_LIVES, lives + bonus);
 
         setupLevel(levelIndex);
@@ -262,9 +233,6 @@
       const sp = levels[levelIndex].speed;
       ball.vx = (Math.random() < 0.5 ? -1 : 1) * sp;
       ball.vy = -sp;
-
-      // Optional: keep timer running (don’t reset roundStartTime)
-      // If you want: losing a life resets timer -> roundStartTime = performance.now();
     }
 
     // ---- Input: Keyboard ----
@@ -284,26 +252,18 @@
       if (e.key === "ArrowLeft"  || e.key === "Left")  leftPressed  = false;
     });
 
-    // ---- Input: Pointer events (touch + mouse unified) ----
+    // ---- Input: Pointer events ----
     canvas.addEventListener("pointerdown", (e) => {
       canvas.setPointerCapture(e.pointerId);
       pointerActive = true;
       pointerX = normalizeToCanvasX(e.clientX);
     });
-
     canvas.addEventListener("pointermove", (e) => {
       if (!pointerActive) return;
       pointerX = normalizeToCanvasX(e.clientX);
     });
-
-    canvas.addEventListener("pointerup", () => {
-      pointerActive = false;
-      // keep pointerX (last position feel)
-    });
-
-    canvas.addEventListener("pointercancel", () => {
-      pointerActive = false;
-    });
+    canvas.addEventListener("pointerup", () => { pointerActive = false; });
+    canvas.addEventListener("pointercancel", () => { pointerActive = false; });
 
     // ---- Overlay controls ----
     playBtn.addEventListener("click", () => {
@@ -327,12 +287,42 @@
       playBtn.click();
     });
 
-    // ---- Draw ----
+    // ---- Draw background (cover) ----
+    function drawBackground() {
+      // Fallback background if image not ready
+      ctx.fillStyle = "#141414";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (!bgReady || !bgImage.naturalWidth) return;
+
+      const imgRatio = bgImage.naturalWidth / bgImage.naturalHeight;
+      const canvasRatio = canvas.width / canvas.height;
+
+      let drawW, drawH, offX, offY;
+      if (canvasRatio > imgRatio) {
+        drawW = canvas.width;
+        drawH = canvas.width / imgRatio;
+        offX = 0;
+        offY = (canvas.height - drawH) / 2;
+      } else {
+        drawH = canvas.height;
+        drawW = canvas.height * imgRatio;
+        offY = 0;
+        offX = (canvas.width - drawW) / 2;
+      }
+
+      ctx.drawImage(bgImage, offX, offY, drawW, drawH);
+
+      // Dark overlay so game objects stay visible
+      ctx.fillStyle = "rgba(0,0,0,0.35)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // ---- HUD ----
     function drawHUD() {
       ctx.font = "14px Arial";
       ctx.fillStyle = "#ffffff";
 
-      // Timer (live)
       const elapsedSec = (performance.now() - roundStartTime) / 1000;
       const timeText = `Time: ${elapsedSec.toFixed(1)}s`;
 
@@ -340,9 +330,8 @@
       ctx.fillText(`Lives: ${lives}`, canvas.width - 70, 18);
       ctx.fillText(`Round: ${levelIndex + 1}/${levels.length}`, canvas.width/2 - 50, 18);
 
-      // Put timer under center line for readability
       ctx.font = "12px Arial";
-      ctx.fillStyle = "#cfcfcf";
+      ctx.fillStyle = "#e0e0e0";
       ctx.fillText(timeText, canvas.width/2 - 38, 34);
     }
 
@@ -385,7 +374,6 @@
       }
     }
 
-    // ---- Brick collisions ----
     function handleBrickCollisions() {
       const L = levels[levelIndex];
       for (let c = 0; c < L.cols; c++) {
@@ -405,8 +393,7 @@
             if (Math.abs(diffX) > Math.abs(diffY)) ball.vx *= -1;
             else ball.vy *= -1;
 
-            const total = L.rows * L.cols;
-            if (scoreForThisLevel() >= total) nextLevelOrWin();
+            if (scoreForThisLevel() >= (L.rows * L.cols)) nextLevelOrWin();
             return;
           }
         }
@@ -415,8 +402,7 @@
 
     // ---- Update ----
     function update(dt) {
-      // Paddle: pointer has priority, then keyboard
-      const paddleSpeed = 420; // px/sec
+      const paddleSpeed = 420;
 
       if (pointerX !== null) {
         const target = pointerX - paddleWidth / 2;
@@ -436,12 +422,11 @@
       if (ball.x > canvas.width - ballRadius) { ball.x = canvas.width - ballRadius; ball.vx *= -1; }
       if (ball.y < ballRadius) { ball.y = ballRadius; ball.vy *= -1; }
 
-      // ---- Paddle collision FIX (no early bounce) ----
+      // ✅ Paddle collision FIX (no early bounce)
       const paddleY = canvas.height - paddleHeight;
 
       const ballComingDown = ball.vy > 0;
       const withinPaddleX = ball.x >= paddleX - ballRadius && ball.x <= paddleX + paddleWidth + ballRadius;
-
       const touchesPaddleTop =
         (ball.y + ballRadius) >= paddleY &&
         (ball.y + ballRadius) <= (paddleY + paddleHeight + 2);
@@ -486,6 +471,11 @@
 
     function render() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // ✅ background first
+      drawBackground();
+
+      // game objects
       drawBricks();
       drawBall();
       drawPaddle();
@@ -515,4 +505,4 @@
     );
   </script>
 </body>
-                                                                         </html>
+  </html>
