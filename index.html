@@ -2,77 +2,128 @@
 <html lang="bn">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slap Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Slap Game - Fullscreen</title>
 
   <style>
     *{box-sizing:border-box}
+    html,body{height:100%; margin:0}
     body{
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      background:#0f0f12;
       font-family:system-ui,Segoe UI,sans-serif;
       color:#fff;
       -webkit-user-select:none;
       user-select:none;
       -webkit-tap-highlight-color:transparent;
+      overflow:hidden;
+      background:#000;
     }
 
+    /* Fullscreen background video */
+    .bgVideo{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      z-index:-2;
+      filter:brightness(.55) saturate(1.1);
+    }
+
+    /* Dark overlay for readability */
+    .bgTint{
+      position:fixed;
+      inset:0;
+      background:radial-gradient(900px 480px at 50% 20%, rgba(0,173,239,.18), transparent 60%),
+                 rgba(0,0,0,.45);
+      z-index:-1;
+    }
+
+    /* App container full screen */
     .app{
-      width:min(420px,94vw);
-      background:#17171c;
-      border-radius:18px;
-      padding:16px;
-      box-shadow:0 20px 50px rgba(0,0,0,.5);
+      height:100%;
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      padding:14px;
+      padding-top:calc(14px + env(safe-area-inset-top));
+      padding-bottom:calc(14px + env(safe-area-inset-bottom));
     }
 
-    h1{
-      margin:0 0 10px;
-      text-align:center;
-      font-size:20px;
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:16px;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(6px);
+    }
+
+    .brand{font-weight:900; letter-spacing:.2px}
+    .brand span{color:#00ADEF}
+    .pill{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.25);
+      color:rgba(255,255,255,.85);
     }
 
     .hud{
-      display:flex;
-      justify-content:space-between;
-      margin-bottom:12px;
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
     }
-
     .box{
-      background:#0c0c0f;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
       padding:10px;
-      border-radius:12px;
-      width:32%;
       text-align:center;
+      backdrop-filter: blur(6px);
     }
-
-    .box small{color:#aaa;font-size:12px}
+    .box small{color:rgba(255,255,255,.72); font-size:12px}
     .box b{font-size:18px}
 
-    .playArea{
-      margin-top:10px;
-      height:340px;
-      border-radius:18px;
-      background:#111;
+    .playWrap{
+      flex:1;
       display:flex;
-      justify-content:center;
       align-items:center;
+      justify-content:center;
+      padding:12px 0;
+    }
+
+    .playArea{
+      width:min(520px, 96vw);
+      height:min(560px, 66vh);
+      border-radius:22px;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(6px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
       position:relative;
       overflow:hidden;
       touch-action:none;
     }
 
     .target{
-      width:220px;
-      height:220px;
+      width:min(320px, 78vw);
+      height:min(320px, 78vw);
+      max-width:360px;
+      max-height:360px;
       border-radius:28px;
       overflow:hidden;
-      box-shadow:0 20px 60px rgba(0,0,0,.6);
+      box-shadow:0 24px 70px rgba(0,0,0,.60);
+      border:1px solid rgba(255,255,255,.12);
+      transform:translateZ(0);
+      background:rgba(0,0,0,.2);
     }
-
     .target img{
       width:100%;
       height:100%;
@@ -80,18 +131,27 @@
       display:block;
     }
 
+    .hint{
+      position:absolute;
+      bottom:12px;
+      left:50%;
+      transform:translateX(-50%);
+      font-size:13px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.10);
+      color:rgba(255,255,255,.85);
+    }
+
     .flash{
       position:absolute;
       inset:0;
-      background:rgba(255,0,0,.25);
+      background:rgba(255,0,0,.22);
       opacity:0;
       pointer-events:none;
     }
-
-    .shake{
-      animation:shake .18s linear;
-    }
-
+    .shake{animation:shake .18s linear}
     @keyframes shake{
       0%{transform:translate(0)}
       25%{transform:translate(4px,-3px)}
@@ -100,85 +160,122 @@
       100%{transform:translate(0)}
     }
 
-    button{
-      width:100%;
+    .controls{
+      display:flex;
+      gap:10px;
       margin-top:12px;
-      padding:12px;
-      border:none;
-      border-radius:14px;
-      background:#00ADEF;
-      font-weight:800;
-      cursor:pointer;
     }
-
+    button{
+      flex:1;
+      padding:12px 14px;
+      border:none;
+      border-radius:16px;
+      background:#00ADEF;
+      color:#051018;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 10px 26px rgba(0,173,239,.18);
+    }
+    .secondary{
+      background:rgba(255,255,255,.10);
+      color:#fff;
+      box-shadow:none;
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(6px);
+    }
     button:active{transform:translateY(1px)}
 
+    /* overlays */
     .overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.6);
-      display:none;
-      justify-content:center;
-      align-items:center;
+      position:fixed; inset:0;
+      display:none; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.55);
+      padding:14px;
+      backdrop-filter: blur(2px);
     }
-
     .overlay.show{display:flex}
-
-    .result{
-      background:#17171c;
-      padding:20px;
+    .modal{
+      width:min(420px, 94vw);
+      background:rgba(0,0,0,.45);
+      border:1px solid rgba(255,255,255,.12);
       border-radius:18px;
+      padding:18px;
       text-align:center;
-      width:min(360px,90vw);
+      backdrop-filter: blur(8px);
+      box-shadow:0 24px 70px rgba(0,0,0,.65);
     }
+    .modal h2{margin:0 0 10px}
+    .modal p{margin:6px 0 12px; color:rgba(255,255,255,.82)}
+    .tiny{font-size:12px; color:rgba(255,255,255,.65)}
   </style>
 </head>
 <body>
 
-<div class="app">
-  <h1>🔥 Slap Game 🔥</h1>
+  <!-- Fullscreen Background Video (also used as audio source) -->
+  <video
+    id="bgVideo"
+    class="bgVideo"
+    src="https://files.catbox.moe/r77wx8.mp4"
+    loop
+    playsinline
+    preload="auto"
+  ></video>
+  <div class="bgTint"></div>
 
-  <div class="hud">
-    <div class="box">
-      <small>সময়</small><br>
-      <b id="time">01:00</b>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">Slap <span>Game</span></div>
+      <div class="pill" id="statePill">Ready</div>
     </div>
-    <div class="box">
-      <small>থাপ্পড়</small><br>
-      <b id="score">0</b>
+
+    <div class="hud">
+      <div class="box"><small>সময়</small><br><b id="time">01:00</b></div>
+      <div class="box"><small>থাপ্পড়</small><br><b id="score">0</b></div>
+      <div class="box"><small>সেরা</small><br><b id="best">0</b></div>
     </div>
-    <div class="box">
-      <small>সেরা</small><br>
-      <b id="best">0</b>
+
+    <div class="playWrap">
+      <div class="playArea" id="playArea">
+        <div class="flash" id="flash"></div>
+        <div class="target" id="target">
+          <img id="targetImg" alt="character">
+        </div>
+        <div class="hint">ট্যাপ করুন (থাপ্পড়) 👆</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="startBtn">▶ Start / Restart</button>
+      <button id="muteBtn" class="secondary">🔊 Sound On</button>
+    </div>
+
+    <div class="tiny" style="margin-top:10px">
+      Note: মোবাইলে অডিও শুরু করতে Start চাপা লাগবে (browser policy).
     </div>
   </div>
 
-  <div class="playArea" id="playArea">
-    <div class="flash" id="flash"></div>
-    <div class="target" id="target">
-      <img id="targetImg">
+  <!-- Result overlay -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2>⏰ সময় শেষ!</h2>
+      <p>তোমার স্কোর: <b id="finalScore">0</b></p>
+      <button id="playAgainBtn">আবার খেলুন</button>
+      <div class="tiny" style="margin-top:10px">Powered by Raha AI</div>
     </div>
   </div>
-
-  <button id="restart">▶ শুরু / আবার খেলুন</button>
-</div>
-
-<div class="overlay" id="overlay">
-  <div class="result">
-    <h2>⏰ সময় শেষ!</h2>
-    <p>তোমার স্কোর: <b id="finalScore">0</b></p>
-    <button onclick="location.reload()">আবার খেলুন</button>
-  </div>
-</div>
 
 <script>
-  const IDLE_IMG = "https://files.catbox.moe/n5tdgb.jpg";
-  const SLAP_IMG = "https://files.catbox.moe/jdabf7.jpg";
+  // Character images
+  const IDLE_IMG = "https://files.catbox.moe/n5tdgb.jpg"; // আগের ছবি
+  const SLAP_IMG = "https://files.catbox.moe/jdabf7.jpg"; // থাপ্পর খাওয়ার পর
 
   const imgIdle = new Image();
   const imgSlap = new Image();
   imgIdle.src = IDLE_IMG;
   imgSlap.src = SLAP_IMG;
+
+  // Background video (audio source)
+  const bgVideo = document.getElementById("bgVideo");
 
   const target = document.getElementById("target");
   const targetImg = document.getElementById("targetImg");
@@ -189,47 +286,76 @@
   const bestEl = document.getElementById("best");
   const overlay = document.getElementById("overlay");
   const finalScore = document.getElementById("finalScore");
-  const restartBtn = document.getElementById("restart");
   const playArea = document.getElementById("playArea");
+
+  const startBtn = document.getElementById("startBtn");
+  const muteBtn = document.getElementById("muteBtn");
+  const playAgainBtn = document.getElementById("playAgainBtn");
+  const statePill = document.getElementById("statePill");
 
   let score = 0;
   let time = 60;
   let running = false;
   let timer = null;
   let slapTimeout = null;
+  let muted = false;
 
   targetImg.src = imgIdle.src;
 
-  bestEl.textContent = localStorage.getItem("bestSlap") || 0;
+  // Best score
+  const bestSaved = Number(localStorage.getItem("bestSlap") || "0");
+  bestEl.textContent = bestSaved;
+
+  function setPill(t){ statePill.textContent = t; }
+
+  function formatTime(sec){
+    const m = Math.floor(sec/60);
+    const s = sec%60;
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+
+  async function ensureAudioPlaying(){
+    // Mobile browsers need user gesture; this is called from Start button click
+    try{
+      bgVideo.muted = muted; // respect mute state
+      bgVideo.volume = muted ? 0 : 1;
+      await bgVideo.play();
+    }catch(e){
+      // If autoplay blocked, user can press start again—no crash
+      console.log("Autoplay blocked:", e);
+    }
+  }
 
   function startGame(){
     score = 0;
     time = 60;
     running = true;
-    scoreEl.textContent = 0;
-    timeEl.textContent = "01:00";
+    scoreEl.textContent = "0";
+    timeEl.textContent = formatTime(time);
     targetImg.src = imgIdle.src;
     overlay.classList.remove("show");
+    setPill("Playing");
 
     clearInterval(timer);
     timer = setInterval(()=>{
       time--;
-      timeEl.textContent = "00:" + String(time).padStart(2,"0");
+      timeEl.textContent = formatTime(Math.max(0,time));
       if(time <= 0){
         endGame();
       }
-    },1000);
+    }, 1000);
   }
 
   function endGame(){
     running = false;
     clearInterval(timer);
+    setPill("Finished");
 
     finalScore.textContent = score;
 
-    const best = Math.max(score, localStorage.getItem("bestSlap") || 0);
-    localStorage.setItem("bestSlap", best);
-    bestEl.textContent = best;
+    const best = Math.max(score, Number(localStorage.getItem("bestSlap") || "0"));
+    localStorage.setItem("bestSlap", String(best));
+    bestEl.textContent = String(best);
 
     overlay.classList.add("show");
   }
@@ -238,29 +364,70 @@
     if(!running) return;
 
     score++;
-    scoreEl.textContent = score;
+    scoreEl.textContent = String(score);
 
-    flash.style.opacity = 1;
-    setTimeout(()=>flash.style.opacity=0,60);
+    // flash
+    flash.style.opacity = "1";
+    setTimeout(()=> flash.style.opacity = "0", 60);
 
+    // shake
     target.classList.remove("shake");
     void target.offsetWidth;
     target.classList.add("shake");
 
+    // image swap: idle -> slap -> idle
     targetImg.src = imgSlap.src;
     clearTimeout(slapTimeout);
     slapTimeout = setTimeout(()=>{
       targetImg.src = imgIdle.src;
-    },130);
+    }, 130);
   }
 
-  playArea.addEventListener("pointerdown", e=>{
+  // Tap area
+  playArea.addEventListener("pointerdown", (e)=>{
     e.preventDefault();
     slap();
-  },{passive:false});
+  }, { passive:false });
 
-  restartBtn.onclick = startGame;
+  // Start / Restart + request full screen
+  startBtn.addEventListener("click", async ()=>{
+    // Fullscreen request (best-effort)
+    try{
+      const el = document.documentElement;
+      if (!document.fullscreenElement && el.requestFullscreen) {
+        await el.requestFullscreen();
+      }
+    }catch(e){ /* ignore */ }
+
+    await ensureAudioPlaying();
+    startGame();
+  });
+
+  playAgainBtn.addEventListener("click", async ()=>{
+    overlay.classList.remove("show");
+    await ensureAudioPlaying();
+    startGame();
+  });
+
+  // Mute toggle
+  muteBtn.addEventListener("click", async ()=>{
+    muted = !muted;
+    bgVideo.muted = muted;
+    bgVideo.volume = muted ? 0 : 1;
+    muteBtn.textContent = muted ? "🔇 Sound Off" : "🔊 Sound On";
+
+    // if user turns sound on, try playing again
+    if(!muted){
+      await ensureAudioPlaying();
+    }
+  });
+
+  // Keep video playing when tab returns
+  document.addEventListener("visibilitychange", async ()=>{
+    if (!document.hidden && running && !muted){
+      await ensureAudioPlaying();
+    }
+  });
 </script>
-
 </body>
-      </html>
+  </html>
