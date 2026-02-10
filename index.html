@@ -6,129 +6,116 @@
   <title>Slap Game</title>
   <style>
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
+    html,body{height:100%; margin:0}
     body{
-      font-family:system-ui,Segoe UI,sans-serif;
       overflow:hidden;
+      font-family:system-ui,Segoe UI,sans-serif;
       -webkit-user-select:none; user-select:none;
       -webkit-tap-highlight-color:transparent;
       background:#000;
     }
 
-    /* Background video cover (optional visual) */
-    .bgVideo{
+    /* Fullscreen background audio (mp4) - hidden video */
+    video#bgAudio{
+      position:fixed;
+      width:1px;height:1px;opacity:0;pointer-events:none;
+    }
+
+    /* Fullscreen poster image area (edge-to-edge) */
+    .poster{
       position:fixed; inset:0;
+      background:#000;
+    }
+
+    /* Character image fills the screen */
+    .poster img{
+      position:absolute; inset:0;
       width:100%; height:100%;
-      object-fit:cover;
-      z-index:-3;
-      filter:brightness(.85) saturate(1.1);
+      object-fit:cover;        /* full screen cover */
+      object-position:center;  /* center crop */
+      transform:translateZ(0);
     }
-    /* Pop-art overlay feel (so it looks like lagarelaga) */
-    .popOverlay{
-      position:fixed; inset:0; z-index:-2;
-      background:
-        radial-gradient(900px 520px at 50% 10%, rgba(255,255,255,.10), transparent 60%),
-        radial-gradient(800px 420px at 20% 40%, rgba(255,255,255,.08), transparent 60%),
-        linear-gradient(135deg, rgba(255,0,128,.20), rgba(255,196,0,.18));
-      mix-blend-mode: screen;
-      pointer-events:none;
-    }
-    /* Dark readability tint */
+
+    /* readability tint so text is visible */
     .tint{
-      position:fixed; inset:0; z-index:-1;
-      background:rgba(0,0,0,.18);
+      position:absolute; inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.05) 35%, rgba(0,0,0,.55));
       pointer-events:none;
     }
 
-    /* Layout: header / main / footer bar */
-    .wrap{
-      height:100%;
-      display:grid;
-      grid-template-rows:auto 1fr auto;
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-
-    /* HUD */
-    .hudRow{
-      padding:10px 12px 6px;
+    /* HUD overlay top */
+    .hudTop{
+      position:absolute;
+      top:calc(10px + env(safe-area-inset-top));
+      left:12px;
+      right:12px;
       display:flex;
       gap:10px;
       justify-content:space-between;
       align-items:center;
+      pointer-events:none; /* allow taps through */
     }
+
     .hudBox{
       flex:1;
       background:rgba(255,255,255,.92);
-      color:#111;
       border-radius:14px;
       padding:10px 10px;
       text-align:center;
       box-shadow:0 10px 30px rgba(0,0,0,.25);
+      color:#111;
     }
-    .hudBox .k{font-size:12px; opacity:.75; font-weight:800}
-    .hudBox .v{font-size:22px; font-weight:1000; margin-top:2px}
+    .hudBox .k{font-size:12px;font-weight:900;opacity:.75}
+    .hudBox .v{font-size:22px;font-weight:1000;margin-top:2px}
     .hudBox.time .v{color:#ff5f6d}
     .hudBox.score .v{color:#e0a100}
     .hudBox.best .v{color:#23b26b}
 
-    .playerPill{
-      margin:0 12px 10px;
-      background:rgba(255,255,255,.92);
-      border-radius:14px;
-      padding:10px 12px;
-      text-align:center;
-      font-weight:900;
-      color:#111;
-      box-shadow:0 10px 30px rgba(0,0,0,.22);
-    }
-    .playerPill span{color:#ff2f8d}
-
-    /* Main character area */
-    .stage{
-      position:relative;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:8px 8px 0;
-    }
-    .character{
-      width:min(86vw, 520px);
-      aspect-ratio: 3 / 4;
-      border-radius:22px;
-      overflow:hidden;
-      box-shadow:0 26px 80px rgba(0,0,0,.45);
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.06);
-      transform:translateZ(0);
-      touch-action:none;
-    }
-    .character img{
-      width:100%; height:100%;
-      object-fit:cover;
-      display:block;
-    }
-
-    .flash{
+    .playerTag{
       position:absolute;
-      inset:0;
-      background:rgba(255,0,0,.20);
+      top:calc(86px + env(safe-area-inset-top));
+      left:50%;
+      transform:translateX(-50%);
+      background:rgba(255,255,255,.92);
+      color:#111;
+      padding:10px 14px;
+      border-radius:14px;
+      font-weight:1000;
+      box-shadow:0 10px 30px rgba(0,0,0,.22);
+      pointer-events:none;
+      white-space:nowrap;
+    }
+    .playerTag span{color:#ff2f8d}
+
+    /* Title pop-up on slap */
+    .titlePop{
+      position:absolute;
+      left:50%;
+      top:calc(140px + env(safe-area-inset-top));
+      transform:translate(-50%, 0);
+      background:rgba(0,0,0,.62);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:1000;
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 14px 40px rgba(0,0,0,.35);
       opacity:0;
       pointer-events:none;
-      transition:opacity .06s linear;
+      transition:opacity .12s ease, transform .12s ease;
+      text-align:center;
+      max-width:92vw;
     }
-    .shake{ animation:shake .16s linear 1; }
-    @keyframes shake{
-      0%{transform:translate(0)}
-      25%{transform:translate(4px,-3px)}
-      50%{transform:translate(-4px,3px)}
-      75%{transform:translate(3px,3px)}
-      100%{transform:translate(0)}
+    .titlePop.show{
+      opacity:1;
+      transform:translate(-50%, -6px);
     }
 
-    /* Bottom control bar like lagarelaga */
+    /* Bottom buttons overlay */
     .bottomBar{
-      padding:10px 12px;
+      position:absolute;
+      left:12px; right:12px;
+      bottom:calc(12px + env(safe-area-inset-bottom));
       display:flex;
       gap:10px;
       justify-content:center;
@@ -140,22 +127,49 @@
       border:none;
       border-radius:14px;
       font-weight:1000;
-      cursor:pointer;
       box-shadow:0 10px 24px rgba(0,0,0,.25);
-      color:#111;
-      background:rgba(255,255,255,.92);
+      cursor:pointer;
     }
-    .btn.primary{
-      background:#ff2f8d;
-      color:#fff;
-    }
-    .btn.secondary{
-      background:rgba(255,255,255,.92);
-      color:#111;
-    }
+    .btn.start{background:rgba(255,255,255,.92); color:#111}
+    .btn.restart{background:#ff2f8d; color:#fff}
+    .btn.leader{background:rgba(255,255,255,.92); color:#111}
     .btn:active{transform:translateY(1px)}
 
-    /* Overlay result */
+    /* Tap hint */
+    .hint{
+      position:absolute;
+      left:50%;
+      bottom:calc(72px + env(safe-area-inset-bottom));
+      transform:translateX(-50%);
+      background:rgba(0,0,0,.45);
+      color:rgba(255,255,255,.9);
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:900;
+      border:1px solid rgba(255,255,255,.14);
+      pointer-events:none;
+      white-space:nowrap;
+    }
+
+    /* Slap feedback */
+    .flash{
+      position:absolute; inset:0;
+      background:rgba(255,0,0,.18);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .06s linear;
+    }
+
+    .shake{ animation:shake .16s linear 1; }
+    @keyframes shake{
+      0%{transform:translate(0)}
+      25%{transform:translate(4px,-3px)}
+      50%{transform:translate(-4px,3px)}
+      75%{transform:translate(3px,3px)}
+      100%{transform:translate(0)}
+    }
+
+    /* Result overlay */
     .overlay{
       position:fixed; inset:0;
       display:none;
@@ -175,96 +189,74 @@
       box-shadow:0 26px 80px rgba(0,0,0,.45);
     }
     .modal h2{margin:0 0 8px}
-    .modal p{margin:8px 0 12px; font-weight:800}
-    .modal .big{font-size:34px; font-weight:1000; color:#ff2f8d}
-    .modal .row{display:flex; gap:10px}
+    .modal .big{font-size:34px;font-weight:1000;color:#ff2f8d}
+    .modal .row{display:flex; gap:10px; margin-top:12px}
     .modal .row button{flex:1}
 
-    /* Tiny sound badge */
-    .soundBadge{
-      position:fixed;
-      right:12px;
-      bottom:calc(76px + env(safe-area-inset-bottom));
-      background:rgba(255,255,255,.92);
-      color:#111;
-      padding:8px 10px;
-      border-radius:999px;
-      font-weight:900;
-      border:none;
-      box-shadow:0 10px 24px rgba(0,0,0,.25);
-    }
+    /* Prevent scroll bounce on mobile */
+    .noScroll{touch-action:none}
   </style>
 </head>
-<body>
 
-  <!-- Background video used as background + audio -->
-  <video
-    id="bgVideo"
-    class="bgVideo"
-    src="https://files.catbox.moe/r77wx8.mp4"
-    loop
-    playsinline
-    preload="auto"
-  ></video>
-  <div class="popOverlay"></div>
-  <div class="tint"></div>
+<body class="noScroll">
 
-  <div class="wrap">
+  <!-- Hidden video only for background audio -->
+  <video id="bgAudio" src="https://files.catbox.moe/r77wx8.mp4" loop playsinline preload="auto"></video>
+
+  <div class="poster" id="poster">
+    <!-- character image -->
+    <img id="charImg" alt="character" />
+    <div class="tint"></div>
+    <div class="flash" id="flash"></div>
+
     <!-- HUD -->
-    <div>
-      <div class="hudRow">
-        <div class="hudBox time">
-          <div class="k">সময়</div>
-          <div class="v" id="time">01:00</div>
-        </div>
-        <div class="hudBox score">
-          <div class="k">থাপ্পড়</div>
-          <div class="v" id="score">0</div>
-        </div>
-        <div class="hudBox best">
-          <div class="k">সেরা</div>
-          <div class="v" id="best">0</div>
-        </div>
+    <div class="hudTop">
+      <div class="hudBox time">
+        <div class="k">সময়</div>
+        <div class="v" id="time">01:00</div>
       </div>
-      <div class="playerPill">খেলোয়াড়: <span id="playerName">Washiq</span></div>
-    </div>
-
-    <!-- Main stage -->
-    <div class="stage">
-      <div class="flash" id="flash"></div>
-      <div class="character" id="tapArea" aria-label="Tap area">
-        <img id="charImg" alt="character" />
+      <div class="hudBox score">
+        <div class="k">থাপ্পড়</div>
+        <div class="v" id="score">0</div>
+      </div>
+      <div class="hudBox best">
+        <div class="k">সেরা</div>
+        <div class="v" id="best">0</div>
       </div>
     </div>
 
-    <!-- Bottom bar -->
+    <div class="playerTag">খেলোয়াড়: <span id="playerName">Washiq</span></div>
+
+    <!-- Title pop -->
+    <div class="titlePop" id="titlePop">মাদক সম্রাট আব্বাস</div>
+
+    <div class="hint">ট্যাপ করে থাপ্পড় দিন 👆</div>
+
+    <!-- Buttons -->
     <div class="bottomBar">
-      <button class="btn secondary" id="btnStart">▶ শুরু</button>
-      <button class="btn primary" id="btnRestart">↺ রিস্টার্ট</button>
-      <button class="btn secondary" id="btnLeader">🏆 লিডারবোর্ড</button>
+      <button class="btn start" id="btnStart">▶ শুরু</button>
+      <button class="btn restart" id="btnRestart">↺ রিস্টার্ট</button>
+      <button class="btn leader" id="btnLeader">🏆 লিডারবোর্ড</button>
     </div>
   </div>
 
-  <!-- Sound toggle -->
-  <button class="soundBadge" id="btnSound">🔊 Sound On</button>
-
-  <!-- Result overlay -->
+  <!-- Result -->
   <div class="overlay" id="overlay">
     <div class="modal">
       <h2>⏰ সময় শেষ!</h2>
       <div class="big" id="finalScore">0</div>
-      <p>Best: <span id="finalBest">0</span></p>
+      <div style="font-weight:900">Best: <span id="finalBest">0</span></div>
       <div class="row">
-        <button class="btn primary" id="btnPlayAgain">আবার খেলুন</button>
-        <button class="btn secondary" id="btnClose">বন্ধ</button>
+        <button class="btn restart" id="btnPlayAgain">আবার খেলুন</button>
+        <button class="btn start" id="btnClose">বন্ধ</button>
       </div>
     </div>
   </div>
 
 <script>
-  // Images
-  const IDLE_IMG = "https://files.catbox.moe/n5tdgb.jpg";
-  const SLAP_IMG = "https://files.catbox.moe/jdabf7.jpg";
+  // Character images
+  const IDLE_IMG = "https://files.catbox.moe/n5tdgb.jpg"; // থাপ্পর করার আগের
+  const SLAP_IMG = "https://files.catbox.moe/jdabf7.jpg"; // থাপ্পর খাওয়ার পর
 
   const imgIdle = new Image();
   const imgSlap = new Image();
@@ -272,20 +264,22 @@
   imgSlap.src = SLAP_IMG;
 
   // Elements
-  const bgVideo = document.getElementById("bgVideo");
+  const bgAudio = document.getElementById("bgAudio");
+
+  const poster = document.getElementById("poster");
+  const charImg = document.getElementById("charImg");
+  const flash = document.getElementById("flash");
+
   const timeEl = document.getElementById("time");
   const scoreEl = document.getElementById("score");
   const bestEl = document.getElementById("best");
-  const playerNameEl = document.getElementById("playerName");
 
-  const tapArea = document.getElementById("tapArea");
-  const charImg = document.getElementById("charImg");
-  const flash = document.getElementById("flash");
+  const playerNameEl = document.getElementById("playerName");
+  const titlePop = document.getElementById("titlePop");
 
   const btnStart = document.getElementById("btnStart");
   const btnRestart = document.getElementById("btnRestart");
   const btnLeader = document.getElementById("btnLeader");
-  const btnSound = document.getElementById("btnSound");
 
   const overlay = document.getElementById("overlay");
   const finalScoreEl = document.getElementById("finalScore");
@@ -294,24 +288,31 @@
   const btnClose = document.getElementById("btnClose");
 
   // State
-  let muted = false;
   let running = false;
   let timerId = null;
   let timeLeft = 60;
   let score = 0;
   let slapTimeout = null;
+  let titleTimeout = null;
 
-  // Init
-  charImg.src = imgIdle.src;
-  const savedBest = Number(localStorage.getItem("bestSlap") || "0");
-  bestEl.textContent = savedBest;
-
-  // (Optional) player name from prompt once
-  // You can replace with your form later
-  if (!localStorage.getItem("playerName")){
-    localStorage.setItem("playerName", "Washiq");
-  }
+  // Player name (later you can add form)
+  if (!localStorage.getItem("playerName")) localStorage.setItem("playerName", "Washiq");
   playerNameEl.textContent = localStorage.getItem("playerName") || "Player";
+
+  // Best
+  bestEl.textContent = String(Number(localStorage.getItem("bestSlap") || "0"));
+
+  // Init character image
+  charImg.src = imgIdle.src;
+
+  // Title list (তুমি যেগুলো বলেছো)
+  const titles = [
+    "বোরকা আব্বাস",
+    "আল্লামা মির্জা আব্বাস",
+    "মাদক সম্রাট আব্বাস",
+    "গ্যাংস্টার আব্বাসউদ্দীন",
+    "চাঁদাবাজ আব্বাস"
+  ];
 
   function formatTime(sec){
     const m = Math.floor(sec/60);
@@ -319,32 +320,28 @@
     return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
 
-  async function ensureAudio(){
-    try{
-      bgVideo.muted = muted;
-      bgVideo.volume = muted ? 0 : 1;
-      await bgVideo.play();
-    }catch(e){
-      // autoplay blocked until user interaction (Start button provides interaction)
-      console.log("play blocked", e);
-    }
-  }
-
   async function goFullscreen(){
-    // best-effort fullscreen on user gesture
     try{
       const el = document.documentElement;
-      if (!document.fullscreenElement && el.requestFullscreen) {
-        await el.requestFullscreen();
-      }
+      if (!document.fullscreenElement && el.requestFullscreen) await el.requestFullscreen();
     }catch(e){}
+  }
+
+  async function playAudio(){
+    // must be triggered by user gesture (Start/Restart)
+    try{
+      bgAudio.muted = false;
+      bgAudio.volume = 1;
+      await bgAudio.play();
+    }catch(e){
+      console.log("audio blocked:", e);
+    }
   }
 
   function startGame(){
     running = true;
     score = 0;
     timeLeft = 60;
-
     scoreEl.textContent = "0";
     timeEl.textContent = formatTime(timeLeft);
     charImg.src = imgIdle.src;
@@ -353,10 +350,8 @@
     clearInterval(timerId);
     timerId = setInterval(()=>{
       timeLeft--;
-      timeEl.textContent = formatTime(Math.max(0, timeLeft));
-      if (timeLeft <= 0){
-        endGame();
-      }
+      timeEl.textContent = formatTime(Math.max(0,timeLeft));
+      if (timeLeft <= 0) endGame();
     }, 1000);
   }
 
@@ -373,31 +368,46 @@
     overlay.classList.add("show");
   }
 
+  function showRandomTitle(){
+    // ✅ সময় অনুযায়ী variation:
+    // শেষ 15 সেকেন্ডে titles আরও aggressive/random দ্রুত দেখাবে
+    const pick = titles[Math.floor(Math.random() * titles.length)];
+    titlePop.textContent = pick;
+
+    titlePop.classList.add("show");
+    clearTimeout(titleTimeout);
+    titleTimeout = setTimeout(()=> titlePop.classList.remove("show"), 650);
+  }
+
   function feedback(){
     flash.style.opacity = "1";
     setTimeout(()=> flash.style.opacity = "0", 60);
 
-    tapArea.classList.remove("shake");
-    void tapArea.offsetWidth;
-    tapArea.classList.add("shake");
+    poster.classList.remove("shake");
+    void poster.offsetWidth;
+    poster.classList.add("shake");
   }
 
   function slap(){
     if (!running) return;
+
     score++;
     scoreEl.textContent = String(score);
 
     feedback();
+    showRandomTitle();
 
+    // image swap idle->slap->idle
     charImg.src = imgSlap.src;
     clearTimeout(slapTimeout);
-    slapTimeout = setTimeout(()=>{
-      charImg.src = imgIdle.src;
-    }, 130);
+    slapTimeout = setTimeout(()=>{ charImg.src = imgIdle.src; }, 130);
   }
 
-  // Tap control
-  tapArea.addEventListener("pointerdown", (e)=>{
+  // Tap anywhere on poster = slap
+  poster.addEventListener("pointerdown", (e)=>{
+    // ignore taps on buttons when not running? (still ok)
+    // but make sure buttons still click: if target is a button, return
+    if (e.target && e.target.tagName === "BUTTON") return;
     e.preventDefault();
     slap();
   }, {passive:false});
@@ -405,45 +415,38 @@
   // Buttons
   btnStart.addEventListener("click", async ()=>{
     await goFullscreen();
-    await ensureAudio();
+    await playAudio();
     startGame();
   });
 
   btnRestart.addEventListener("click", async ()=>{
     await goFullscreen();
-    await ensureAudio();
+    await playAudio();
     startGame();
   });
 
   btnPlayAgain.addEventListener("click", async ()=>{
     overlay.classList.remove("show");
     await goFullscreen();
-    await ensureAudio();
+    await playAudio();
     startGame();
   });
 
   btnClose.addEventListener("click", ()=> overlay.classList.remove("show"));
 
-  btnSound.addEventListener("click", async ()=>{
-    muted = !muted;
-    btnSound.textContent = muted ? "🔇 Sound Off" : "🔊 Sound On";
-    bgVideo.muted = muted;
-    bgVideo.volume = muted ? 0 : 1;
-    if (!muted) await ensureAudio();
-  });
-
-  // Leaderboard placeholder (you can connect backend later)
   btnLeader.addEventListener("click", ()=>{
-    alert("Leaderboard: এখন ডেমোতে শুধু Best (local) আছে। চাইলে আমি Firebase লিডারবোর্ড যোগ করে দেব।");
+    alert("Leaderboard: ডেমোতে এখন Best (local) আছে। চাইলে আমি Firebase leaderboard যোগ করে দেব।");
   });
 
-  // Keep audio alive when returning
+  // keep audio alive when returning
   document.addEventListener("visibilitychange", async ()=>{
-    if (!document.hidden && running && !muted) await ensureAudio();
+    if (!document.hidden && running){
+      try{ await bgAudio.play(); }catch(e){}
+    }
   });
 
-  // Initial time
+  // Initial time text
   timeEl.textContent = formatTime(60);
 </script>
 </body>
-  </html>
+        </html>
