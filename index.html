@@ -6,7 +6,7 @@
   <title>Slap Game</title>
   <style>
     *{box-sizing:border-box}
-    html,body{height:100%; margin:0}
+    html,body{height:100%;margin:0}
     body{
       overflow:hidden;
       font-family:system-ui,Segoe UI,sans-serif;
@@ -15,52 +15,40 @@
       background:#000;
     }
 
-    /* Fullscreen background audio (mp4) - hidden video */
-    video#bgAudio{
-      position:fixed;
-      width:1px;height:1px;opacity:0;pointer-events:none;
-    }
+    /* background audio only */
+    video#bgAudio{position:fixed;width:1px;height:1px;opacity:0;pointer-events:none}
 
-    /* Fullscreen poster image area (edge-to-edge) */
-    .poster{
-      position:fixed; inset:0;
-      background:#000;
-    }
-
-    /* Character image fills the screen */
+    .poster{position:fixed;inset:0;background:#000}
     .poster img{
       position:absolute; inset:0;
       width:100%; height:100%;
-      object-fit:cover;        /* full screen cover */
-      object-position:center;  /* center crop */
-      transform:translateZ(0);
+      object-fit:cover; object-position:center;
     }
-
-    /* readability tint so text is visible */
     .tint{
       position:absolute; inset:0;
       background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.05) 35%, rgba(0,0,0,.55));
       pointer-events:none;
     }
+    .flash{
+      position:absolute; inset:0;
+      background:rgba(255,0,0,.18);
+      opacity:0; pointer-events:none;
+      transition:opacity .06s linear;
+    }
 
-    /* HUD overlay top */
     .hudTop{
       position:absolute;
       top:calc(10px + env(safe-area-inset-top));
-      left:12px;
-      right:12px;
-      display:flex;
-      gap:10px;
-      justify-content:space-between;
-      align-items:center;
-      pointer-events:none; /* allow taps through */
+      left:12px; right:12px;
+      display:flex; gap:10px;
+      justify-content:space-between; align-items:center;
+      pointer-events:none;
     }
-
     .hudBox{
       flex:1;
       background:rgba(255,255,255,.92);
       border-radius:14px;
-      padding:10px 10px;
+      padding:10px;
       text-align:center;
       box-shadow:0 10px 30px rgba(0,0,0,.25);
       color:#111;
@@ -84,10 +72,12 @@
       box-shadow:0 10px 30px rgba(0,0,0,.22);
       pointer-events:none;
       white-space:nowrap;
+      max-width:92vw;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .playerTag span{color:#ff2f8d}
 
-    /* Title pop-up on slap */
     .titlePop{
       position:absolute;
       left:50%;
@@ -106,12 +96,23 @@
       text-align:center;
       max-width:92vw;
     }
-    .titlePop.show{
-      opacity:1;
-      transform:translate(-50%, -6px);
+    .titlePop.show{opacity:1; transform:translate(-50%,-6px)}
+
+    .hint{
+      position:absolute;
+      left:50%;
+      bottom:calc(72px + env(safe-area-inset-bottom));
+      transform:translateX(-50%);
+      background:rgba(0,0,0,.45);
+      color:rgba(255,255,255,.9);
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:900;
+      border:1px solid rgba(255,255,255,.14);
+      pointer-events:none;
+      white-space:nowrap;
     }
 
-    /* Bottom buttons overlay */
     .bottomBar{
       position:absolute;
       left:12px; right:12px;
@@ -135,32 +136,7 @@
     .btn.leader{background:rgba(255,255,255,.92); color:#111}
     .btn:active{transform:translateY(1px)}
 
-    /* Tap hint */
-    .hint{
-      position:absolute;
-      left:50%;
-      bottom:calc(72px + env(safe-area-inset-bottom));
-      transform:translateX(-50%);
-      background:rgba(0,0,0,.45);
-      color:rgba(255,255,255,.9);
-      padding:8px 12px;
-      border-radius:999px;
-      font-weight:900;
-      border:1px solid rgba(255,255,255,.14);
-      pointer-events:none;
-      white-space:nowrap;
-    }
-
-    /* Slap feedback */
-    .flash{
-      position:absolute; inset:0;
-      background:rgba(255,0,0,.18);
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .06s linear;
-    }
-
-    .shake{ animation:shake .16s linear 1; }
+    .shake{animation:shake .16s linear 1}
     @keyframes shake{
       0%{transform:translate(0)}
       25%{transform:translate(4px,-3px)}
@@ -169,70 +145,93 @@
       100%{transform:translate(0)}
     }
 
-    /* Result overlay */
+    /* overlays */
     .overlay{
       position:fixed; inset:0;
-      display:none;
-      align-items:center; justify-content:center;
+      display:none; align-items:center; justify-content:center;
       background:rgba(0,0,0,.55);
       backdrop-filter: blur(2px);
       padding:14px;
     }
     .overlay.show{display:flex}
+
     .modal{
       width:min(420px, 94vw);
       background:rgba(255,255,255,.95);
       color:#111;
       border-radius:18px;
       padding:18px;
-      text-align:center;
       box-shadow:0 26px 80px rgba(0,0,0,.45);
     }
     .modal h2{margin:0 0 8px}
-    .modal .big{font-size:34px;font-weight:1000;color:#ff2f8d}
+    .modal .big{font-size:34px;font-weight:1000;color:#ff2f8d;text-align:center}
     .modal .row{display:flex; gap:10px; margin-top:12px}
     .modal .row button{flex:1}
 
-    /* Prevent scroll bounce on mobile */
-    .noScroll{touch-action:none}
+    /* Name modal */
+    .field{margin-top:10px}
+    .field label{font-size:12px;font-weight:900;opacity:.8}
+    .field input{
+      width:100%;
+      margin-top:6px;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.12);
+      outline:none;
+      font-size:16px;
+    }
+    .field input:focus{border-color:#ff2f8d; box-shadow:0 0 0 3px rgba(255,47,141,.15)}
+
+    /* Leaderboard table */
+    .tabs{display:flex; gap:8px; margin-top:10px}
+    .tab{
+      flex:1;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.10);
+      background:rgba(0,0,0,.04);
+      font-weight:1000;
+      cursor:pointer;
+      text-align:center;
+    }
+    .tab.active{
+      border-color:#ff2f8d;
+      box-shadow:0 0 0 3px rgba(255,47,141,.12);
+      background:#fff;
+    }
+    .tableWrap{
+      margin-top:10px;
+      max-height:52vh;
+      overflow:auto;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.10);
+      background:#fff;
+    }
+    table{width:100%; border-collapse:collapse}
+    th,td{padding:10px 8px; border-bottom:1px solid rgba(0,0,0,.08); font-size:13px}
+    th{opacity:.7; text-align:left}
+    .right{text-align:right}
   </style>
 </head>
 
-<body class="noScroll">
-
-  <!-- Hidden video only for background audio -->
+<body>
   <video id="bgAudio" src="https://files.catbox.moe/r77wx8.mp4" loop playsinline preload="auto"></video>
 
   <div class="poster" id="poster">
-    <!-- character image -->
     <img id="charImg" alt="character" />
     <div class="tint"></div>
     <div class="flash" id="flash"></div>
 
-    <!-- HUD -->
     <div class="hudTop">
-      <div class="hudBox time">
-        <div class="k">সময়</div>
-        <div class="v" id="time">01:00</div>
-      </div>
-      <div class="hudBox score">
-        <div class="k">থাপ্পড়</div>
-        <div class="v" id="score">0</div>
-      </div>
-      <div class="hudBox best">
-        <div class="k">সেরা</div>
-        <div class="v" id="best">0</div>
-      </div>
+      <div class="hudBox time"><div class="k">সময়</div><div class="v" id="time">01:00</div></div>
+      <div class="hudBox score"><div class="k">থাপ্পড়</div><div class="v" id="score">0</div></div>
+      <div class="hudBox best"><div class="k">সেরা</div><div class="v" id="best">0</div></div>
     </div>
 
-    <div class="playerTag">খেলোয়াড়: <span id="playerName">Washiq</span></div>
-
-    <!-- Title pop -->
+    <div class="playerTag">খেলোয়াড়: <span id="playerName">Player</span></div>
     <div class="titlePop" id="titlePop">মাদক সম্রাট আব্বাস</div>
-
     <div class="hint">ট্যাপ করে থাপ্পড় দিন 👆</div>
 
-    <!-- Buttons -->
     <div class="bottomBar">
       <button class="btn start" id="btnStart">▶ শুরু</button>
       <button class="btn restart" id="btnRestart">↺ রিস্টার্ট</button>
@@ -240,40 +239,87 @@
     </div>
   </div>
 
-  <!-- Result -->
-  <div class="overlay" id="overlay">
+  <!-- Name Overlay -->
+  <div class="overlay show" id="nameOverlay">
     <div class="modal">
-      <h2>⏰ সময় শেষ!</h2>
+      <h2 style="text-align:center">খেলোয়াড়ের নাম দিন</h2>
+      <div class="field">
+        <label>নাম *</label>
+        <input id="nameInput" placeholder="আপনার নাম লিখুন" maxlength="24" />
+      </div>
+      <div class="row">
+        <button class="btn restart" id="saveNameBtn">সেভ</button>
+        <button class="btn start" id="skipNameBtn">Skip</button>
+      </div>
+      <div style="margin-top:10px;opacity:.75;font-weight:800;font-size:12px;text-align:center">
+        Start চাপলে অডিও শুরু হবে (ব্রাউজার পলিসি)
+      </div>
+    </div>
+  </div>
+
+  <!-- Result Overlay -->
+  <div class="overlay" id="resultOverlay">
+    <div class="modal">
+      <h2 style="text-align:center">⏰ সময় শেষ!</h2>
       <div class="big" id="finalScore">0</div>
-      <div style="font-weight:900">Best: <span id="finalBest">0</span></div>
+      <div style="text-align:center;font-weight:1000">Best: <span id="finalBest">0</span></div>
       <div class="row">
         <button class="btn restart" id="btnPlayAgain">আবার খেলুন</button>
-        <button class="btn start" id="btnClose">বন্ধ</button>
+        <button class="btn start" id="btnCloseResult">বন্ধ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Overlay -->
+  <div class="overlay" id="lbOverlay">
+    <div class="modal">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <h2 style="margin:0">🏆 লিডারবোর্ড</h2>
+        <button class="btn start" id="btnCloseLB" style="flex:0 0 auto">বন্ধ</button>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" id="tabToday">আজকের</div>
+        <div class="tab" id="tabAll">সর্বকালের</div>
+      </div>
+
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>নাম</th>
+              <th class="right">স্কোর</th>
+              <th class="right">সময়</th>
+            </tr>
+          </thead>
+          <tbody id="lbBody"></tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:10px;font-size:12px;opacity:.75;font-weight:800">
+        এখন লোকালি সেভ হচ্ছে (localStorage)। চাইলে Firebase দিয়ে অনলাইন leaderboard করা যাবে।
       </div>
     </div>
   </div>
 
 <script>
-  // Character images
-  const IDLE_IMG = "https://files.catbox.moe/n5tdgb.jpg"; // থাপ্পর করার আগের
-  const SLAP_IMG = "https://files.catbox.moe/jdabf7.jpg"; // থাপ্পর খাওয়ার পর
+  // Images
+  const IDLE_IMG = "https://files.catbox.moe/n5tdgb.jpg";
+  const SLAP_IMG = "https://files.catbox.moe/jdabf7.jpg";
+  const imgIdle = new Image(); imgIdle.src = IDLE_IMG;
+  const imgSlap = new Image(); imgSlap.src = SLAP_IMG;
 
-  const imgIdle = new Image();
-  const imgSlap = new Image();
-  imgIdle.src = IDLE_IMG;
-  imgSlap.src = SLAP_IMG;
-
-  // Elements
+  // Audio
   const bgAudio = document.getElementById("bgAudio");
 
+  // UI elements
   const poster = document.getElementById("poster");
   const charImg = document.getElementById("charImg");
   const flash = document.getElementById("flash");
-
   const timeEl = document.getElementById("time");
   const scoreEl = document.getElementById("score");
   const bestEl = document.getElementById("best");
-
   const playerNameEl = document.getElementById("playerName");
   const titlePop = document.getElementById("titlePop");
 
@@ -281,11 +327,23 @@
   const btnRestart = document.getElementById("btnRestart");
   const btnLeader = document.getElementById("btnLeader");
 
-  const overlay = document.getElementById("overlay");
+  // overlays
+  const nameOverlay = document.getElementById("nameOverlay");
+  const nameInput = document.getElementById("nameInput");
+  const saveNameBtn = document.getElementById("saveNameBtn");
+  const skipNameBtn = document.getElementById("skipNameBtn");
+
+  const resultOverlay = document.getElementById("resultOverlay");
   const finalScoreEl = document.getElementById("finalScore");
   const finalBestEl = document.getElementById("finalBest");
   const btnPlayAgain = document.getElementById("btnPlayAgain");
-  const btnClose = document.getElementById("btnClose");
+  const btnCloseResult = document.getElementById("btnCloseResult");
+
+  const lbOverlay = document.getElementById("lbOverlay");
+  const btnCloseLB = document.getElementById("btnCloseLB");
+  const tabToday = document.getElementById("tabToday");
+  const tabAll = document.getElementById("tabAll");
+  const lbBody = document.getElementById("lbBody");
 
   // State
   let running = false;
@@ -295,17 +353,7 @@
   let slapTimeout = null;
   let titleTimeout = null;
 
-  // Player name (later you can add form)
-  if (!localStorage.getItem("playerName")) localStorage.setItem("playerName", "Washiq");
-  playerNameEl.textContent = localStorage.getItem("playerName") || "Player";
-
-  // Best
-  bestEl.textContent = String(Number(localStorage.getItem("bestSlap") || "0"));
-
-  // Init character image
-  charImg.src = imgIdle.src;
-
-  // Title list (তুমি যেগুলো বলেছো)
+  // Titles
   const titles = [
     "বোরকা আব্বাস",
     "আল্লামা মির্জা আব্বাস",
@@ -314,10 +362,50 @@
     "চাঁদাবাজ আব্বাস"
   ];
 
+  // Leaderboard keys
+  const KEY_ALL = "slap_lb_all";
+  const KEY_TODAY_PREFIX = "slap_lb_today_";
+
+  function todayKey(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  }
+
   function formatTime(sec){
     const m = Math.floor(sec/60);
     const s = sec%60;
     return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+
+  function safeName(raw){
+    const n = String(raw || "").trim();
+    if (!n) return "Player";
+    // limit length and strip weird control chars
+    return n.replace(/[\u0000-\u001F\u007F]/g,"").slice(0,24);
+  }
+
+  function loadArr(key){
+    try{ return JSON.parse(localStorage.getItem(key) || "[]"); }
+    catch{ return []; }
+  }
+  function saveArr(key, arr){
+    localStorage.setItem(key, JSON.stringify(arr));
+  }
+
+  function setPlayerNameUI(){
+    const saved = safeName(localStorage.getItem("playerName"));
+    playerNameEl.textContent = saved;
+  }
+
+  function bestAllTime(){
+    return Number(localStorage.getItem("bestSlap") || "0");
+  }
+
+  function updateBestUI(){
+    bestEl.textContent = String(bestAllTime());
   }
 
   async function goFullscreen(){
@@ -328,7 +416,6 @@
   }
 
   async function playAudio(){
-    // must be triggered by user gesture (Start/Restart)
     try{
       bgAudio.muted = false;
       bgAudio.volume = 1;
@@ -342,15 +429,17 @@
     running = true;
     score = 0;
     timeLeft = 60;
+
     scoreEl.textContent = "0";
     timeEl.textContent = formatTime(timeLeft);
     charImg.src = imgIdle.src;
-    overlay.classList.remove("show");
+
+    resultOverlay.classList.remove("show");
 
     clearInterval(timerId);
     timerId = setInterval(()=>{
       timeLeft--;
-      timeEl.textContent = formatTime(Math.max(0,timeLeft));
+      timeEl.textContent = formatTime(Math.max(0, timeLeft));
       if (timeLeft <= 0) endGame();
     }, 1000);
   }
@@ -359,18 +448,37 @@
     running = false;
     clearInterval(timerId);
 
-    const best = Math.max(score, Number(localStorage.getItem("bestSlap") || "0"));
-    localStorage.setItem("bestSlap", String(best));
-    bestEl.textContent = String(best);
+    // Save best
+    const prevBest = bestAllTime();
+    const newBest = Math.max(score, prevBest);
+    localStorage.setItem("bestSlap", String(newBest));
+    updateBestUI();
 
+    // Save leaderboard entries
+    const name = safeName(localStorage.getItem("playerName"));
+    const entry = { name, score, time: new Date().toISOString() };
+
+    // All-time leaderboard
+    const all = loadArr(KEY_ALL);
+    all.push(entry);
+    all.sort((a,b) => b.score - a.score);
+    saveArr(KEY_ALL, all.slice(0, 50));
+
+    // Today leaderboard
+    const tk = KEY_TODAY_PREFIX + todayKey();
+    const td = loadArr(tk);
+    td.push(entry);
+    td.sort((a,b) => b.score - a.score);
+    saveArr(tk, td.slice(0, 50));
+
+    // Show result
     finalScoreEl.textContent = String(score);
-    finalBestEl.textContent = String(best);
-    overlay.classList.add("show");
+    finalBestEl.textContent = String(newBest);
+    resultOverlay.classList.add("show");
   }
 
   function showRandomTitle(){
-    // ✅ সময় অনুযায়ী variation:
-    // শেষ 15 সেকেন্ডে titles আরও aggressive/random দ্রুত দেখাবে
+    // time-based flavour: last 15 sec more “aggressive”
     const pick = titles[Math.floor(Math.random() * titles.length)];
     titlePop.textContent = pick;
 
@@ -397,16 +505,88 @@
     feedback();
     showRandomTitle();
 
-    // image swap idle->slap->idle
     charImg.src = imgSlap.src;
     clearTimeout(slapTimeout);
     slapTimeout = setTimeout(()=>{ charImg.src = imgIdle.src; }, 130);
   }
 
-  // Tap anywhere on poster = slap
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  function renderLeaderboard(mode){
+    lbBody.innerHTML = "";
+    const list = (mode === "all")
+      ? loadArr(KEY_ALL)
+      : loadArr(KEY_TODAY_PREFIX + todayKey());
+
+    if (!list.length){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="4" style="padding:14px;opacity:.7">কোনো স্কোর নেই</td>`;
+      lbBody.appendChild(tr);
+      return;
+    }
+
+    list.slice(0, 30).forEach((e, i) => {
+      const t = new Date(e.time);
+      const hh = String(t.getHours()).padStart(2,"0");
+      const mm = String(t.getMinutes()).padStart(2,"0");
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i+1}</td>
+        <td>${escapeHtml(e.name)}</td>
+        <td class="right"><b>${e.score}</b></td>
+        <td class="right" style="opacity:.75">${hh}:${mm}</td>
+      `;
+      lbBody.appendChild(tr);
+    });
+  }
+
+  function openLB(mode){
+    lbOverlay.classList.add("show");
+    if (mode === "all"){
+      tabAll.classList.add("active");
+      tabToday.classList.remove("active");
+      renderLeaderboard("all");
+    } else {
+      tabToday.classList.add("active");
+      tabAll.classList.remove("active");
+      renderLeaderboard("today");
+    }
+  }
+
+  // Init UI
+  charImg.src = imgIdle.src;
+  timeEl.textContent = formatTime(60);
+  updateBestUI();
+  setPlayerNameUI();
+
+  // Name overlay behavior
+  const existingName = safeName(localStorage.getItem("playerName"));
+  if (existingName && existingName !== "Player") {
+    // hide name overlay if already saved
+    nameOverlay.classList.remove("show");
+  } else {
+    nameOverlay.classList.add("show");
+  }
+
+  saveNameBtn.addEventListener("click", ()=>{
+    const v = safeName(nameInput.value);
+    localStorage.setItem("playerName", v);
+    setPlayerNameUI();
+    nameOverlay.classList.remove("show");
+  });
+
+  skipNameBtn.addEventListener("click", ()=>{
+    localStorage.setItem("playerName", "Player");
+    setPlayerNameUI();
+    nameOverlay.classList.remove("show");
+  });
+
+  // Tap anywhere (except buttons)
   poster.addEventListener("pointerdown", (e)=>{
-    // ignore taps on buttons when not running? (still ok)
-    // but make sure buttons still click: if target is a button, return
     if (e.target && e.target.tagName === "BUTTON") return;
     e.preventDefault();
     slap();
@@ -426,27 +606,35 @@
   });
 
   btnPlayAgain.addEventListener("click", async ()=>{
-    overlay.classList.remove("show");
+    resultOverlay.classList.remove("show");
     await goFullscreen();
     await playAudio();
     startGame();
   });
 
-  btnClose.addEventListener("click", ()=> overlay.classList.remove("show"));
+  btnCloseResult.addEventListener("click", ()=> resultOverlay.classList.remove("show"));
 
-  btnLeader.addEventListener("click", ()=>{
-    alert("Leaderboard: ডেমোতে এখন Best (local) আছে। চাইলে আমি Firebase leaderboard যোগ করে দেব।");
+  btnLeader.addEventListener("click", ()=> openLB("today"));
+
+  btnCloseLB.addEventListener("click", ()=> lbOverlay.classList.remove("show"));
+  lbOverlay.addEventListener("click", (e)=>{ if (e.target === lbOverlay) lbOverlay.classList.remove("show"); });
+
+  tabToday.addEventListener("click", ()=>{
+    tabToday.classList.add("active"); tabAll.classList.remove("active");
+    renderLeaderboard("today");
   });
 
-  // keep audio alive when returning
+  tabAll.addEventListener("click", ()=>{
+    tabAll.classList.add("active"); tabToday.classList.remove("active");
+    renderLeaderboard("all");
+  });
+
+  // keep audio when back
   document.addEventListener("visibilitychange", async ()=>{
     if (!document.hidden && running){
       try{ await bgAudio.play(); }catch(e){}
     }
   });
-
-  // Initial time text
-  timeEl.textContent = formatTime(60);
 </script>
 </body>
-        </html>
+  </html>
