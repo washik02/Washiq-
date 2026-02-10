@@ -9,16 +9,17 @@
       background:#121212;color:#fff;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
       display:flex;flex-direction:column;align-items:center;justify-content:center;
       height:100vh;margin:0;overflow:hidden;
-      /* mobile: reduce accidental selection */
       -webkit-user-select:none; user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
     h1{font-size:24px;margin:0 0 12px;text-shadow:0 0 10px rgba(0,173,239,.5)}
-    .game-container{position:relative;box-shadow:0 0 20px rgba(0,0,0,.8);border:2px solid #333;border-radius:6px;overflow:hidden}
+    .game-container{
+      position:relative;box-shadow:0 0 20px rgba(0,0,0,.8);
+      border:2px solid #333;border-radius:6px;overflow:hidden
+    }
     canvas{
       background:#1e1e1e;display:block;max-width:100%;height:auto;
-      /* IMPORTANT for mobile gestures */
-      touch-action: none;
+      touch-action:none; /* IMPORTANT: no scroll/zoom while playing */
     }
     .footer{margin-top:12px;font-size:14px;color:#888;font-weight:700}
     .highlight{color:#00ADEF}
@@ -43,7 +44,10 @@
     }
     .btn:active{transform:translateY(1px)}
     .small{font-size:12px;color:#a8a8a8;margin-top:10px}
-    .kbd{display:inline-block;border:1px solid #3a3a3a;border-bottom-width:3px;padding:2px 6px;border-radius:6px;font-size:12px;color:#ddd}
+    .kbd{
+      display:inline-block;border:1px solid #3a3a3a;border-bottom-width:3px;
+      padding:2px 6px;border-radius:6px;font-size:12px;color:#ddd
+    }
   </style>
 </head>
 <body>
@@ -57,7 +61,7 @@
         <h2 id="overlayTitle">Breakout</h2>
         <p id="overlayText">
           Tap <span class="kbd">Play</span> to start.<br/>
-          Move: <span class="kbd">Touch</span> / <span class="kbd">Mouse</span> / <span class="kbd">←</span><span class="kbd">→</span>
+          Move: <span class="kbd">Touch & Drag</span> / <span class="kbd">Mouse</span> / <span class="kbd">←</span><span class="kbd">→</span>
         </p>
         <button id="playBtn" class="btn">Play</button>
         <div class="small">Powered by <span class="highlight">Raha AI</span></div>
@@ -76,23 +80,25 @@
     const overlayText  = document.getElementById("overlayText");
     const playBtn = document.getElementById("playBtn");
 
+    // ---- Game constants ----
     const paddleHeight = 10;
-    const paddleWidth = 80;
-    const ballRadius = 8;
+    const paddleWidth  = 80;
+    const ballRadius   = 8;
 
+    const MAX_LIVES = 9;
+
+    // ---- Game state ----
     let lastTime = 0;
     let running = false;
     let paused = false;
     let gameOver = false;
 
-    // Input
     let leftPressed = false;
     let rightPressed = false;
-    let mouseX = null;
 
-    // Touch state
-    let isTouching = false;
-    let touchX = null;
+    // Pointer (touch + mouse unified)
+    let pointerActive = false;
+    let pointerX = null;
 
     // World
     let paddleX = (canvas.width - paddleWidth) / 2;
@@ -100,6 +106,10 @@
     let score = 0;
     let lives = 3;
 
+    // Timer per round
+    let roundStartTime = 0;
+
+    // Levels: first easy 😅
     const levels = [
       { rows: 3, cols: 5, padding: 10, offsetTop: 34, offsetLeft: 45, brickW: 62, brickH: 18, speed: 170 },
       { rows: 4, cols: 6, padding: 10, offsetTop: 34, offsetLeft: 35, brickW: 60, brickH: 20, speed: 200 },
@@ -107,9 +117,72 @@
       { rows: 6, cols: 8, padding: 8,  offsetTop: 30, offsetLeft: 12, brickW: 54, brickH: 16, speed: 260 },
       { rows: 7, cols: 9, padding: 7,  offsetTop: 28, offsetLeft: 8,  brickW: 50, brickH: 15, speed: 290 },
     ];
-
     let levelIndex = 0;
     let bricks = [];
+
+    // ---- Time-based bonus rules (4 time-cases each round) ----
+    // You can edit these numbers anytime.
+    // Example: Round 1 -> <=18s +2 life, <=28s +1, <=40s +0, else +0
+    const timeBonusRules = [
+      // Round 1
+      [
+        { maxSec: 18, bonus: 2 },
+        { maxSec: 28, bonus: 1 },
+        { maxSec: 40, bonus: 0 },
+        { maxSec: Infinity, bonus: 0 },
+      ],
+      // Round 2
+      [
+        { maxSec: 22, bonus: 2 },
+        { maxSec: 34, bonus: 1 },
+        { maxSec: 48, bonus: 0 },
+        { maxSec: Infinity, bonus: 0 },
+      ],
+      // Round 3
+      [
+        { maxSec: 26, bonus: 2 },
+        { maxSec: 40, bonus: 1 },
+        { maxSec: 55, bonus: 0 },
+        { maxSec: Infinity, bonus: 0 },
+      ],
+      // Round 4
+      [
+        { maxSec: 30, bonus: 2 },
+        { maxSec: 46, bonus: 1 },
+        { maxSec: 62, bonus: 0 },
+        { maxSec: Infinity, bonus: 0 },
+      ],
+      // Round 5
+      [
+        { maxSec: 34, bonus: 2 },
+        { maxSec: 52, bonus: 1 },
+        { maxSec: 70, bonus: 0 },
+        { maxSec: Infinity, bonus: 0 },
+      ],
+    ];
+
+    // ---- Helpers ----
+    function showOverlay(title, text, btnLabel = "Play") {
+      overlayTitle.textContent = title;
+      overlayText.innerHTML = text;
+      playBtn.textContent = btnLabel;
+      overlay.classList.add("show");
+    }
+    function hideOverlay() { overlay.classList.remove("show"); }
+
+    function normalizeToCanvasX(clientX) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      return (clientX - rect.left) * scaleX;
+    }
+
+    function circleRectCollision(cx, cy, cr, rx, ry, rw, rh) {
+      const closestX = Math.max(rx, Math.min(cx, rx + rw));
+      const closestY = Math.max(ry, Math.min(cy, ry + rh));
+      const dx = cx - closestX;
+      const dy = cy - closestY;
+      return (dx*dx + dy*dy) <= cr*cr;
+    }
 
     function setupLevel(idx) {
       const L = levels[idx];
@@ -121,29 +194,80 @@
 
       paddleX = (canvas.width - paddleWidth) / 2;
       ball.x = canvas.width/2;
-      ball.y = canvas.height-30;
+      ball.y = canvas.height - 30;
 
       const dirX = ball.vx >= 0 ? 1 : -1;
       ball.vx = dirX * L.speed;
       ball.vy = -Math.abs(L.speed);
+
+      // ✅ Round start time reset
+      roundStartTime = performance.now();
     }
 
-    function showOverlay(title, text, btnLabel = "Play") {
-      overlayTitle.textContent = title;
-      overlayText.innerHTML = text;
-      playBtn.textContent = btnLabel;
-      overlay.classList.add("show");
-    }
-    function hideOverlay() { overlay.classList.remove("show"); }
-
-    function normalizeToCanvasX(clientX) {
-      // Map touch/mouse clientX to canvas coordinate system accurately (even when scaled)
-      const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      return (clientX - rect.left) * scaleX;
+    function scoreForThisLevel() {
+      const L = levels[levelIndex];
+      let destroyed = 0;
+      for (let c = 0; c < L.cols; c++)
+        for (let r = 0; r < L.rows; r++)
+          destroyed += (bricks[c][r].status === 0 ? 1 : 0);
+      return destroyed;
     }
 
-    // ---------- Keyboard ----------
+    function getTimeBonusForLevel(levelIdx, elapsedSec) {
+      const rules = timeBonusRules[levelIdx] || timeBonusRules[timeBonusRules.length - 1];
+      for (const r of rules) {
+        if (elapsedSec <= r.maxSec) return r.bonus;
+      }
+      return 0;
+    }
+
+    function nextLevelOrWin() {
+      const elapsedSec = (performance.now() - roundStartTime) / 1000;
+      const bonus = getTimeBonusForLevel(levelIndex, elapsedSec);
+
+      if (levelIndex < levels.length - 1) {
+        levelIndex++;
+
+        // ✅ time-based bonus life
+        lives = Math.min(MAX_LIVES, lives + bonus);
+
+        setupLevel(levelIndex);
+        paused = true;
+
+        showOverlay(
+          `Round ${levelIndex + 1} শুরু!`,
+          `Round cleared in <span class="highlight">${elapsedSec.toFixed(1)}s</span><br/>
+           Bonus Life: <span class="highlight">+${bonus}</span> ✅ | Lives now: <span class="highlight">${lives}</span><br/>
+           Tap <span class="kbd">Play</span> to continue.`,
+          "Play"
+        );
+      } else {
+        gameOver = true;
+        running = false;
+        showOverlay(
+          "Winner! 🎉",
+          `You cleared all rounds!<br/>
+           Final Score: <span class="highlight">${score}</span><br/>
+           Tap <span class="kbd">Play Again</span> to restart.`,
+          "Play Again"
+        );
+      }
+    }
+
+    function resetAfterLifeLost() {
+      paddleX = (canvas.width - paddleWidth) / 2;
+      ball.x = canvas.width / 2;
+      ball.y = canvas.height - 30;
+
+      const sp = levels[levelIndex].speed;
+      ball.vx = (Math.random() < 0.5 ? -1 : 1) * sp;
+      ball.vy = -sp;
+
+      // Optional: keep timer running (don’t reset roundStartTime)
+      // If you want: losing a life resets timer -> roundStartTime = performance.now();
+    }
+
+    // ---- Input: Keyboard ----
     document.addEventListener("keydown", (e) => {
       if (e.key === "ArrowRight" || e.key === "Right") rightPressed = true;
       if (e.key === "ArrowLeft"  || e.key === "Left")  leftPressed = true;
@@ -160,42 +284,28 @@
       if (e.key === "ArrowLeft"  || e.key === "Left")  leftPressed  = false;
     });
 
-    // ---------- Mouse ----------
-    document.addEventListener("mousemove", (e) => {
-      // Mouse works only if not touching
-      if (isTouching) return;
-      mouseX = normalizeToCanvasX(e.clientX);
+    // ---- Input: Pointer events (touch + mouse unified) ----
+    canvas.addEventListener("pointerdown", (e) => {
+      canvas.setPointerCapture(e.pointerId);
+      pointerActive = true;
+      pointerX = normalizeToCanvasX(e.clientX);
     });
 
-    // ---------- Touch (Mobile) ----------
-    // We attach to canvas so page doesn't scroll while playing
-    canvas.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      isTouching = true;
-      const t = e.changedTouches[0];
-      touchX = normalizeToCanvasX(t.clientX);
+    canvas.addEventListener("pointermove", (e) => {
+      if (!pointerActive) return;
+      pointerX = normalizeToCanvasX(e.clientX);
+    });
 
-      // Quick UX: if game not started / paused overlay visible, a tap starts/resumes
-      // (avoid tapping UI button only)
-      if (overlay.classList.contains("show") && !gameOver) {
-        // do nothing; user can tap Play/Resume button
-      }
-    }, { passive: false });
+    canvas.addEventListener("pointerup", () => {
+      pointerActive = false;
+      // keep pointerX (last position feel)
+    });
 
-    canvas.addEventListener("touchmove", (e) => {
-      e.preventDefault();
-      const t = e.changedTouches[0];
-      touchX = normalizeToCanvasX(t.clientX);
-    }, { passive: false });
+    canvas.addEventListener("pointercancel", () => {
+      pointerActive = false;
+    });
 
-    canvas.addEventListener("touchend", (e) => {
-      e.preventDefault();
-      // keep last touchX so paddle stays where user left it
-      // but mark not touching so mouse can work again (desktop)
-      isTouching = false;
-    }, { passive: false });
-
-    // ---------- Overlay Button ----------
+    // ---- Overlay controls ----
     playBtn.addEventListener("click", () => {
       if (gameOver) {
         levelIndex = 0;
@@ -212,20 +322,28 @@
       requestAnimationFrame(loop);
     });
 
-    // Bonus: tap overlay panel anywhere to play/resume (mobile friendly)
     overlay.addEventListener("click", (e) => {
-      // allow click on panel to also start/resume
       if (e.target === playBtn) return;
       playBtn.click();
     });
 
-    // ---------- Draw ----------
-    function drawScoreLivesLevel() {
+    // ---- Draw ----
+    function drawHUD() {
       ctx.font = "14px Arial";
       ctx.fillStyle = "#ffffff";
+
+      // Timer (live)
+      const elapsedSec = (performance.now() - roundStartTime) / 1000;
+      const timeText = `Time: ${elapsedSec.toFixed(1)}s`;
+
       ctx.fillText(`Score: ${score}`, 8, 18);
       ctx.fillText(`Lives: ${lives}`, canvas.width - 70, 18);
       ctx.fillText(`Round: ${levelIndex + 1}/${levels.length}`, canvas.width/2 - 50, 18);
+
+      // Put timer under center line for readability
+      ctx.font = "12px Arial";
+      ctx.fillStyle = "#cfcfcf";
+      ctx.fillText(timeText, canvas.width/2 - 38, 34);
     }
 
     function drawBall() {
@@ -267,45 +385,7 @@
       }
     }
 
-    // ---------- Collision ----------
-    function circleRectCollision(cx, cy, cr, rx, ry, rw, rh) {
-      const closestX = Math.max(rx, Math.min(cx, rx + rw));
-      const closestY = Math.max(ry, Math.min(cy, ry + rh));
-      const dx = cx - closestX;
-      const dy = cy - closestY;
-      return (dx*dx + dy*dy) <= cr*cr;
-    }
-
-    function scoreForThisLevel() {
-      const L = levels[levelIndex];
-      let destroyed = 0;
-      for (let c = 0; c < L.cols; c++)
-        for (let r = 0; r < L.rows; r++)
-          destroyed += (bricks[c][r].status === 0 ? 1 : 0);
-      return destroyed;
-    }
-
-    function nextLevelOrWin() {
-      if (levelIndex < levels.length - 1) {
-        levelIndex++;
-        setupLevel(levelIndex);
-        paused = true;
-        showOverlay(
-          `Round ${levelIndex} শুরু!`,
-          `Nice! 🎉 Next round is harder.<br/>Tap <span class="kbd">Play</span> to continue.`,
-          "Play"
-        );
-      } else {
-        gameOver = true;
-        running = false;
-        showOverlay(
-          "Winner! 🎉",
-          `You cleared all rounds!<br/>Final Score: <span class="highlight">${score}</span><br/>Tap <span class="kbd">Play Again</span> to restart.`,
-          "Play Again"
-        );
-      }
-    }
-
+    // ---- Brick collisions ----
     function handleBrickCollisions() {
       const L = levels[levelIndex];
       for (let c = 0; c < L.cols; c++) {
@@ -333,32 +413,18 @@
       }
     }
 
-    function resetAfterLifeLost() {
-      paddleX = (canvas.width - paddleWidth) / 2;
-      ball.x = canvas.width / 2;
-      ball.y = canvas.height - 30;
-
-      const sp = levels[levelIndex].speed;
-      ball.vx = (Math.random() < 0.5 ? -1 : 1) * sp;
-      ball.vy = -sp;
-    }
-
-    // ---------- Loop ----------
+    // ---- Update ----
     function update(dt) {
-      // Touch has priority, then mouse, then keyboard
+      // Paddle: pointer has priority, then keyboard
       const paddleSpeed = 420; // px/sec
 
-      if (touchX !== null && isTouching) {
-        const target = touchX - paddleWidth / 2;
-        paddleX += (target - paddleX) * Math.min(1, dt * 18); // slightly stronger smoothing for touch
-      } else if (mouseX !== null && !isTouching) {
-        const target = mouseX - paddleWidth / 2;
-        paddleX += (target - paddleX) * Math.min(1, dt * 12);
+      if (pointerX !== null) {
+        const target = pointerX - paddleWidth / 2;
+        paddleX += (target - paddleX) * Math.min(1, dt * (pointerActive ? 18 : 10));
       } else {
         if (rightPressed) paddleX += paddleSpeed * dt;
         if (leftPressed)  paddleX -= paddleSpeed * dt;
       }
-
       paddleX = Math.max(0, Math.min(canvas.width - paddleWidth, paddleX));
 
       // Ball move
@@ -370,13 +436,21 @@
       if (ball.x > canvas.width - ballRadius) { ball.x = canvas.width - ballRadius; ball.vx *= -1; }
       if (ball.y < ballRadius) { ball.y = ballRadius; ball.vy *= -1; }
 
-      // Paddle collision
+      // ---- Paddle collision FIX (no early bounce) ----
       const paddleY = canvas.height - paddleHeight;
-      if (circleRectCollision(ball.x, ball.y, ballRadius, paddleX, paddleY, paddleWidth, paddleHeight)) {
+
+      const ballComingDown = ball.vy > 0;
+      const withinPaddleX = ball.x >= paddleX - ballRadius && ball.x <= paddleX + paddleWidth + ballRadius;
+
+      const touchesPaddleTop =
+        (ball.y + ballRadius) >= paddleY &&
+        (ball.y + ballRadius) <= (paddleY + paddleHeight + 2);
+
+      if (ballComingDown && withinPaddleX && touchesPaddleTop) {
         ball.y = paddleY - ballRadius - 0.5;
         ball.vy = -Math.abs(ball.vy);
 
-        const hitPos = (ball.x - (paddleX + paddleWidth/2)) / (paddleWidth/2); // -1..1
+        const hitPos = (ball.x - (paddleX + paddleWidth/2)) / (paddleWidth/2);
         const sp = Math.hypot(ball.vx, ball.vy);
         const maxAngle = Math.PI * 0.35;
         const angle = hitPos * maxAngle;
@@ -384,7 +458,7 @@
         ball.vy = -sp * Math.cos(angle);
       }
 
-      // Bottom
+      // Bottom (lose life)
       if (ball.y > canvas.height + ballRadius) {
         lives--;
         if (lives <= 0) {
@@ -415,7 +489,7 @@
       drawBricks();
       drawBall();
       drawPaddle();
-      drawScoreLivesLevel();
+      drawHUD();
     }
 
     function loop(t) {
@@ -429,15 +503,16 @@
       requestAnimationFrame(loop);
     }
 
-    // ---------- Init ----------
+    // ---- Init ----
     setupLevel(levelIndex);
     showOverlay(
       "Breakout - Raha AI Edition",
       `Mobile friendly ✅<br/>
        Move: <span class="kbd">Touch & Drag</span><br/>
-       Pause: <span class="kbd">Space</span> (Desktop)`,
+       Round 1 is easy 😅<br/>
+       Bonus lives depend on time ⏱️`,
       "Play"
     );
   </script>
 </body>
-</html>
+                                                                         </html>
