@@ -1,0 +1,19 @@
+[
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/RT9MmFFC/image0.jpg", "options": ["A. Doraemon", "B. Sewashi", "C. Nobita", "D. Sunio"], "answer": "a" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/93pWBPyY/image0.jpg", "options": ["A. Dekisugi", "B. Doraemon", "C. Nobita", "D. Sunio"], "answer": "c" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/HTrxwXT4/image0.png", "options": ["A. Jaiko", "B. Shizuka", "C. Doremi", "D. Yumeko"], "answer": "b" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/gMHXB3Y1/image0.jpg", "options": ["A. Gian", "B. Sunio", "C. Kiyo", "D. Nobita"], "answer": "a" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/SXFGWvSp/image0.jpg", "options": ["A. Kenichi", "B. Kiyo", "C. Hattori", "D. Yumeko"], "answer": "b" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/11fY1Km/image0.jpg", "options": ["A. Kemumaki", "B. Shinzo", "C. Hattori", "D. Kiyo"], "answer": "c" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/MkWLWzck/image0.jpg", "options": ["A. Hattori", "B. Shinzo", "C. Kemumaki", "D. Kagechiyo"], "answer": "c" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/9Hw0cXm0/image0.jpg", "options": ["A. Kenichi", "B. Nobita", "C. Dekisugi", "D. Kiyo"], "answer": "a" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/BHrmsG65/image0.png", "options": ["A. Shiva", "B. Rehan", "C. Nanunji", "D. Laddoo Singh"], "answer": "a" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/Lh2hdd67/image0.png", "options": ["A. Patlu", "B. Motu", "C. Dr. Jhataka", "D. Ghasitaram"], "answer": "b" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/HTXwjS3X/image0.jpg", "options": ["A. John", "B. Boxer", "C. Number 1", "D. Number 2"], "answer": "a" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/h0Jq6nx/image0.jpg", "options": ["A. Dr. Jhataka", "B. Chingam", "C. Hera Singh", "D. Pheri Singh"], "answer": "b" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/wNMpKvkg/image0.png", "options": ["A. Motu", "B. Ghasitaram", "C. Patlu", "D. Chaiwala"], "answer": "c" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/0jkGwKF3/image0.png", "options": ["A. Dr. Jhataka", "B. Boxer", "C. Ghasitaram", "D. John"], "answer": "c" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/RpY9kJLp/image0.jpg", "options": ["A. Ghasitaram", "B. Dr. Jhataka", "C. Dr. Virus", "D. Motu"], "answer": "b" },
+  { "question": "Guess this character...❓", "image": "https://i.ibb.co/JjMNnJxP/image0.jpg", "options": ["A. Chingam", "B. John", "C. Chaiwala", "D. Ghasitaram"], "answer": "c" }
+]
+  
